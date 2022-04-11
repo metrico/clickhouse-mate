@@ -10,7 +10,7 @@ Clickhouse Play+ in Angular
 
 #### Usage
 ```
-git clone https://github.com/QXIP/clickhouse-play
+git clone https://github.com/metrico/clickhouse-mate
 cd ./click-house-play
 npm install
 npm start
