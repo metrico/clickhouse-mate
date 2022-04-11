@@ -2,11 +2,11 @@ name: Build & Publish
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, main ]
     paths-ignore:
       - '**/README.md'
   pull_request:
-    branches: [ master ]
+    branches: [ master, main ]
     paths-ignore:
       - '**/README.md'
 
