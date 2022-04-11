@@ -1,0 +1,124 @@
+<mat-toolbar color="primary">
+    <span>ClickHouse Play console</span>
+    <span class="example-spacer"></span>
+    <span> {{ dbLink }} : {{ dbLogin }} </span>
+</mat-toolbar>
+
+<div style="width: 100%; height: calc(100vh - 4rem)">
+    <as-split direction="horizontal" [gutterSize]="5">
+        <as-split-area [size]="20">
+            <div *ngIf="this.dbTreeData.length > 0">
+                <tree-filter
+                    [data]="dbTreeData"
+                    [isFilter]="false"
+                    [fileIcon]="true"
+                    (clickRow)="onDbChoose($event)"
+                ></tree-filter>
+            </div>
+        </as-split-area>
+        <as-split-area [size]="60">
+            <mat-accordion>
+                <mat-expansion-panel hideToggle>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title> Access config: </mat-panel-title>
+                        <mat-panel-description>
+                            {{ dbLink }} : {{ dbLogin }} :
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+
+                    <mat-form-field appearance="fill">
+                        <mat-label>DataBase link</mat-label>
+                        <input matInput [(ngModel)]="dbLink" />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                        <mat-label>DB Login</mat-label>
+                        <input matInput [(ngModel)]="dbLogin" />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                        <mat-label>DB Password</mat-label>
+                        <input
+                            type="password"
+                            matInput
+                            [(ngModel)]="dbPassword"
+                        />
+                    </mat-form-field>
+                </mat-expansion-panel>
+                <mat-expansion-panel
+                    (opened)="panelOpenState = true"
+                    (closed)="panelOpenState = false"
+                >
+                    <mat-expansion-panel-header>
+                        <mat-panel-title> SQL query panel </mat-panel-title>
+                        <mat-panel-description>
+                            {{ sqlRequest }}
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <mat-form-field appearance="fill" style="width: 100%">
+                        <mat-label>SQL query</mat-label>
+                        <textarea matInput [(ngModel)]="sqlRequest"></textarea>
+                    </mat-form-field>
+
+                    <button
+                        mat-stroked-button
+                        matTooltip="Ctrl + Enter"
+                        color="primary"
+                        (click)="onClickRun()"
+                        style="float: right"
+                    >
+                        Run
+                    </button>
+                </mat-expansion-panel>
+            </mat-accordion>
+
+            <div style="max-width: 100%; overflow: auto">
+                <!-- RESULT -->
+                <ng-container *ngIf="details.length === 0; else hasData">
+                    <h1>No Data</h1>
+                    <!-- <h3 color="warn" *ngIf="errorMessage" >{{errorMessage}}</h3> -->
+                    <button
+                        mat-flat-button
+                        color="warn"
+                        *ngIf="errorMessage"
+                        style="white-space: pre-wrap; width: 100%"
+                    >
+                        {{ errorMessage }}
+                    </button>
+                </ng-container>
+                <ng-template #hasData>
+                    <app-custom-table
+                        [details]="details"
+                        [columns]="columns"
+                        [isPaginator]="false"
+                    ></app-custom-table>
+                </ng-template>
+            </div>
+        </as-split-area>
+        <as-split-area [size]="20">
+            <div class="right-panel" style="display: flex; flex-direction: column">
+                <h3>Popular SQL:</h3>
+                <button
+                    mat-button
+                    *ngFor="let item of PopularQueries"
+                    (click)="SQL(item)"
+                    color="primary"
+                    cdkFocusInitial
+                >
+                    {{ item }}
+                </button>
+                <hr />
+                <h3>SQL Archive:</h3>
+                <button
+                    mat-button
+                    *ngFor="let item of SqlArchive"
+                    (click)="SQL(item)"
+                    color="primary"
+                    cdkFocusInitial
+                >
+                    {{ item }}
+                </button>
+            </div>
+        </as-split-area>
+    </as-split>
+</div>

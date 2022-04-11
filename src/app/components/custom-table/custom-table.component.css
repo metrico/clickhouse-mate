@@ -1,0 +1,35 @@
+table.this-table {
+    table-layout: fixed;
+    min-width: 100%;
+    /* max-width: 100%; */
+}
+table.this-table tr {
+    transition: background-color 0.3s;
+    height: 38px;
+}
+table.this-table tr:hover {
+    background-color: rgba(0, 0, 0, 0.12);
+    cursor: pointer;
+}
+
+table.this-table th,
+table.this-table td {
+    padding: 1rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.mat-row:nth-child(2n+1){
+  background-color: #e4f0ec;
+}
+
+.mat-row:not(:nth-child(2n+1)){
+  background-color:#ffffff;
+}
+
+.search-input {
+  border: 0;
+  background-color: rgba(0,0,0,0.1);
+  outline: none;
+}

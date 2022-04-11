@@ -1,0 +1,8 @@
+Alexandr Dubovikov
+https://clickhouse.com/docs/ru/sql-reference/functions/string-search-functions/
+https://clickhouse.com/docs/ru/sql-reference/functions/string-search-functions/#position
+https://clickhouse.com/docs/ru/sql-reference/functions/string-search-functions/#positioncaseinsensitive
+https://clickhouse.com/docs/ru/sql-reference/functions/
+https://github.com/ClickHouse/ClickHouse/tree/master/docs/ru/sql-reference/functions
+multiply(a, b), оператор a * b {#multiplya-b-operator-a-b}
+## multiply(a, b), оператор a \* b {#multiplya-b-operator-a-b}

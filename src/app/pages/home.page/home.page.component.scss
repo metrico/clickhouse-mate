@@ -1,0 +1,13 @@
+.example-spacer {
+  flex: 1 1 auto;
+}
+h1 {
+  padding: 2rem;
+  text-align: center;
+  color: grey;
+}
+.right-panel {
+    > button {
+        text-align: left;
+    }
+}

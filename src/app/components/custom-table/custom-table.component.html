@@ -1,0 +1,57 @@
+<div
+  class="mat-elevation-z8"
+  style="display: flex; flex-direction: column; height: 100%;">
+  <table
+    mat-table
+    matSort
+    style="flex: 0"
+    [dataSource]="dataSource"
+    class="this-table">
+    <ng-container
+      *ngFor="let item of columns; let i = index"
+      [matColumnDef]="item">
+      <ng-container>
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header>
+          <div style="float: left; max-width: 100%;">
+            <div style="max-width: 100%;text-align: left;">{{ item | titlecase}}</div>
+            <div
+              *ngIf="checkFilterColumn(item)"
+              style="max-width: 100%;">
+              <input
+                [placeholder]="item"
+                class="search-input"
+                (keyup)="applyFilter($event, item)">
+            </div>
+          </div>
+        </th>
+        <td
+          mat-cell
+          *matCellDef="let element">
+          {{ element[item] }}
+        </td>
+      </ng-container>
+    </ng-container>
+
+    <tbody>
+      <tr
+        mat-header-row
+        *matHeaderRowDef="columns"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; index as i; columns: columns"
+        (click)="onRowClick(row, i, $event)"
+        (dblclick)="onRowDblClick(row, i, $event)"
+        ></tr>
+    </tbody>
+  </table>
+  <div style="flex: 1"></div>
+  <mat-paginator
+    *ngIf="isPaginator"
+    style="flex: 0"
+    [pageSizeOptions]="[10, 25, 50, 100, 200]"
+    showFirstLastButtons></mat-paginator>
+
+</div>
