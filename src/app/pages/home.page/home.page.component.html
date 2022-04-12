@@ -134,17 +134,17 @@
                     <img src="assets/image/big-logo.png" alt="" />
                 </div>
                 <mat-form-field appearance="fill">
-                    <mat-label>DataBase link</mat-label>
-                    <input matInput [(ngModel)]="dbLink" />
+                    <mat-label>ClickHouse HTTP URL</mat-label>
+                    <input matInput [(ngModel)]="dbLink" placeholder="//localhost:8123" />
                 </mat-form-field>
 
                 <mat-form-field appearance="fill">
-                    <mat-label>DB Login</mat-label>
-                    <input matInput [(ngModel)]="dbLogin" />
+                    <mat-label>Username</mat-label>
+                    <input matInput [(ngModel)]="dbLogin" placeholder="readonly" />
                 </mat-form-field>
 
                 <mat-form-field appearance="fill">
-                    <mat-label>DB Password</mat-label>
+                    <mat-label>Password</mat-label>
                     <input type="password" matInput [(ngModel)]="dbPassword" />
                 </mat-form-field>
                 <div class="btn-panel">
