@@ -14,19 +14,19 @@ table.this-table tr:hover {
 
 table.this-table th,
 table.this-table td {
-    padding: 1rem;
+    padding: 0rem 1rem;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
 }
 
-.mat-row:nth-child(2n+1){
+/* .mat-row:nth-child(2n+1){
   background-color: #e4f0ec;
 }
 
 .mat-row:not(:nth-child(2n+1)){
   background-color:#ffffff;
-}
+} */
 
 .search-input {
   border: 0;

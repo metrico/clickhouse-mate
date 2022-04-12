@@ -8,9 +8,9 @@ import { firstValueFrom, lastValueFrom } from 'rxjs';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomePageComponent implements OnInit {
-    panelOpenState: boolean = false;
     isAccess = false;
     isReadonly = true;
+    isLeftPanel = true;
     dbLink: string = '';
     dbLogin: string = '';
     dbPassword: string = '';

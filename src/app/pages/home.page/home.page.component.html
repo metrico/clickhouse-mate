@@ -1,9 +1,16 @@
 <mat-toolbar color="primary" class="ukranian-bg">
+    <button
+        mat-icon-button
+        class="example-icon"
+        (click)="isLeftPanel = !isLeftPanel"
+    >
+        <mat-icon>menu</mat-icon>
+    </button>
     <span>ClickHouse Mate</span>
     <span class="example-spacer"></span>
     <!-- <span> {{ dbLink }} : {{ dbLogin }} </span> -->
     <button
-        [matTooltip]="'READONLY TURN ' + (isReadonly ? 'ON': 'OFF') + ''"
+        [matTooltip]="'READONLY TURN ' + (isReadonly ? 'ON' : 'OFF') + ''"
         mat-icon-button
         class="example-icon"
         (click)="setReadonly(!isReadonly)"
@@ -18,32 +25,51 @@
 
 <div style="width: 100%; height: calc(100vh - 4rem)">
     <as-split direction="horizontal" [gutterSize]="5">
-        <as-split-area [size]="20">
-            <div *ngIf="this.dbTreeData.length > 0">
-                <tree-filter
-                    [data]="dbTreeData"
-                    [isFilter]="false"
-                    [fileIcon]="true"
-                    (clickRow)="onDbChoose($event)"
-                ></tree-filter>
-            </div>
-        </as-split-area>
-        <as-split-area [size]="60">
+        <as-split-area [size]="15" *ngIf="isLeftPanel" [order]="0">
             <mat-accordion>
-                <!-- <mat-expansion-panel hideToggle>
+                <mat-expansion-panel [expanded]="true">
                     <mat-expansion-panel-header>
-                        <mat-panel-title> Access config: </mat-panel-title>
-                        <mat-panel-description>
-                            {{ dbLink }} : {{ dbLogin }} :
-                        </mat-panel-description>
+                        <mat-panel-title> DB Tree: </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div *ngIf="this.dbTreeData.length > 0">
+                        <tree-filter
+                            [data]="dbTreeData"
+                            [isFilter]="false"
+                            [fileIcon]="true"
+                            (clickRow)="onDbChoose($event)"
+                        ></tree-filter>
+                    </div>
+                </mat-expansion-panel>
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title> Popular SQL: </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div
+                        class="archive-line"
+                        *ngFor="let item of PopularQueries"
+                        (click)="SQL(item)"
+                    >
+                        {{ item }}
+                    </div>
+                </mat-expansion-panel>
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title> SQL Archive: </mat-panel-title>
                     </mat-expansion-panel-header>
 
-
-                </mat-expansion-panel> -->
-                <mat-expansion-panel
-                    (opened)="panelOpenState = true"
-                    (closed)="panelOpenState = false"
-                >
+                    <div
+                        *ngFor="let item of SqlArchive"
+                        (click)="SQL(item)"
+                        class="archive-line"
+                    >
+                        {{ item }}
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </as-split-area>
+        <as-split-area [size]="85" [order]="1">
+            <mat-accordion>
+                <mat-expansion-panel [expanded]="true">
                     <mat-expansion-panel-header>
                         <mat-panel-title> SQL query panel </mat-panel-title>
                         <mat-panel-description>
@@ -95,7 +121,7 @@
                 </ng-template>
             </div>
         </as-split-area>
-        <as-split-area [size]="20">
+        <!-- <as-split-area [size]="20">
             <mat-accordion sty>
                 <mat-expansion-panel hideToggle>
                     <mat-expansion-panel-header>
@@ -123,7 +149,7 @@
                     </div>
                 </mat-expansion-panel>
             </mat-accordion>
-        </as-split-area>
+        </as-split-area> -->
     </as-split>
 </div>
 <div class="login-form-group" *ngIf="!isAccess" #login>
@@ -131,16 +157,24 @@
         <mat-card-content>
             <div style="display: flex; flex-direction: column">
                 <div>
-                    <img src="assets/image/big-logo.png" alt="" />
+                    <img src="assets/image/big-logo.png" style="max-width: 90vw;" />
                 </div>
                 <mat-form-field appearance="fill">
                     <mat-label>ClickHouse HTTP URL</mat-label>
-                    <input matInput [(ngModel)]="dbLink" placeholder="//localhost:8123" />
+                    <input
+                        matInput
+                        [(ngModel)]="dbLink"
+                        placeholder="//localhost:8123"
+                    />
                 </mat-form-field>
 
                 <mat-form-field appearance="fill">
                     <mat-label>Username</mat-label>
-                    <input matInput [(ngModel)]="dbLogin" placeholder="readonly" />
+                    <input
+                        matInput
+                        [(ngModel)]="dbLogin"
+                        placeholder="readonly"
+                    />
                 </mat-form-field>
 
                 <mat-form-field appearance="fill">
