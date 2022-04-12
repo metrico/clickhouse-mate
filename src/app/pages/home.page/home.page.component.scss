@@ -1,13 +1,41 @@
 .example-spacer {
-  flex: 1 1 auto;
+    flex: 1 1 auto;
 }
 h1 {
-  padding: 2rem;
-  text-align: center;
-  color: grey;
+    padding: 2rem;
+    text-align: center;
+    color: grey;
 }
 .right-panel {
     > button {
         text-align: left;
+    }
+}
+.ukranian-bg {
+    background: rgb(80, 116, 255);
+    background: linear-gradient(
+        175deg,
+        rgba(80, 116, 255, 1) 0%,
+        rgba(35, 115, 204, 1) 61%,
+        rgba(254, 255, 0, 1) 62%,
+        rgba(217, 218, 0, 1) 99%
+    );
+}
+
+.login-form-group {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    display: flex;
+    z-index: 100;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.8);
+
+    .card {
     }
 }

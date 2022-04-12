@@ -1,7 +1,14 @@
-<mat-toolbar color="primary">
+<mat-toolbar color="primary" class="ukranian-bg">
     <span>ClickHouse Mate</span>
     <span class="example-spacer"></span>
-    <span> {{ dbLink }} : {{ dbLogin }} </span>
+    <!-- <span> {{ dbLink }} : {{ dbLogin }} </span> -->
+    <button
+        mat-icon-button
+        class="example-icon"
+        (click)="isAccess = !isAccess"
+    >
+        <mat-icon>settings</mat-icon>
+    </button>
 </mat-toolbar>
 
 <div style="width: 100%; height: calc(100vh - 4rem)">
@@ -18,7 +25,7 @@
         </as-split-area>
         <as-split-area [size]="60">
             <mat-accordion>
-                <mat-expansion-panel hideToggle>
+                <!-- <mat-expansion-panel hideToggle>
                     <mat-expansion-panel-header>
                         <mat-panel-title> Access config: </mat-panel-title>
                         <mat-panel-description>
@@ -26,25 +33,8 @@
                         </mat-panel-description>
                     </mat-expansion-panel-header>
 
-                    <mat-form-field appearance="fill">
-                        <mat-label>DB URL</mat-label>
-                        <input matInput [(ngModel)]="dbLink" />
-                    </mat-form-field>
 
-                    <mat-form-field appearance="fill">
-                        <mat-label>DB Login</mat-label>
-                        <input matInput [(ngModel)]="dbLogin" />
-                    </mat-form-field>
-
-                    <mat-form-field appearance="fill">
-                        <mat-label>DB Password</mat-label>
-                        <input
-                            type="password"
-                            matInput
-                            [(ngModel)]="dbPassword"
-                        />
-                    </mat-form-field>
-                </mat-expansion-panel>
+                </mat-expansion-panel> -->
                 <mat-expansion-panel
                     (opened)="panelOpenState = true"
                     (closed)="panelOpenState = false"
@@ -96,7 +86,10 @@
             </div>
         </as-split-area>
         <as-split-area [size]="20">
-            <div class="right-panel" style="display: flex; flex-direction: column">
+            <div
+                class="right-panel"
+                style="display: flex; flex-direction: column"
+            >
                 <h3>Popular SQL:</h3>
                 <button
                     mat-button
@@ -121,4 +114,39 @@
             </div>
         </as-split-area>
     </as-split>
+</div>
+<div class="login-form-group" *ngIf="!isAccess" #login>
+    <mat-card class="card">
+        <mat-card-content>
+            <div style="display: flex; flex-direction: column">
+                <div>
+                    <img src="/assets/image/big-logo.png" alt="" />
+                </div>
+                <mat-form-field appearance="fill">
+                    <mat-label>DataBase link</mat-label>
+                    <input matInput [(ngModel)]="dbLink" />
+                </mat-form-field>
+
+                <mat-form-field appearance="fill">
+                    <mat-label>DB Login</mat-label>
+                    <input matInput [(ngModel)]="dbLogin" />
+                </mat-form-field>
+
+                <mat-form-field appearance="fill">
+                    <mat-label>DB Password</mat-label>
+                    <input type="password" matInput [(ngModel)]="dbPassword" />
+                </mat-form-field>
+                <div>
+                    <button
+                        mat-raised-button
+                        (click)="connect_to_DB()"
+                        color="primary"
+                        cdkFocusInitial
+                    >
+                        Connect to DB
+                    </button>
+                </div>
+            </div>
+        </mat-card-content>
+    </mat-card>
 </div>

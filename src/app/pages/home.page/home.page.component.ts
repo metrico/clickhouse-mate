@@ -9,9 +9,13 @@ import { firstValueFrom, lastValueFrom } from 'rxjs';
 })
 export class HomePageComponent implements OnInit {
     panelOpenState: boolean = false;
+    isAccess = false;
     dbLink: string = '';
     dbLogin: string = '';
     dbPassword: string = '';
+    // dbLink: string = 'http://de3.null.qxip.net:8123';
+    // dbLogin: string = 'default';
+    // dbPassword: string = 'AiXaiy3IahJ1eiTi';
     sqlRequest: string = 'SHOW DATABASES';
 
     details: any[] = [];
@@ -34,12 +38,17 @@ export class HomePageComponent implements OnInit {
         if (json) {
             this.SqlArchive = JSON.parse(json);
         }
-        this.apiService.setLoginData({
-            dbURL: this.dbLink,
-            login: this.dbLogin,
-            password: this.dbPassword,
-        });
-        this.initDbTree();
+        const auth: any = getStorage('AUTH_DATA');
+        console.log(auth)
+        if (auth) {
+            this.dbLink = auth.dbURL;
+            this.dbLogin = auth.login;
+            this.dbPassword = auth.password;
+        }
+
+
+
+        this.connect_to_DB()
     }
 
     initDbTree(): void {
@@ -47,7 +56,7 @@ export class HomePageComponent implements OnInit {
             console.log(result)
             const { data } = result || {}
             const dbTreeData: any[] = [];
-            console.log({data})
+            console.log({ data })
             const stack = async ([dbName]: any) => {
                 let lvf;
                 try {
@@ -110,7 +119,7 @@ export class HomePageComponent implements OnInit {
         // event.name: "hepic_archive"
         const sqlStr = `select * from ${event.name} limit 10`
         if (event?.level === 1) {
-            this.sqlRequest = sqlStr;
+
             this.SQL(sqlStr)
 
         }
@@ -131,31 +140,60 @@ export class HomePageComponent implements OnInit {
         console.log(this.columns, this.details)
     }
 
-    SQL(strSQL: string): void {
+    async SQL(sqlStr: string) {
+        this.sqlRequest = sqlStr;
         this.details = [];
-        if (!this.SqlArchive.includes(strSQL)) {
-            this.SqlArchive.unshift(strSQL);
+        if (!this.SqlArchive.includes(sqlStr)) {
+            this.SqlArchive.unshift(sqlStr);
             localStorage.setItem('SqlArchive', JSON.stringify(this.SqlArchive));
         }
-        this.apiService.runQuery(strSQL)
-            .subscribe(response => {
-                this.formatData(response);
-                console.log(response);
-                this.cdr.detectChanges();
-            }, error => {
-                this.details = [];
-                console.log(error);
-                this.errorMessage = error.error || error.message;
-                this.cdr.detectChanges();
-            })
+        try {
+            const response = await lastValueFrom(this.apiService.runQuery(sqlStr));
+            this.formatData(response);
+            this.errorMessage = '';
+            this.cdr.detectChanges();
+            return true;
+
+        } catch (error: any) {
+            this.details = [];
+            console.log(error);
+            this.errorMessage = error.error || error.message;
+            this.cdr.detectChanges();
+
+            return false;
+        }
     }
 
     @HostListener('document:keydown', ['$event'])
     onClickRun(event?: any): void {
-
         if (!event || event.code === 'Enter' && event.ctrlKey) {
             this.SQL(this.sqlRequest);
         }
     }
-
+    async connect_to_DB() {
+        const auth = {
+            dbURL: this.dbLink,
+            login: this.dbLogin,
+            password: this.dbPassword,
+        };
+        this.apiService.setLoginData(auth);
+        if (await this.SQL(QUERY_LIST.getDatabases)) {
+            setStorage('AUTH_DATA', auth)
+            this.formatData({ meta: [], data: [] });
+            this.errorMessage = '';
+            this.isAccess = true;
+            this.initDbTree();
+            this.cdr.detectChanges();
+        }
+    }
 }
+
+
+export function setStorage(key: string, value: any): void {
+    localStorage.setItem(key, JSON.stringify(value));
+}
+
+export function getStorage(key: string) {
+    return JSON.parse(localStorage.getItem(key) || '{}');
+}
+
