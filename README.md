@@ -5,8 +5,8 @@ Clickhouse _"Play"_ client in _Angular_
 
 [Live DEMO](https://metrico.github.io/clickhouse-mate/)
 
-<a href="https://metrico.github.io/clickhouse-mate">
-<img src="https://user-images.githubusercontent.com/1423657/162940684-4ae57ea9-6c6e-47d8-8b41-bc3ea6634331.png"/>
+<a href="https://metrico.github.io/clickhouse-mate" target="_blank">
+<img src="https://user-images.githubusercontent.com/1423657/162940684-4ae57ea9-6c6e-47d8-8b41-bc3ea6634331.png"  />
 </a>
 
 ## Usage
