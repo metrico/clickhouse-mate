@@ -20,4 +20,7 @@ npm run build
 npm start
 ```
 
-Licensed under [AGPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+
+
+### License
+Licensed under [AGPLv3](LICENSE), sponsored by [qxip/metrico](https://metrico.in) as part of the [cLoki](https://cloki.org) project
