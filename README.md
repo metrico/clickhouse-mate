@@ -2,6 +2,8 @@
 
 [![Node.js CI](https://github.com/metrico/clickhouse-mate/actions/workflows/build.yml/badge.svg)](https://github.com/metrico/clickhouse-mate/actions/workflows/build.yml)
 
+[DEMO] https://metrico.github.io/clickhouse-mate/
+
 # ClickHouse-Mate
 Clickhouse Play+ in Angular
 
