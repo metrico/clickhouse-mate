@@ -15,8 +15,8 @@ Use the [public version](https://metrico.github.io/clickhouse-mate/) _(no data g
 
 ```
 git clone https://github.com/metrico/clickhouse-mate
-cd ./click-house-play
-npm install
+cd ./click-house-mate
+npm run build
 npm start
 ```
 
