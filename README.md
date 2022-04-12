@@ -1,7 +1,7 @@
 <img src="https://user-images.githubusercontent.com/1423657/162776419-0330af12-7857-40c0-b660-254f8837a910.png" width=420 />
 
 # ClickHouse-Mate
-Clickhouse _"Play"_ client in _Angular_
+Clickhouse _"play"_ client prototype in _Angular_ 
 
 [Live DEMO](https://metrico.github.io/clickhouse-mate/)
 
