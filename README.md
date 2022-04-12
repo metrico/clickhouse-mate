@@ -1,16 +1,18 @@
 <img src="https://user-images.githubusercontent.com/1423657/162776419-0330af12-7857-40c0-b660-254f8837a910.png" width=420 />
 
-[![Node.js CI](https://github.com/metrico/clickhouse-mate/actions/workflows/build.yml/badge.svg)](https://github.com/metrico/clickhouse-mate/actions/workflows/build.yml)
-
-[DEMO] https://metrico.github.io/clickhouse-mate/
-
 # ClickHouse-Mate
-Clickhouse Play+ in Angular
+Clickhouse _"Play"_ client in _Angular_
 
-#### Status
-- Experimental
+[Live DEMO](https://metrico.github.io/clickhouse-mate/)
 
-#### Usage
+<a href="https://metrico.github.io/clickhouse-mate" target="_blank">
+<img src="https://user-images.githubusercontent.com/1423657/162940684-4ae57ea9-6c6e-47d8-8b41-bc3ea6634331.png"  />
+</a>
+
+## Usage
+
+Use the [public version](https://metrico.github.io/clickhouse-mate/) _(no data goes through the server)_ or build your own:
+
 ```
 git clone https://github.com/metrico/clickhouse-mate
 cd ./click-house-play
