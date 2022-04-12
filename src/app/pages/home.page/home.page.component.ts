@@ -172,6 +172,9 @@ export class HomePageComponent implements OnInit {
         }
     }
     async connect_to_DB() {
+        if (!this.dbPassword || this.dbPassword === '') {
+            return;
+        }
         const auth = {
             dbURL: this.dbLink,
             login: this.dbLogin,
