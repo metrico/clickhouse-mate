@@ -10,6 +10,7 @@ import { firstValueFrom, lastValueFrom } from 'rxjs';
 export class HomePageComponent implements OnInit {
     panelOpenState: boolean = false;
     isAccess = false;
+    isReadonly = true;
     dbLink: string = '';
     dbLogin: string = '';
     dbPassword: string = '';
@@ -185,6 +186,11 @@ export class HomePageComponent implements OnInit {
             this.initDbTree();
             this.cdr.detectChanges();
         }
+    }
+
+    setReadonly(bool: boolean) {
+        this.isReadonly = bool;
+        this.apiService.setReadOnly(bool);
     }
 }
 

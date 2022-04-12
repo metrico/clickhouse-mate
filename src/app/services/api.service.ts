@@ -15,18 +15,25 @@ export class ApiService {
     login = '';
     password = '';
     dbURL = '';
+    isReadonly: boolean = true;
     constructor(private http: HttpClient) { }
-
+    setReadOnly(bool: boolean) {
+        this.isReadonly = bool;
+    }
     setLoginData({ dbURL, login, password }: any) {
         this.dbURL = dbURL;
         this.login = login;
         this.password = password;
     }
     post(dbURL: string = this.dbURL, postData: any) {
-        const { login = this.login, password = this.password, query = '' } = postData;
+        const {
+            login = this.login,
+            password = this.password,
+            query = ''
+        } = postData;
 
         const SESSION_ID = ApiService.SESSION_ID;
-        const queryObject = {
+        const queryObject: any = {
             session_id: SESSION_ID,
             add_http_cors_header: 1,
             user: login,
@@ -35,6 +42,9 @@ export class ApiService {
             max_result_rows: 1000,
             max_result_bytes: 10000000,
             result_overflow_mode: 'break'
+        }
+        if (this.isReadonly) {
+            queryObject.readonly = 1;
         }
         // const getStr = `?add_http_cors_header=1&user=${login}&password=${password}&default_format=JSONCompact&max_result_rows=1000&max_result_bytes=10000000&result_overflow_mode=break`
         const getStr = '?' + Object.entries(queryObject)

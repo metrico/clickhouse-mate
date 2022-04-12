@@ -2,6 +2,15 @@
     <span>ClickHouse Mate</span>
     <span class="example-spacer"></span>
     <!-- <span> {{ dbLink }} : {{ dbLogin }} </span> -->
+    <button
+        [matTooltip]="'READONLY TURN ' + (isReadonly ? 'ON': 'OFF') + ''"
+        mat-icon-button
+        class="example-icon"
+        (click)="setReadonly(!isReadonly)"
+    >
+        <mat-icon *ngIf="isReadonly">lock</mat-icon>
+        <mat-icon *ngIf="!isReadonly">lock_open</mat-icon>
+    </button>
     <button mat-icon-button class="example-icon" (click)="isAccess = !isAccess">
         <mat-icon>settings</mat-icon>
     </button>
