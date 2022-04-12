@@ -43,3 +43,15 @@ h1 {
     flex-wrap: nowrap;
     justify-content: space-between;
 }
+.archive-line {
+    font-family: monospace;
+    font-size: 12px;
+    padding: 4px;
+    margin: 2px;
+    border: 1px solid #f5f5f5;
+    cursor: pointer;
+
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.2)
+    }
+}

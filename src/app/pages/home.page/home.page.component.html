@@ -44,6 +44,7 @@
                     <mat-form-field appearance="fill" style="width: 100%">
                         <mat-label>SQL query</mat-label>
                         <textarea
+                            style="font-family: monospace"
                             matInput
                             [(ngModel)]="sqlRequest"
                             spellcheck="false"
@@ -86,32 +87,33 @@
             </div>
         </as-split-area>
         <as-split-area [size]="20">
-            <div
-                class="right-panel"
-                style="display: flex; flex-direction: column"
-            >
-                <h3>Popular SQL:</h3>
-                <button
-                    mat-button
-                    *ngFor="let item of PopularQueries"
-                    (click)="SQL(item)"
-                    color="primary"
-                    cdkFocusInitial
-                >
-                    {{ item }}
-                </button>
-                <hr />
-                <h3>SQL Archive:</h3>
-                <button
-                    mat-button
-                    *ngFor="let item of SqlArchive"
-                    (click)="SQL(item)"
-                    color="primary"
-                    cdkFocusInitial
-                >
-                    {{ item }}
-                </button>
-            </div>
+            <mat-accordion sty>
+                <mat-expansion-panel hideToggle>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title> Popular SQL: </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div
+                        class="archive-line"
+                        *ngFor="let item of PopularQueries"
+                        (click)="SQL(item)"
+                    >
+                        {{ item }}
+                    </div>
+                </mat-expansion-panel>
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title> SQL Archive: </mat-panel-title>
+                    </mat-expansion-panel-header>
+
+                    <div
+                        *ngFor="let item of SqlArchive"
+                        (click)="SQL(item)"
+                        class="archive-line"
+                    >
+                        {{ item }}
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
         </as-split-area>
     </as-split>
 </div>
