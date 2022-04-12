@@ -2,11 +2,7 @@
     <span>ClickHouse Mate</span>
     <span class="example-spacer"></span>
     <!-- <span> {{ dbLink }} : {{ dbLogin }} </span> -->
-    <button
-        mat-icon-button
-        class="example-icon"
-        (click)="isAccess = !isAccess"
-    >
+    <button mat-icon-button class="example-icon" (click)="isAccess = !isAccess">
         <mat-icon>settings</mat-icon>
     </button>
 </mat-toolbar>
@@ -47,7 +43,11 @@
                     </mat-expansion-panel-header>
                     <mat-form-field appearance="fill" style="width: 100%">
                         <mat-label>SQL query</mat-label>
-                        <textarea matInput [(ngModel)]="sqlRequest" spellcheck="false"></textarea>
+                        <textarea
+                            matInput
+                            [(ngModel)]="sqlRequest"
+                            spellcheck="false"
+                        ></textarea>
                     </mat-form-field>
 
                     <button
@@ -136,7 +136,15 @@
                     <mat-label>DB Password</mat-label>
                     <input type="password" matInput [(ngModel)]="dbPassword" />
                 </mat-form-field>
-                <div>
+                <div class="btn-panel">
+                    <button
+                        style="margin-right: 0.5rem"
+                        mat-raised-button
+                        (click)="isAccess = !isAccess"
+                        cdkFocusInitial
+                    >
+                        cancel
+                    </button>
                     <button
                         mat-raised-button
                         (click)="connect_to_DB()"
