@@ -29,7 +29,7 @@
             <mat-accordion>
                 <mat-expansion-panel [expanded]="true">
                     <mat-expansion-panel-header>
-                        <mat-panel-title> DB Tree: </mat-panel-title>
+                        <mat-panel-title> DB Tree </mat-panel-title>
                     </mat-expansion-panel-header>
                     <div *ngIf="this.dbTreeData.length > 0">
                         <tree-filter
@@ -42,7 +42,7 @@
                 </mat-expansion-panel>
                 <mat-expansion-panel>
                     <mat-expansion-panel-header>
-                        <mat-panel-title> Popular SQL: </mat-panel-title>
+                        <mat-panel-title> Query Presets </mat-panel-title>
                     </mat-expansion-panel-header>
                     <div
                         class="archive-line"
@@ -54,7 +54,7 @@
                 </mat-expansion-panel>
                 <mat-expansion-panel>
                     <mat-expansion-panel-header>
-                        <mat-panel-title> SQL Archive: </mat-panel-title>
+                        <mat-panel-title> Query History </mat-panel-title>
                     </mat-expansion-panel-header>
 
                     <div
@@ -71,7 +71,7 @@
             <mat-accordion>
                 <mat-expansion-panel [expanded]="true">
                     <mat-expansion-panel-header>
-                        <mat-panel-title> SQL query panel </mat-panel-title>
+                        <mat-panel-title> Query </mat-panel-title>
                         <mat-panel-description>
                             {{ sqlRequest }}
                         </mat-panel-description>
