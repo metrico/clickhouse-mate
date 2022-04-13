@@ -10,6 +10,8 @@
   },
   "private": true,
   "dependencies": {
+    "@ag-grid-community/all-modules": "^27.1.0",
+    "@ag-grid-community/angular": "^27.1.1",
     "@angular/animations": "^12.2.16",
     "@angular/cdk": "^12.2.13",
     "@angular/common": "~12.2.0",
@@ -20,6 +22,13 @@
     "@angular/platform-browser": "~12.2.0",
     "@angular/platform-browser-dynamic": "~12.2.0",
     "@angular/router": "~12.2.0",
+    "@fortawesome/angular-fontawesome": "^0.10.2",
+    "@fortawesome/fontawesome-svg-core": "^6.1.1",
+    "@fortawesome/free-brands-svg-icons": "^6.1.1",
+    "@fortawesome/free-regular-svg-icons": "^6.1.1",
+    "@fortawesome/free-solid-svg-icons": "^6.1.1",
+    "ag-grid-angular": "^27.1.1",
+    "ag-grid-community": "^27.1.0",
     "angular-split": "^5.0.0",
     "rxjs": "^7.3.0",
     "ts-md5": "^1.2.11",
@@ -27,7 +36,7 @@
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~12.2.16",
+    "@angular-devkit/build-angular": "^13.3.2",
     "@angular/cli": "~12.2.16",
     "@angular/compiler-cli": "~12.2.0",
     "@types/jasmine": "~3.8.0",

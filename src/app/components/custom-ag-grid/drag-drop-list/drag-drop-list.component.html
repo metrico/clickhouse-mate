@@ -1,0 +1,27 @@
+<div style="display: flex">
+  <div class="example-container-setting">
+    <h3>Inactive</h3>
+    <div cdkDropList
+      class="example-list disabled"
+      #inactiveListView="cdkDropList"
+      [cdkDropListData]="inactiveList"
+      [cdkDropListConnectedTo]="[activeListView]"
+      (cdkDropListDropped)="drop($event)"
+      id="inactiveListView">
+        <div class="example-box" *ngFor="let item of inactiveList" cdkDrag>{{item && item.name || '\{skipped on Mapping\}'}}</div>
+    </div>
+  </div>
+
+  <div class="example-container-setting">
+    <h3>Active</h3>
+    <div cdkDropList
+      class="example-list pos-sticky"
+      #activeListView="cdkDropList"
+      [cdkDropListData]="activeList"
+      [cdkDropListConnectedTo]="[inactiveListView]"
+      (cdkDropListDropped)="drop($event)"
+      id="activeListView">
+        <div class="example-box" *ngFor="let item of activeList" cdkDrag>{{item && item.name || '\{skipped on Mapping\}'}}</div>
+    </div>
+  </div>
+</div>

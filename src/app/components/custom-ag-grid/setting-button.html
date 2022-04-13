@@ -1,0 +1,14 @@
+<button mat-icon-button
+    [matMenuTriggerFor]="menu"
+    class="button-icon-right-top">
+    <fa-icon icon="cog"></fa-icon>
+</button>
+<span>{{headerName | titlecase}}</span>
+<mat-menu #menu="matMenu">
+    <div class="container"
+        (click)="$event.stopPropagation();">
+        <h3 style="text-align: center">Columns settings</h3>
+        <app-drag-drop-list [list]="allColumnIds"
+            (order)="onUpdateList($event)"></app-drag-drop-list>
+    </div>
+</mat-menu>

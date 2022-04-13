@@ -1,0 +1,12 @@
+.container {
+    padding: 1rem;
+    min-width: 400px;
+    max-height: 600px;
+    overflow-y: auto;
+}
+.button-icon-right-top {
+    width: 30px;
+}
+::ng-deep.mat-menu-panel {
+    max-width: initial !important;
+}

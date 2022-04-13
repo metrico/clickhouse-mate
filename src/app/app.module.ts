@@ -13,6 +13,7 @@ import { FormsModule } from '@angular/forms';
 import { APP_BASE_HREF } from '@angular/common';
 import { AngularSplitModule } from 'angular-split';
 import { TreeFilterModule } from './controls/tree-filter/tree-filter.module';
+import { CustomAgGridModule } from './components/custom-ag-grid/custom-ag-grid.module';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { TreeFilterModule } from './controls/tree-filter/tree-filter.module';
     FormsModule,
     HttpClientModule,
     AngularSplitModule,
-    TreeFilterModule
+      TreeFilterModule,
+      CustomAgGridModule
   ],
   providers: [
     { provide: APP_BASE_HREF, useValue: (window as any)['base-href'] }
