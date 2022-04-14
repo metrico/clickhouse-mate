@@ -1,4 +1,101 @@
-/* You can add global styles to this file, and also import other style files */
+// @import "~@angular/material/theming";
+// /* You can add global styles to this file, and also import other style files */
+// @include mat-core();
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+    height: 100%;
+}
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+// @import "ag-grid-community/dist/styles/ag-grid.css";
+// @import "ag-grid-community/dist/styles/ag-theme-alpine.css";
+
+// @import "~ag-grid-community/dist/styles/ag-grid.css";
+// @import "~ag-grid-community/dist/styles/ag-theme-balham.css";
+
+@import "~ag-grid-community/dist/styles/ag-grid.css";
+@import "~ag-grid-community/src/styles/ag-theme-material/sass/ag-theme-material";
+
+.ag-row-selected {
+    background-color: #eee !important;
+}
+
+.ag-theme-material .ag-ltr .ag-cell {
+    border-right: 1px solid lightgray;
+}
+.ag-theme-material.custom .ag-ltr .ag-cell {
+    line-height: 3;
+}
+
+.ag-body-viewport {
+    overflow-x: auto !important;
+}
+
+.ag-theme-material,
+.ag-header-cell,
+.ag-cell-wrapper,
+.ag-filter-select,
+.ag-filter .ag-filter-filter,
+.ag-paging-panel {
+    font-family: monospace;
+}
+// adjust the icons path
+$ag-mat-icons-path: "~ag-grid-community/src/styles/ag-theme-material/icons/";
+$ag-icons-path: "~ag-grid-community/src/styles/ag-theme-base/icons/";
+
+/* ag-grid */
+// changes the default icon color
+$ag-icon-color: #0077f9;
+$ag-icon-checkbox-checked-color: #0077f9;
+// changes the selected checkbox check mark color
+$ag-accent-color: #0077f9;
+$header-height: 50px;
+$row-height: 40px;
+$row-border-width: 1px;
+$hover-color: cornsilk;
+$ag-suppress-legacy-var-import: true;
+
+.ag-theme-alpine * {
+    font-family: monospace;
+}
+
+.ag-cell {
+    padding-right: 5px !important;
+    padding-left: 5px !important;
+    border: none !important;
+    border-right: 1px solid lightgray !important;
+}
+
+.ag-row {
+    border: none !important;
+}
+
+.ag-header-cell {
+    padding-right: 5px !important;
+    padding-left: 5px !important;
+}
+
+a:not([href]) {
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+.ag-row-selected {
+    background-color: #eee !important;
+}
+
+.ag-theme-material .ag-ltr .ag-cell {
+    border-right: 1px solid lightgray;
+}
+.ag-theme-material.custom .ag-ltr .ag-cell {
+    line-height: 3;
+}
+.ag-body-viewport {
+    overflow-x: auto !important;
+  }

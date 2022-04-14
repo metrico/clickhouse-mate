@@ -67,8 +67,12 @@
                 </mat-expansion-panel>
             </mat-accordion>
         </as-split-area>
-        <as-split-area [size]="85" [order]="1">
-            <mat-accordion>
+        <as-split-area
+            [size]="85"
+            [order]="1"
+            style="display: flex; flex-direction: column"
+        >
+            <mat-accordion style="flex: 0">
                 <mat-expansion-panel [expanded]="true">
                     <mat-expansion-panel-header>
                         <mat-panel-title> Query </mat-panel-title>
@@ -84,21 +88,22 @@
                             [(ngModel)]="sqlRequest"
                             spellcheck="false"
                         ></textarea>
+                        <button
+                            matSuffix
+                            mat-icon-button
+                            matTooltip="Ctrl + Enter"
+                            color="primary"
+                            aria-label="Run"
+                            (click)="onClickRun()"
+                            style="float: right"
+                        >
+                            <mat-icon>send</mat-icon>
+                        </button>
                     </mat-form-field>
-
-                    <button
-                        mat-stroked-button
-                        matTooltip="Ctrl + Enter"
-                        color="primary"
-                        (click)="onClickRun()"
-                        style="float: right"
-                    >
-                        Run
-                    </button>
                 </mat-expansion-panel>
             </mat-accordion>
 
-            <div style="max-width: 100%; overflow: auto">
+            <div style="flex: 1 1 auto; overflow: hidden; position: relative;">
                 <!-- RESULT -->
                 <ng-container *ngIf="details.length === 0; else hasData">
                     <h1>No Data</h1>
@@ -113,11 +118,16 @@
                     </button>
                 </ng-container>
                 <ng-template #hasData>
-                    <app-custom-table
+                    <!-- <app-custom-table
                         [details]="details"
                         [columns]="columns"
-                        [isPaginator]="false"
-                    ></app-custom-table>
+                        [isPaginator]="true"
+                    ></app-custom-table> -->
+                    <custom-ag-grid
+                        class="example-table-container"
+                        [details]="details"
+                        [columns]="columns"
+                    ></custom-ag-grid>
                 </ng-template>
             </div>
         </as-split-area>

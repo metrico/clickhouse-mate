@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
-import { cloneObject } from '@app/helpers/functions';
+import { cloneObject } from '@app/helper/functions';
 import { GridOptions } from 'ag-grid-community';
 import { SettingButtonComponent } from './setting-button';
 
@@ -14,13 +14,16 @@ export class CustomAgGridComponent implements OnInit {
         // pageSize: 100
     };
     agColumnDefs: any[] = [];
-    _details = [];
+    _details: any[] = [];
     frameworkComponents: any;
     gridOptions: GridOptions = <GridOptions>{
         defaultColDef: {
             sortable: true,
             resizable: true,
         },
+        enableCellTextSelection: true,
+        ensureDomOrder: true,
+        domLayout: 'normal', //'autoHeight',
         rowHeight: 38,
         rowSelection: 'multiple',
         suppressRowClickSelection: true,
@@ -48,7 +51,7 @@ export class CustomAgGridComponent implements OnInit {
                     .filter(([key, value]: any) => typeof value !== 'object' || value instanceof Array)
                     .map(([key]: any) => {
 
-                        const aliasFromKey = {
+                        const aliasFromKey: any = {
                             'srcAlias_srcPort': 'SRC IP with Port',
                             'dstAlias_dstPort': 'DST IP with Port',
                             'diff': 'Delta',
@@ -86,7 +89,7 @@ export class CustomAgGridComponent implements OnInit {
         };
         isDetailsReady();
     }
-    get columns() {
+    get columns(): any {
         return this._columns;
     }
     @Output() rowClick: EventEmitter<any> = new EventEmitter();
@@ -133,7 +136,7 @@ export class CustomAgGridComponent implements OnInit {
         }, 100);
     }
 
-    public getRowStyle(params) {
+    public getRowStyle(params: any) {
         const _style: any = {
             'border-bottom': '1px solid rgba(0,0,0,0.1)',
             'cursor': 'pointer'
@@ -143,10 +146,10 @@ export class CustomAgGridComponent implements OnInit {
         }
         return _style;
     }
-    sortChanged(event) {
+    sortChanged(event?: any) {
         this.cdr.detectChanges();
     }
-    cellClicked(event) {
+    cellClicked(event?: any) {
         this.rowClick.emit(event);
     }
     doOpenFilter() {

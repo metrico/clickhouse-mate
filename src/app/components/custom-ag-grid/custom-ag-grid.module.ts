@@ -20,7 +20,7 @@ import { far } from '@fortawesome/free-regular-svg-icons';
         FontAwesomeModule,
         MatButtonModule,
         FormsModule,
-        // AgGridModule.withComponents([]),
+        AgGridModule.withComponents([]),
         MatMenuModule,
         MatCheckboxModule,
         MatCardModule,

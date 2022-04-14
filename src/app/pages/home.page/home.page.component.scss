@@ -58,3 +58,8 @@ h1 {
 :host ::ng-deep .mat-expansion-panel-body {
     padding: 0;
 }
+.example-table-container {
+    position: relative;
+    height: 100%;
+    overflow: auto;
+  }

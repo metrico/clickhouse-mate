@@ -14,9 +14,6 @@ export class HomePageComponent implements OnInit {
     dbLink: string = '';
     dbLogin: string = '';
     dbPassword: string = '';
-    // dbLink: string = 'http://de3.null.qxip.net:8123';
-    // dbLogin: string = 'default';
-    // dbPassword: string = 'AiXaiy3IahJ1eiTi';
     sqlRequest: string = 'SHOW DATABASES';
 
     details: any[] = [];

@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 
 @Component({
     selector: 'app-drag-drop-list',
@@ -9,18 +9,18 @@ import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag
 })
 
 export class DragDropListComponent implements OnInit {
-    _list: Array<any>;
+    _list: Array<any> | null = null;
     inactiveList: Array<any> = [];
     activeList: Array<any> = [];
 
-    @Output() change = new EventEmitter<any> ();
-    @Output() order = new EventEmitter<any> ();
-    @Input() sortlistactive: Array<any>;
+    @Output() change = new EventEmitter<any>();
+    @Output() order = new EventEmitter<any>();
+    @Input() sortlistactive: Array<any> | null = null;
     @Input('list') set list(val) {
         this._list = val;
         this.activeList = [];
         this.inactiveList = [];
-        this.list.forEach((item: any) => {
+        this.list?.forEach((item: any) => {
             if (item.selected) {
                 this.activeList.push(item);
             } else {
@@ -33,9 +33,9 @@ export class DragDropListComponent implements OnInit {
         return this._list;
     }
 
-    ngOnInit () {
+    ngOnInit() {
         if (this.sortlistactive && this.sortlistactive.length > 0) {
-            const _activeList = [];
+            const _activeList: any[] = [];
             this.sortlistactive.forEach((item: any) => {
                 _activeList.push(this.activeList.find(i => i.id === item.field_name));
 
@@ -66,8 +66,10 @@ export class DragDropListComponent implements OnInit {
         this.activeList.forEach((item: any) => {
             item.selected = true;
         });
-        const newProto = [].concat(this.activeList, this.inactiveList);
-        const sortedProto = newProto.sort((a, b) => a.idx - b.idx);
+
+
+        const newProto = [...this.activeList, ...this.inactiveList];
+        const sortedProto = newProto.sort((a: any, b: any) => a.idx - b.idx);
         this.change.emit(newProto);
         this.order.emit({
             sortedProto: sortedProto,
