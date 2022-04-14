@@ -72,38 +72,42 @@
             [order]="1"
             style="display: flex; flex-direction: column"
         >
-            <mat-accordion style="flex: 0">
+            <!-- <mat-accordion style="flex: 0">
                 <mat-expansion-panel [expanded]="true">
                     <mat-expansion-panel-header>
                         <mat-panel-title> Query </mat-panel-title>
                         <mat-panel-description>
                             {{ sqlRequest }}
                         </mat-panel-description>
-                    </mat-expansion-panel-header>
-                    <mat-form-field appearance="fill" style="width: 100%">
-                        <mat-label>SQL query</mat-label>
-                        <textarea
-                            style="font-family: monospace"
-                            matInput
-                            [(ngModel)]="sqlRequest"
-                            spellcheck="false"
-                        ></textarea>
-                        <button
-                            matSuffix
-                            mat-icon-button
-                            matTooltip="Ctrl + Enter"
-                            color="primary"
-                            aria-label="Run"
-                            (click)="onClickRun()"
-                            style="float: right"
-                        >
-                            <mat-icon>send</mat-icon>
-                        </button>
-                    </mat-form-field>
-                </mat-expansion-panel>
-            </mat-accordion>
+                    </mat-expansion-panel-header> -->
 
-            <div style="flex: 1 1 auto; overflow: hidden; position: relative;">
+            <div>
+                <mat-form-field appearance="fill" style="width: 100%">
+                    <mat-label>SQL query</mat-label>
+                    <textarea
+                        style="font-family: monospace"
+                        matInput
+                        [(ngModel)]="sqlRequest"
+                        spellcheck="false"
+                    ></textarea>
+                    <button
+                        matSuffix
+                        mat-icon-button
+                        matTooltip="Ctrl + Enter"
+                        color="primary"
+                        aria-label="Run"
+                        (click)="onClickRun()"
+                        style="float: right"
+                    >
+                        <mat-icon>send</mat-icon>
+                    </button>
+                </mat-form-field>
+            </div>
+<!--
+                </mat-expansion-panel>
+            </mat-accordion> -->
+
+            <div style="flex: 1 1 auto; overflow: hidden; position: relative">
                 <!-- RESULT -->
                 <ng-container *ngIf="details.length === 0; else hasData">
                     <h1>No Data</h1>
