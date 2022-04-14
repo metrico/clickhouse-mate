@@ -3,6 +3,9 @@ import { cloneObject } from '@app/helper/functions';
 import { GridOptions } from 'ag-grid-community';
 import { SettingButtonComponent } from './setting-button';
 
+
+const GRID_FIT = 'autoSizeColumns';
+
 @Component({
     selector: 'custom-ag-grid',
     templateUrl: './custom-ag-grid.component.html',
@@ -10,7 +13,7 @@ import { SettingButtonComponent } from './setting-button';
 })
 export class CustomAgGridComponent implements OnInit {
     agGridSizeControl = {
-        selectedType: 'sizeToFit',
+        selectedType: 'sizeToFitContinuos', // 'sizeToFit',
         // pageSize: 100
     };
     agColumnDefs: any[] = [];
@@ -65,7 +68,7 @@ export class CustomAgGridComponent implements OnInit {
                         if (aliasFromKey[key]) {
                             return { field: key, headerName: aliasFromKey[key], hide: !val.includes(key) }
                         } else {
-                            return { field: key, hide: !val.includes(key) }
+                            return { field: key, hide: !val.includes(key), filter: 'agTextColumnFilter' }
                         }
                     });
 
@@ -103,12 +106,12 @@ export class CustomAgGridComponent implements OnInit {
 
     // @HostListener('window:resize')
     onResize() {
-        if (!this.gridApi || this.agGridSizeControl.selectedType !== 'sizeToFit') {
+        if (!this.gridApi || this.agGridSizeControl.selectedType !== GRID_FIT) {
             return;
         }
 
         requestAnimationFrame(() => {
-            if (this.agGridSizeControl.selectedType === 'sizeToFit') {
+            if (this.agGridSizeControl.selectedType === GRID_FIT) {
                 this.gridApi?.sizeColumnsToFit();
             }
         });
