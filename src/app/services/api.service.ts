@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { map } from 'rxjs';
 
 export const QUERY_LIST = {
     getDatabases: 'SHOW DATABASES',
@@ -48,11 +49,30 @@ export class ApiService {
         if (this.isReadonly) {
             queryObject.readonly = 1;
         }
-        // const getStr = `?add_http_cors_header=1&user=${login}&password=${password}&default_format=JSONCompact&max_result_rows=1000&max_result_bytes=10000000&result_overflow_mode=break`
         const getStr = '?' + Object.entries(queryObject)
             .map(([key, value]: any) => `${key}=${value}`).join('&');
 
-        return this.http.post<any>(`${dbURL}${getStr}`, query);
+        // return this.http.post<any>(`${dbURL}${getStr}`, query);
+
+        const headers = new HttpHeaders().set('Content-Type', 'text/plain; charset=utf-8');
+
+        return this.http.post(
+            `${dbURL}${getStr}`,
+            query,
+            { headers, responseType: 'text' }
+        ).pipe(map(response => {
+            console.log({ response })
+            if (response === '') {
+                return null;
+            }
+            try {
+                return JSON.parse(response)
+            } catch (error) {
+                return response;
+            }
+            // return { data: [] };
+        }))
+        //.pipe(catchError(this.errorHandlerService.handleError));
     }
 
     runQuery(query: string) {

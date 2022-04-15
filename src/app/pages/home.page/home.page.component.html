@@ -72,17 +72,11 @@
             [order]="1"
             style="display: flex; flex-direction: column"
         >
-            <!-- <mat-accordion style="flex: 0">
-                <mat-expansion-panel [expanded]="true">
-                    <mat-expansion-panel-header>
-                        <mat-panel-title> Query </mat-panel-title>
-                        <mat-panel-description>
-                            {{ sqlRequest }}
-                        </mat-panel-description>
-                    </mat-expansion-panel-header> -->
-
             <div>
-                <mat-form-field appearance="fill" style="width: 100%">
+                <mat-form-field
+                    appearance="fill"
+                    style="width: 100%; margin-bottom: -1rem"
+                >
                     <mat-label>SQL query</mat-label>
                     <textarea
                         style="font-family: monospace"
@@ -103,15 +97,11 @@
                     </button>
                 </mat-form-field>
             </div>
-<!--
-                </mat-expansion-panel>
-            </mat-accordion> -->
 
             <div style="flex: 1 1 auto; overflow: hidden; position: relative">
-                <!-- RESULT -->
                 <ng-container *ngIf="details.length === 0; else hasData">
                     <h1>No Data</h1>
-                    <!-- <h3 color="warn" *ngIf="errorMessage" >{{errorMessage}}</h3> -->
+
                     <button
                         mat-flat-button
                         color="warn"
@@ -122,16 +112,15 @@
                     </button>
                 </ng-container>
                 <ng-template #hasData>
-                    <!-- <app-custom-table
-                        [details]="details"
-                        [columns]="columns"
-                        [isPaginator]="true"
-                    ></app-custom-table> -->
                     <custom-ag-grid
+                        *ngIf="isObjectData(); else preText"
                         class="example-table-container"
                         [details]="details"
                         [columns]="columns"
                     ></custom-ag-grid>
+                    <ng-template #preText>
+                        <pre>{{ details }}</pre>
+                    </ng-template>
                 </ng-template>
             </div>
         </as-split-area>

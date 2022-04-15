@@ -16,7 +16,7 @@ export class HomePageComponent implements OnInit {
     dbPassword: string = '';
     sqlRequest: string = 'SHOW DATABASES';
 
-    details: any[] = [];
+    details: any = [];
     columns: any[] = [];
     errorMessage: string = '';
     PopularQueries: string[] = [
@@ -61,16 +61,12 @@ export class HomePageComponent implements OnInit {
                     lvf = await firstValueFrom(this.apiService.runQuery(QUERY_LIST.useDatabase(dbName)))
                     console.log({ lvf, dbName });
                 } catch (err) {
-                    // console.log(err)
                     dbTreeData.push({
                         name: dbName,
-                        // children: [{ name: '..no access..' }]
                     })
-                    // this.cdr.detectChanges();
                 }
                 if (lvf === null) {
-                    // await this.promiseWait(10);
-                    const tablesList = await firstValueFrom(this.apiService.runQuery(QUERY_LIST.getTables))
+                    const tablesList: any = await firstValueFrom(this.apiService.runQuery(QUERY_LIST.getTables))
 
                     console.log({ tablesList })
 
@@ -81,7 +77,6 @@ export class HomePageComponent implements OnInit {
                             const [tableName] = t;
                             return {
                                 name: `${dbName}.${tableName}`,
-                                // children: children
                                 type: 'table'
                             }
                         })
@@ -92,7 +87,6 @@ export class HomePageComponent implements OnInit {
                     stack(data.shift())
                 } else {
                     console.log({ dbTreeData });
-                    // await this.promiseWait(1000);
                     this.dbTreeData = dbTreeData;
                     this.cdr.detectChanges();
                 }
@@ -100,8 +94,6 @@ export class HomePageComponent implements OnInit {
             if (data.length > 0) {
                 stack(data.shift())
             }
-
-
         })
     }
     promiseWait(sec = 1000): Promise<any> {
@@ -114,26 +106,31 @@ export class HomePageComponent implements OnInit {
 
     onDbChoose(event?: any): void {
         console.log({ event })
-        // event.name: "hepic_archive"
         const sqlStr = `select * from ${event.name} limit 10`
         if (event?.level === 1) {
-
             this.SQL(sqlStr)
-
         }
     }
-
+    isObjectData() {
+        return typeof this.details === 'object';
+    }
     formatData(data: any) {
+        console.log({ data })
         data = data || (window as any).data || {};
-
-        this.columns = data.meta?.map((i: any) => i.name);
-        this.details = data.data.map((i: any) => {
-            let out: any = {};
-            i.forEach((j: any, k: any) => {
-                out[this.columns[k]] = j
+        if (typeof data === 'string') {
+            this.details = data;
+        } else {
+            this.columns = data.meta?.map((i: any) => i.name);
+            this.details = data.data.map((i: any) => {
+                const itemArray: any[] = i instanceof Array ? i : Object.values(i);
+                let out: any = {};
+                itemArray.forEach((j: any, k: any) => {
+                    out[this.columns[k]] = j;
+                });
+                return out;
             });
-            return out;
-        });
+        }
+
 
         console.log(this.columns, this.details)
     }

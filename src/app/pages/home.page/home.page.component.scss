@@ -63,3 +63,15 @@ h1 {
     height: 100%;
     overflow: auto;
   }
+pre {
+    white-space: pre;
+    max-width: 100%;
+    overflow: auto;
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+}
