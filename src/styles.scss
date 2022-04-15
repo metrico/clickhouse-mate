@@ -99,3 +99,7 @@ a:not([href]) {
 .ag-body-viewport {
     overflow-x: auto !important;
   }
+.ag-cell-value {
+    display: block;
+    width: 100%;
+}

@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { cloneObject } from '@app/helper/functions';
 import { GridOptions } from 'ag-grid-community';
+import { CellTypeDetectorComponent } from './cell-type-detector/cell-type-detector.component';
 import { SettingButtonComponent } from './setting-button';
 
 
@@ -18,7 +19,7 @@ export class CustomAgGridComponent implements OnInit {
     };
     agColumnDefs: any[] = [];
     _details: any[] = [];
-    frameworkComponents: any;
+    frameworkComponents: any = {};
     gridOptions: GridOptions = <GridOptions>{
         defaultColDef: {
             sortable: true,
@@ -51,7 +52,7 @@ export class CustomAgGridComponent implements OnInit {
                 const [firstItemOfDetails] = this.details;
 
                 this._columns = Object.entries(firstItemOfDetails)
-                    .filter(([key, value]: any) => typeof value !== 'object' || value instanceof Array)
+                    // .filter(([key, value]: any) => typeof value !== 'object' || value instanceof Array)
                     .map(([key]: any) => {
 
                         const aliasFromKey: any = {
@@ -66,9 +67,19 @@ export class CustomAgGridComponent implements OnInit {
                         }
                         // console.log({ key, al: aliasFromKey[key] });
                         if (aliasFromKey[key]) {
-                            return { field: key, headerName: aliasFromKey[key], hide: !val.includes(key) }
+                            return {
+                                field: key,
+                                headerName: aliasFromKey[key],
+                                hide: !val.includes(key),
+                                cellRenderer: 'cellTypeDetector'
+                            }
                         } else {
-                            return { field: key, hide: !val.includes(key), filter: 'agTextColumnFilter' }
+                            return {
+                                field: key,
+                                hide: !val.includes(key),
+                                filter: 'agTextColumnFilter',
+                                cellRenderer: 'cellTypeDetector'
+                            }
                         }
                     });
 
@@ -121,7 +132,8 @@ export class CustomAgGridComponent implements OnInit {
     }
     constructor(private cdr: ChangeDetectorRef) {
         this.frameworkComponents = {
-            settings: SettingButtonComponent
+            settings: SettingButtonComponent,
+            cellTypeDetector: CellTypeDetectorComponent
         };
     }
 

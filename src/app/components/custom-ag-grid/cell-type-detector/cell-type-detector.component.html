@@ -1,0 +1,12 @@
+<div [style.text-align]="isNumber && 'right'">
+    <span
+        [style.display]="isNULL && 'none'"
+        [style.color]="isNumber && 'purple'"
+    >
+        {{ value }}
+    </span>
+
+    <span style="color: grey" [style.display]="!isNULL && 'none'">
+        <i>NULL</i>
+    </span>
+</div>
