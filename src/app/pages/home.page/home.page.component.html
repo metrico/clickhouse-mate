@@ -73,6 +73,7 @@
             style="display: flex; flex-direction: column"
         >
             <div>
+
                 <ace-editor
                 [(text)]="sqlRequest"
                 [mode]="'sql'"
@@ -82,6 +83,7 @@
                 #editor
             ></ace-editor>
                 <!-- <mat-form-field
+
                     appearance="fill"
                     style="width: 100%; margin-bottom: -1rem"
                 >
@@ -177,7 +179,7 @@
                     </button>
                     <button
                         mat-raised-button
-                        (click)="connect_to_DB()"
+                        (click)="connectToDB()"
                         color="primary"
                         cdkFocusInitial
                     >

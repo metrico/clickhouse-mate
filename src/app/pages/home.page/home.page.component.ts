@@ -1,6 +1,7 @@
 import { Component, HostListener, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ApiService, QUERY_LIST } from 'src/app/services/api.service';
 import { firstValueFrom, lastValueFrom } from 'rxjs';
+
 @Component({
     templateUrl: './home.page.component.html',
     styleUrls: ['./home.page.component.scss'],
@@ -35,30 +36,28 @@ export class HomePageComponent implements OnInit {
         if (json) {
             this.SqlArchive = JSON.parse(json);
         }
-        const auth: any = getStorage('AUTH_DATA');
-        console.log(auth)
-        if (auth) {
-            this.dbLink = auth.dbURL;
-            this.dbLogin = auth.login;
-            this.dbPassword = auth.password;
+        if (!this.getHash()) {
+            const auth: any = getStorage('AUTH_DATA');
+            if (auth) {
+                this.dbLink = auth.dbURL;
+                this.dbLogin = auth.login;
+                this.dbPassword = auth.password;
+            }
+
+
+            this.connectToDB();
         }
-
-
-
-        this.connect_to_DB()
     }
 
     initDbTree(): void {
         this.apiService.runQuery(QUERY_LIST.getDatabases).subscribe(async (result) => {
-            console.log(result)
             const { data } = result || {}
             const dbTreeData: any[] = [];
-            console.log({ data })
             const stack = async ([dbName]: any) => {
                 let lvf;
                 try {
                     lvf = await firstValueFrom(this.apiService.runQuery(QUERY_LIST.useDatabase(dbName)))
-                    console.log({ lvf, dbName });
+                    // console.log({ lvf, dbName });
                 } catch (err) {
                     dbTreeData.push({
                         name: dbName,
@@ -67,7 +66,7 @@ export class HomePageComponent implements OnInit {
                 if (lvf === null) {
                     const tablesList: any = await firstValueFrom(this.apiService.runQuery(QUERY_LIST.getTables))
 
-                    console.log({ tablesList })
+                    // console.log({ tablesList })
 
                     dbTreeData.push({
                         name: dbName,
@@ -85,7 +84,7 @@ export class HomePageComponent implements OnInit {
                 if (data.length > 0) {
                     stack(data.shift())
                 } else {
-                    console.log({ dbTreeData });
+                    // console.log({ dbTreeData });
                     this.dbTreeData = dbTreeData;
                     this.cdr.detectChanges();
                 }
@@ -95,16 +94,8 @@ export class HomePageComponent implements OnInit {
             }
         })
     }
-    promiseWait(sec = 1000): Promise<any> {
-        return new Promise<any>((require) => {
-            setTimeout(() => {
-                require(true);
-            }, sec)
-        })
-    }
 
     onDbChoose(event?: any): void {
-        console.log({ event })
         const sqlStr = `select * from ${event.name} limit 10`
         if (event?.level === 1) {
             this.SQL(sqlStr)
@@ -114,7 +105,6 @@ export class HomePageComponent implements OnInit {
         return typeof this.details === 'object';
     }
     formatData(data: any) {
-        console.log({ data })
         data = data || (window as any).data || {};
         if (typeof data === 'string') {
             this.details = data;
@@ -129,17 +119,68 @@ export class HomePageComponent implements OnInit {
                 return out;
             });
         }
-
-
-        console.log(this.columns, this.details)
     }
+    getHash() {
+        if (!location.hash) {
+            return false;
+        }
+        console.log((location.hash + '').replace('#', ''))
+        try {
+            const [
+                dbLink,
+                dbLogin,
+                dbPassword,
+                sqlRequest
+            ] = JSON.parse(atob((location.hash + '').replace('#', '')));
 
+            this.dbLink = dbLink;
+            this.dbLogin = dbLogin;
+            this.dbPassword = dbPassword;
+            this.sqlRequest = sqlRequest;
+
+            const auth = {
+                dbURL: this.dbLink,
+                login: this.dbLogin,
+                password: this.dbPassword,
+            };
+            this.apiService.setLoginData(auth);
+            this.initDbTree();
+
+            this.SQL(this.sqlRequest);
+            this.isAccess = true;
+
+            console.log('all OK', [dbLink,
+                dbLogin,
+                dbPassword,
+                sqlRequest
+            ]);
+
+            return true;
+        } catch (error) {
+            console.log('ERROR', error)
+            location.hash = '';
+            return false;
+        }
+    }
+    setHash() {
+        const hashObject = [
+            this.dbLink,
+            this.dbLogin,
+            this.dbPassword,
+            this.sqlRequest
+        ];
+
+        location.hash = '#' + btoa(JSON.stringify(hashObject))
+        console.log(location.hash);
+    }
     async SQL(sqlStr: string) {
         this.sqlRequest = sqlStr;
         this.details = [];
+        this.setHash();
         if (!this.SqlArchive.includes(sqlStr)) {
             this.SqlArchive.unshift(sqlStr);
             localStorage.setItem('SqlArchive', JSON.stringify(this.SqlArchive));
+
         }
         try {
             const response = await lastValueFrom(this.apiService.runQuery(sqlStr));
@@ -150,7 +191,6 @@ export class HomePageComponent implements OnInit {
 
         } catch (error: any) {
             this.details = [];
-            console.log(error);
             this.errorMessage = error.error || error.message;
             this.cdr.detectChanges();
 
@@ -164,7 +204,7 @@ export class HomePageComponent implements OnInit {
             this.SQL(this.sqlRequest);
         }
     }
-    async connect_to_DB() {
+    async connectToDB() {
         const auth = {
             dbURL: this.dbLink,
             login: this.dbLogin,
@@ -178,7 +218,9 @@ export class HomePageComponent implements OnInit {
             this.isAccess = true;
             this.initDbTree();
             this.cdr.detectChanges();
+            return true;
         }
+        return false;
     }
 
     setReadonly(bool: boolean) {

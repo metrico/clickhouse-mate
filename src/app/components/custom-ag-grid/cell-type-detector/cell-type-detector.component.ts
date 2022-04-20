@@ -24,7 +24,7 @@ export class CellTypeDetectorComponent implements ICellRendererAngularComp {
             params.value = JSON.stringify(params.value)
         }
         this.value = params.value;
-        console.log(params.value);
+        // console.log(params.value);
     }
 
     refresh(): boolean {

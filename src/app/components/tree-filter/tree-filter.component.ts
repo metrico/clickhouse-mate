@@ -35,7 +35,7 @@ export class TreeFilterComponent implements OnInit, AfterViewInit {
         }
         this.textFilterTree = val;
         this.onKeyUpFilterTree();
-        console.log('textFilterTree = val')
+        // console.log('textFilterTree = val')
     }
     @Input() set jsonData(val: any) {
         if (!val) {
@@ -69,7 +69,7 @@ export class TreeFilterComponent implements OnInit, AfterViewInit {
         }
         this.dataSource.data = val;
         this.dataIndex = [];
-        console.log('this.dataSource.data = val;')
+        // console.log('this.dataSource.data = val;')
         const pushToIndex = (i: any) => {
             i.forEach(({ name, description, children }: any) => {
                 const o: any = { name, description: description || name };
@@ -185,7 +185,7 @@ export class TreeFilterComponent implements OnInit, AfterViewInit {
                 tc.collapseAll();
             }
         }
-        console.log('------------', this.bufferFiltered)
+        // console.log('------------', this.bufferFiltered)
         const b = this.dataIndex.filter(i => !!Math.max(...this.textFilterTree.toLowerCase().split('||').map(f => {
             return (i.description + i.name + (i.children || '')).toLowerCase().includes(f)
         })));
@@ -201,7 +201,7 @@ export class TreeFilterComponent implements OnInit, AfterViewInit {
         this.cdr.detectChanges();
     }
     onClickLine(data: any) {
-        console.log(data)
+        // console.log(data)
         this.clickRow.emit(data);
     }
 }

@@ -18,6 +18,7 @@ import { AceEditorModule } from 'ng2-ace-editor';
 import { AceModule, ACE_CONFIG, AceConfigInterface } from 'ngx-ace-wrapper';
 const DEFAULT_ACE_CONFIG: AceConfigInterface = {};
 
+
 @NgModule({
     declarations: [
         AppComponent,
