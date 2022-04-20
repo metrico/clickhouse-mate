@@ -17,6 +17,8 @@ import { CustomAgGridModule } from './components/custom-ag-grid/custom-ag-grid.m
 import { AceEditorModule } from 'ng2-ace-editor';
 import { AceModule, ACE_CONFIG, AceConfigInterface } from 'ngx-ace-wrapper';
 const DEFAULT_ACE_CONFIG: AceConfigInterface = {};
+
+
 @NgModule({
     declarations: [
         AppComponent,
@@ -32,9 +34,9 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {};
         HttpClientModule,
         AngularSplitModule,
         TreeFilterModule,
-        AceModule,
+        CustomAgGridModule,
         AceEditorModule,
-        CustomAgGridModule
+        AceModule
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     providers: [
