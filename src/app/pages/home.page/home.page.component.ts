@@ -1,7 +1,7 @@
 import { Component, HostListener, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ApiService, QUERY_LIST } from 'src/app/services/api.service';
 import { firstValueFrom, lastValueFrom } from 'rxjs';
-
+import * as ace from "ace-builds";
 @Component({
     templateUrl: './home.page.component.html',
     styleUrls: ['./home.page.component.scss'],
@@ -14,7 +14,7 @@ export class HomePageComponent implements OnInit {
     dbLink: string = '';
     dbLogin: string = '';
     dbPassword: string = '';
-    sqlRequest: string = 'SHOW DATABASES';
+    sqlRequest: any = 'SHOW DATABASES';
 
     details: any = [];
     columns: any[] = [];
@@ -37,29 +37,27 @@ export class HomePageComponent implements OnInit {
             this.SqlArchive = JSON.parse(json);
         }
         const auth: any = getStorage('AUTH_DATA');
-        console.log(auth)
+        // console.log(auth)
         if (auth) {
             this.dbLink = auth.dbURL;
             this.dbLogin = auth.login;
             this.dbPassword = auth.password;
         }
 
-
-
-        this.connect_to_DB()
+        this.connectToDB();
     }
 
     initDbTree(): void {
         this.apiService.runQuery(QUERY_LIST.getDatabases).subscribe(async (result) => {
-            console.log(result)
+            // console.log(result)
             const { data } = result || {}
             const dbTreeData: any[] = [];
-            console.log({ data })
+            // console.log({ data })
             const stack = async ([dbName]: any) => {
                 let lvf;
                 try {
                     lvf = await firstValueFrom(this.apiService.runQuery(QUERY_LIST.useDatabase(dbName)))
-                    console.log({ lvf, dbName });
+                    // console.log({ lvf, dbName });
                 } catch (err) {
                     dbTreeData.push({
                         name: dbName,
@@ -68,7 +66,7 @@ export class HomePageComponent implements OnInit {
                 if (lvf === null) {
                     const tablesList: any = await firstValueFrom(this.apiService.runQuery(QUERY_LIST.getTables))
 
-                    console.log({ tablesList })
+                    // console.log({ tablesList })
 
                     dbTreeData.push({
                         name: dbName,
@@ -86,7 +84,7 @@ export class HomePageComponent implements OnInit {
                 if (data.length > 0) {
                     stack(data.shift())
                 } else {
-                    console.log({ dbTreeData });
+                    // console.log({ dbTreeData });
                     this.dbTreeData = dbTreeData;
                     this.cdr.detectChanges();
                 }
@@ -105,7 +103,7 @@ export class HomePageComponent implements OnInit {
     }
 
     onDbChoose(event?: any): void {
-        console.log({ event })
+        // console.log({ event })
         const sqlStr = `select * from ${event.name} limit 10`
         if (event?.level === 1) {
             this.SQL(sqlStr)
@@ -115,7 +113,7 @@ export class HomePageComponent implements OnInit {
         return typeof this.details === 'object';
     }
     formatData(data: any) {
-        console.log({ data })
+        // console.log({ data })
         data = data || (window as any).data || {};
         if (typeof data === 'string') {
             this.details = data;
@@ -132,7 +130,7 @@ export class HomePageComponent implements OnInit {
         }
 
 
-        console.log(this.columns, this.details)
+        // console.log(this.columns, this.details)
     }
 
     async SQL(sqlStr: string) {
@@ -151,7 +149,7 @@ export class HomePageComponent implements OnInit {
 
         } catch (error: any) {
             this.details = [];
-            console.log(error);
+            // console.log(error);
             this.errorMessage = error.error || error.message;
             this.cdr.detectChanges();
 
@@ -165,7 +163,7 @@ export class HomePageComponent implements OnInit {
             this.SQL(this.sqlRequest);
         }
     }
-    async connect_to_DB() {
+    async connectToDB() {
         const auth = {
             dbURL: this.dbLink,
             login: this.dbLogin,

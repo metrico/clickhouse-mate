@@ -61,7 +61,7 @@ export class ApiService {
             query,
             { headers, responseType: 'text' }
         ).pipe(map(response => {
-            console.log({ response })
+            // console.log({ response })
             if (response === '') {
                 return null;
             }
