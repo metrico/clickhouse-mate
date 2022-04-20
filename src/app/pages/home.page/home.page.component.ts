@@ -1,7 +1,7 @@
 import { Component, HostListener, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ApiService, QUERY_LIST } from 'src/app/services/api.service';
 import { firstValueFrom, lastValueFrom } from 'rxjs';
-import * as ace from "ace-builds";
+
 @Component({
     templateUrl: './home.page.component.html',
     styleUrls: ['./home.page.component.scss'],
