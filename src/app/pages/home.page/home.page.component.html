@@ -73,7 +73,15 @@
             style="display: flex; flex-direction: column"
         >
             <div>
-                <mat-form-field
+                <ace-editor
+                [(text)]="sqlRequest"
+                [mode]="'sql'"
+                [theme]="'sqlserver'"
+                [readOnly]="false"
+                style="min-height: 200px; width:100%; overflow: auto;"
+                #editor
+            ></ace-editor>
+                <!-- <mat-form-field
                     appearance="fill"
                     style="width: 100%; margin-bottom: -1rem"
                 >
@@ -95,7 +103,7 @@
                     >
                         <mat-icon>send</mat-icon>
                     </button>
-                </mat-form-field>
+                </mat-form-field> -->
             </div>
 
             <div style="flex: 1 1 auto; overflow: hidden; position: relative">
