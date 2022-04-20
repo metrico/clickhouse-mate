@@ -72,17 +72,92 @@
             [order]="1"
             style="display: flex; flex-direction: column"
         >
-            <div>
+            <as-split direction="vertical" [gutterSize]="5">
+                <as-split-area [size]="10" [order]="0" style="position: relative">
+                    <ace-editor
+                        [(text)]="sqlRequest"
+                        [mode]="'sql'"
+                        [theme]="'sqlserver'"
+                        [readOnly]="false"
+                        style="min-height: 20px; height: 100%; width: 100%; overflow: auto; font-size: 18px;"
+                        #editor
+                    ></ace-editor>
+                    <button
+                        style="float: right; position: absolute; right: 1rem; bottom: 1rem"
+                        matSuffix
+                        mat-icon-button
+                        matTooltip="Ctrl + Enter"
+                        color="primary"
+                        aria-label="Run"
+                        (click)="onClickRun()"
+                    >
+                        <mat-icon>send</mat-icon>
+                    </button>
+                </as-split-area>
+                <as-split-area [size]="90">
+                    <div
+                        style="
+                            flex: 1 1 auto;
+                            overflow: hidden;
+                            height: 100%;
+                            position: relative;
+                        "
+                    >
+                        <ng-container
+                            *ngIf="details.length === 0; else hasData"
+                        >
+                            <h1>No Data</h1>
 
-                <ace-editor
-                [(text)]="sqlRequest"
-                [mode]="'sql'"
-                [theme]="'sqlserver'"
-                [readOnly]="false"
-                style="min-height: 200px; width:100%; overflow: auto;"
-                #editor
-            ></ace-editor>
-                <!-- <mat-form-field
+                            <button
+                                mat-flat-button
+                                color="warn"
+                                *ngIf="errorMessage"
+                                style="white-space: pre-wrap; width: 100%"
+                            >
+                                {{ errorMessage }}
+                            </button>
+                        </ng-container>
+                        <ng-template #hasData>
+                            <div>
+                                <button
+                                    style="margin-right: 0.5rem"
+                                    mat-button
+                                    (click)="save('json')"
+                                    cdkFocusInitial
+                                >
+                                    Save as JSON
+                                </button>
+                                <button
+                                    style="margin-right: 0.5rem"
+                                    mat-button
+                                    (click)="save('json', true)"
+                                    cdkFocusInitial
+                                >
+                                    Save as JSONCompact
+                                </button>
+                                <button
+                                    style="margin-right: 0.5rem"
+                                    mat-button
+                                    (click)="save('csv')"
+                                    cdkFocusInitial
+                                >
+                                    Save as CSV
+                                </button>
+                            </div>
+                            <custom-ag-grid
+                                *ngIf="isObjectData(); else preText"
+                                class="example-table-container"
+                                [details]="details"
+                                [columns]="columns"
+                            ></custom-ag-grid>
+                            <ng-template #preText>
+                                <pre>{{ details }}</pre>
+                            </ng-template>
+                        </ng-template>
+                    </div>
+                </as-split-area>
+            </as-split>
+            <!-- <mat-form-field
 
                     appearance="fill"
                     style="width: 100%; margin-bottom: -1rem"
@@ -93,72 +168,19 @@
                         matInput
                         [(ngModel)]="sqlRequest"
                         spellcheck="false"
+                        <button
+                            matSuffix
+                            mat-icon-button
+                            matTooltip="Ctrl + Enter"
+                            color="primary"
+                            aria-label="Run"
+                            (click)="onClickRun()"
+                            style="float: right"
+                        >
+                            <mat-icon>send</mat-icon>
+                        </button>
                     ></textarea>
-                    <button
-                        matSuffix
-                        mat-icon-button
-                        matTooltip="Ctrl + Enter"
-                        color="primary"
-                        aria-label="Run"
-                        (click)="onClickRun()"
-                        style="float: right"
-                    >
-                        <mat-icon>send</mat-icon>
-                    </button>
                 </mat-form-field> -->
-            </div>
-
-            <div style="flex: 1 1 auto; overflow: hidden; position: relative">
-                <ng-container *ngIf="details.length === 0; else hasData">
-                    <h1>No Data</h1>
-
-                    <button
-                        mat-flat-button
-                        color="warn"
-                        *ngIf="errorMessage"
-                        style="white-space: pre-wrap; width: 100%"
-                    >
-                        {{ errorMessage }}
-                    </button>
-                </ng-container>
-                <ng-template #hasData>
-                    <div>
-                        <button
-                            style="margin-right: 0.5rem"
-                            mat-button
-                            (click)="save('json')"
-                            cdkFocusInitial
-                        >
-                            Save as JSON
-                        </button>
-                        <button
-                            style="margin-right: 0.5rem"
-                            mat-button
-                            (click)="save('json', true)"
-                            cdkFocusInitial
-                        >
-                            Save as JSONCompact
-                        </button>
-                        <button
-                            style="margin-right: 0.5rem"
-                            mat-button
-                            (click)="save('csv')"
-                            cdkFocusInitial
-                        >
-                            Save as CSV
-                        </button>
-                    </div>
-                    <custom-ag-grid
-                        *ngIf="isObjectData(); else preText"
-                        class="example-table-container"
-                        [details]="details"
-                        [columns]="columns"
-                    ></custom-ag-grid>
-                    <ng-template #preText>
-                        <pre>{{ details }}</pre>
-                    </ng-template>
-                </ng-template>
-            </div>
         </as-split-area>
     </as-split>
 </div>
