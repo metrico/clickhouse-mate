@@ -1,7 +1,8 @@
 import { Component, HostListener, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ApiService, QUERY_LIST } from 'src/app/services/api.service';
 import { firstValueFrom, lastValueFrom } from 'rxjs';
-import * as ace from "ace-builds";
+import { saveToFile } from '@app/helper/windowFunctions';
+
 @Component({
     templateUrl: './home.page.component.html',
     styleUrls: ['./home.page.component.scss'],
@@ -15,6 +16,8 @@ export class HomePageComponent implements OnInit {
     dbLogin: string = '';
     dbPassword: string = '';
     sqlRequest: any = 'SHOW DATABASES';
+
+    dataForFile: any = null;
 
     details: any = [];
     columns: any[] = [];
@@ -184,6 +187,7 @@ export class HomePageComponent implements OnInit {
         }
         try {
             const response = await lastValueFrom(this.apiService.runQuery(sqlStr));
+            this.dataForFile = response;
             this.formatData(response);
             this.errorMessage = '';
             this.cdr.detectChanges();
@@ -226,6 +230,13 @@ export class HomePageComponent implements OnInit {
     setReadonly(bool: boolean) {
         this.isReadonly = bool;
         this.apiService.setReadOnly(bool);
+    }
+    save(type: string, isCompact: boolean = false) {
+        let [sqlStr] = this.sqlRequest.split('FORMAT');
+        sqlStr += ' FORMAT ' + (isCompact ? 'JSONCompact' : type.toUpperCase());
+        lastValueFrom(this.apiService.runQuery(sqlStr)).then(result => {
+            saveToFile(JSON.stringify(result, null, 2), 'tableData.'+type);
+        })
     }
 }
 

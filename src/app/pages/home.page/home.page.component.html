@@ -120,6 +120,32 @@
                     </button>
                 </ng-container>
                 <ng-template #hasData>
+                    <div>
+                        <button
+                            style="margin-right: 0.5rem"
+                            mat-button
+                            (click)="save('json')"
+                            cdkFocusInitial
+                        >
+                            Save as JSON
+                        </button>
+                        <button
+                            style="margin-right: 0.5rem"
+                            mat-button
+                            (click)="save('json', true)"
+                            cdkFocusInitial
+                        >
+                            Save as JSONCompact
+                        </button>
+                        <button
+                            style="margin-right: 0.5rem"
+                            mat-button
+                            (click)="save('csv')"
+                            cdkFocusInitial
+                        >
+                            Save as CSV
+                        </button>
+                    </div>
                     <custom-ag-grid
                         *ngIf="isObjectData(); else preText"
                         class="example-table-container"
