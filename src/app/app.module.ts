@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import {
     HttpClientModule
@@ -14,6 +14,9 @@ import { APP_BASE_HREF } from '@angular/common';
 import { AngularSplitModule } from 'angular-split';
 import { TreeFilterModule } from './components/tree-filter/tree-filter.module';
 import { CustomAgGridModule } from './components/custom-ag-grid/custom-ag-grid.module';
+import { AceEditorModule } from 'ng2-ace-editor';
+import { AceModule, ACE_CONFIG, AceConfigInterface } from 'ngx-ace-wrapper';
+const DEFAULT_ACE_CONFIG: AceConfigInterface = {};
 
 @NgModule({
     declarations: [
@@ -30,10 +33,14 @@ import { CustomAgGridModule } from './components/custom-ag-grid/custom-ag-grid.m
         HttpClientModule,
         AngularSplitModule,
         TreeFilterModule,
-        CustomAgGridModule
+        CustomAgGridModule,
+        AceEditorModule,
+        AceModule
     ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
     providers: [
-        { provide: APP_BASE_HREF, useValue: (window as any)['base-href'] }
+        { provide: APP_BASE_HREF, useValue: (window as any)['base-href'] },
+        { provide: ACE_CONFIG, useValue: DEFAULT_ACE_CONFIG },
     ],
     bootstrap: [AppComponent]
 })

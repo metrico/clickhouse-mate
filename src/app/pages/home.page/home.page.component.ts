@@ -1,7 +1,6 @@
 import { Component, HostListener, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ApiService, QUERY_LIST } from 'src/app/services/api.service';
 import { firstValueFrom, lastValueFrom } from 'rxjs';
-
 @Component({
     templateUrl: './home.page.component.html',
     styleUrls: ['./home.page.component.scss'],
@@ -14,7 +13,7 @@ export class HomePageComponent implements OnInit {
     dbLink: string = '';
     dbLogin: string = '';
     dbPassword: string = '';
-    sqlRequest: string = 'SHOW DATABASES';
+    sqlRequest: any = 'SHOW DATABASES';
 
     details: any = [];
     columns: any[] = [];
