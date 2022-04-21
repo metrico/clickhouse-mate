@@ -5,10 +5,12 @@
 html,
 body {
     height: 100%;
-}
-body {
     margin: 0;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+* {
+    font-family: monospace !important;
+    font-size: 14px !important;
 }
 
 // @import "ag-grid-community/dist/styles/ag-grid.css";
@@ -89,7 +91,9 @@ a:not([href]) {
 .ag-row-selected {
     background-color: #eee !important;
 }
-
+.ag-theme-material {
+    font-size: 14px !important;
+}
 .ag-theme-material .ag-ltr .ag-cell {
     border-right: 1px solid lightgray;
 }
@@ -102,4 +106,8 @@ a:not([href]) {
 .ag-cell-value {
     display: block;
     width: 100%;
+}
+.material-icons {
+    font-family: 'Material Icons' !important;
+    font-size: 24px !important;
 }
