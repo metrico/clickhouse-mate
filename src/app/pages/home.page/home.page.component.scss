@@ -75,3 +75,23 @@ pre {
     margin: 0;
     padding: 0;
 }
+.editor {
+    min-height: 20px;
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+    // font-size: 18px;
+    font-family: monospace;
+}
+.btn-send {
+    float: right;
+    position: absolute;
+    right: 1rem;
+    bottom: 1rem;
+}
+.data-place {
+    flex: 1 1 auto;
+    overflow: hidden;
+    height: 100%;
+    position: relative;
+}
