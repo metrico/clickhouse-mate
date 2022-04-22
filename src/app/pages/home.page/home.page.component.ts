@@ -143,6 +143,7 @@ export class HomePageComponent implements OnInit {
         location.hash = '#' + btoa(this.sqlRequest);
     }
     async SQL(sqlStr: string, isAuthenticated: boolean = false) {
+        await promiseWait(100);
         this.sqlRequest = sqlStr;
         this.details = [];
         if (!isAuthenticated) {
@@ -242,7 +243,13 @@ export class HomePageComponent implements OnInit {
     }
 }
 
-
+export function promiseWait(sec = 1000): Promise<any> {
+    return new Promise<any>((require) => {
+        setTimeout(() => {
+            require(true);
+        }, sec)
+    })
+}
 export function setStorage(key: string, value: any): void {
     localStorage.setItem(key, JSON.stringify(value));
 }
