@@ -115,13 +115,13 @@ export class CustomAgGridComponent implements OnInit {
     @Output() menuClick: EventEmitter<any> = new EventEmitter();
 
     @HostListener('dblclick')
+    @HostListener('window:resize')
     onDblClick() {
         requestAnimationFrame(() => {
             this.gridApi?.sizeColumnsToFit();
         });
     }
 
-    // @HostListener('window:resize')
     onResize() {
         if (!this.gridApi || this.agGridSizeControl.selectedType !== GRID_FIT) {
             return;
