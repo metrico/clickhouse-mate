@@ -16,6 +16,7 @@ import { TreeFilterModule } from './components/tree-filter/tree-filter.module';
 import { CustomAgGridModule } from './components/custom-ag-grid/custom-ag-grid.module';
 import { AceEditorModule } from 'ng2-ace-editor';
 import { AceModule, ACE_CONFIG, AceConfigInterface } from 'ngx-ace-wrapper';
+import { LoginFormModule } from './components/login-form/login-form.module';
 const DEFAULT_ACE_CONFIG: AceConfigInterface = {};
 
 
@@ -36,7 +37,8 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {};
         TreeFilterModule,
         CustomAgGridModule,
         AceEditorModule,
-        AceModule
+        AceModule,
+        LoginFormModule
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     providers: [
