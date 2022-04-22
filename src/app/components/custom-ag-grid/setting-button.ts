@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
 import { emitWindowResize } from '@app/helper/windowFunctions';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
+import { AgEventService } from './ag-event.service';
 
 @Component({
     selector: 'app-setting-button',
@@ -15,14 +16,25 @@ export class SettingButtonComponent implements ICellRendererAngularComp {
     allColumnIds: any[] = [];
     apiColumn: any;
     headerName = '';
+
+    menuList: any;
+
     @Input() isTab = false;
-    constructor(private cdr: ChangeDetectorRef) { }
+    constructor(
+        private cdr: ChangeDetectorRef,
+        private agEventService: AgEventService
+    ) { }
 
     agInit(params: any): void {
         this.params = params;
         this.callid = this.params.value || null;
         this.headerName = this.params.displayName || '';
         this.apiColumn = this.params.columnApi;
+
+        this.menuList = this.agEventService.itemList;
+
+        console.log('this.menuList', this.menuList);
+
         Object.values(this.params.columnApi.getAllGridColumns() as Object)
             .filter((column) => !['', 'id'].includes(column.colDef.field))
             .forEach((column, index) => this.allColumnIds.push({
@@ -34,7 +46,9 @@ export class SettingButtonComponent implements ICellRendererAngularComp {
         this.cdr.detectChanges();
     }
 
-
+    menuClick(item: any) {
+        this.agEventService.emit(item);
+    }
     refresh(): boolean {
         return false;
     }

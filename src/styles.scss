@@ -4,15 +4,34 @@
 
 html,
 body {
-    height: 100%;
+    height: 100vh;
     margin: 0;
+    overflow: hidden;
 }
 
 * {
     font-family: monospace !important;
     font-size: 14px !important;
-}
 
+    /** SAFARY SCROLL FIX */
+    ::-webkit-scrollbar {
+        -webkit-appearance: none;
+        width: 7px;
+        height: 7px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        border-radius: 4px;
+        background-color: rgba(199, 199, 199, 0.748);
+        box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+    }
+    ::-webkit-scrollbar-corner {
+        background: rgba(0, 0, 0, 0);
+    }
+
+    scrollbar-width: thin;
+    scrollbar-color: rgba(199, 199, 199, 0.748) transparent;
+}
 // @import "ag-grid-community/dist/styles/ag-grid.css";
 // @import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 
@@ -102,12 +121,22 @@ a:not([href]) {
 }
 .ag-body-viewport {
     overflow-x: auto !important;
-  }
+}
 .ag-cell-value {
     display: block;
     width: 100%;
 }
 .material-icons {
-    font-family: 'Material Icons' !important;
+    font-family: "Material Icons" !important;
     font-size: 24px !important;
+}
+.mat-expansion-panel-header {
+    height: 30px;
+
+    &.mat-expanded {
+        height: 30px;
+    }
+}
+.mat-expansion-panel-spacing {
+    margin: 0;
 }

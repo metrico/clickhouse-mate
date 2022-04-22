@@ -1,14 +1,27 @@
-<button mat-icon-button
+<button
+    mat-icon-button
     [matMenuTriggerFor]="menu"
-    class="button-icon-right-top">
+    class="button-icon-right-top"
+>
     <fa-icon icon="cog"></fa-icon>
 </button>
 <span>{{headerName | titlecase}}</span>
 <mat-menu #menu="matMenu">
-    <div class="container"
-        (click)="$event.stopPropagation();">
+    <div class="container" (click)="$event.stopPropagation();">
+        <button
+            style="margin-right: 0.5rem"
+            mat-raised-button
+            *ngFor="let item of menuList"
+            (click)="menuClick(item)"
+            cdkFocusInitial
+        >
+            {{item}}
+        </button>
+
         <h3 style="text-align: center">Columns settings</h3>
-        <app-drag-drop-list [list]="allColumnIds"
-            (order)="onUpdateList($event)"></app-drag-drop-list>
+        <app-drag-drop-list
+            [list]="allColumnIds"
+            (order)="onUpdateList($event)"
+        ></app-drag-drop-list>
     </div>
 </mat-menu>

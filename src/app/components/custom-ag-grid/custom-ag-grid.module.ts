@@ -1,3 +1,4 @@
+import { AgEventService } from './ag-event.service';
 import { DragDropListComponent } from './drag-drop-list/drag-drop-list.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -28,7 +29,8 @@ import { far } from '@fortawesome/free-regular-svg-icons';
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     declarations: [CustomAgGridComponent, SettingButtonComponent, DragDropListComponent],
-    exports: [CustomAgGridComponent]
+    exports: [CustomAgGridComponent],
+    providers: [AgEventService]
 })
 export class CustomAgGridModule {
     constructor(library: FaIconLibrary) {

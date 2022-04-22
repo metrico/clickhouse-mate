@@ -115,7 +115,7 @@
                             </button>
                         </ng-container>
                         <ng-template #hasData>
-                            <div>
+                            <!-- <div>
                                 <button
                                     style="margin-right: 0.5rem"
                                     mat-button
@@ -140,10 +140,16 @@
                                 >
                                     Save as CSV
                                 </button>
-                            </div>
+                            </div> -->
                             <custom-ag-grid
                                 *ngIf="isObjectData(); else preText"
-                                class="example-table-container"
+                                class="example-table-containers"
+                                [itemList]="[
+                                    'Save as JSON',
+                                    'Save as JSONCompact',
+                                    'Save as CSV'
+                                ]"
+                                (menuClick)="save($event)"
                                 [details]="details"
                                 [columns]="columns"
                             ></custom-ag-grid>
@@ -157,57 +163,9 @@
         </as-split-area>
     </as-split>
 </div>
-<div class="login-form-group" *ngIf="!isAccess" #login>
-    <mat-card class="card">
-        <mat-card-content>
-            <div style="display: flex; flex-direction: column">
-                <div>
-                    <img
-                        src="assets/image/big-logo.png"
-                        style="max-width: 90vw"
-                    />
-                </div>
-                <mat-form-field appearance="fill">
-                    <mat-label>ClickHouse HTTP URL</mat-label>
-                    <input
-                        matInput
-                        [(ngModel)]="dbLink"
-                        placeholder="//localhost:8123"
-                    />
-                </mat-form-field>
 
-                <mat-form-field appearance="fill">
-                    <mat-label>Username</mat-label>
-                    <input
-                        matInput
-                        [(ngModel)]="dbLogin"
-                        placeholder="readonly"
-                    />
-                </mat-form-field>
-
-                <mat-form-field appearance="fill">
-                    <mat-label>Password</mat-label>
-                    <input type="password" matInput [(ngModel)]="dbPassword" />
-                </mat-form-field>
-                <div class="btn-panel">
-                    <button
-                        style="margin-right: 0.5rem"
-                        mat-raised-button
-                        (click)="isAccess = !isAccess"
-                        cdkFocusInitial
-                    >
-                        cancel
-                    </button>
-                    <button
-                        mat-raised-button
-                        (click)="connectToDB()"
-                        color="primary"
-                        cdkFocusInitial
-                    >
-                        Connect to DB
-                    </button>
-                </div>
-            </div>
-        </mat-card-content>
-    </mat-card>
-</div>
+<app-login-form
+    [isAccess]="isAccess"
+    [settings]="{ dbLink, dbLogin, dbPassword }"
+    (ready)="connectToDB($event)"
+></app-login-form>

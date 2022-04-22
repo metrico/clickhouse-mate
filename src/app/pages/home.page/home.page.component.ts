@@ -208,7 +208,12 @@ export class HomePageComponent implements OnInit {
             this.SQL(this.sqlRequest);
         }
     }
-    async connectToDB() {
+    async connectToDB(event?: any) {
+        if (event) {
+            this.dbLink = event.dbLink;
+            this.dbLogin = event.dbLogin;
+            this.dbPassword = event.dbPassword;
+        }
         const auth = {
             dbURL: this.dbLink,
             login: this.dbLogin,
@@ -231,11 +236,32 @@ export class HomePageComponent implements OnInit {
         this.isReadonly = bool;
         this.apiService.setReadOnly(bool);
     }
-    save(type: string, isCompact: boolean = false) {
+    save(buttonName: string) {
+        let type: string = '';
+        let isCompact: boolean = false;
+        switch (buttonName) {
+            case 'Save as JSON':
+                type = 'json';
+                break;
+            case 'Save as JSONCompact':
+                type = 'json';
+                isCompact = true;
+                break;
+            case 'Save as CSV':
+                type = 'csv';
+                break;
+            default: return;
+        }
+
         let [sqlStr] = this.sqlRequest.split('FORMAT');
         sqlStr += ' FORMAT ' + (isCompact ? 'JSONCompact' : type.toUpperCase());
         lastValueFrom(this.apiService.runQuery(sqlStr)).then(result => {
-            saveToFile(JSON.stringify(result, null, 2), 'tableData.'+type);
+            if (type === 'csv') {
+                saveToFile(result, 'tableData.' + type);
+            } else {
+                saveToFile(JSON.stringify(result, null, 2), 'tableData.' + type);
+
+            }
         })
     }
 }

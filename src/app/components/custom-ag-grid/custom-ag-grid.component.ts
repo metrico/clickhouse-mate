@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { cloneObject } from '@app/helper/functions';
 import { GridOptions } from 'ag-grid-community';
+import { AgEventService } from './ag-event.service';
 import { CellTypeDetectorComponent } from './cell-type-detector/cell-type-detector.component';
 import { SettingButtonComponent } from './setting-button';
 
@@ -13,6 +14,10 @@ const GRID_FIT = 'autoSizeColumns';
     styleUrls: ['./custom-ag-grid.component.scss']
 })
 export class CustomAgGridComponent implements OnInit {
+    @Input()
+    set itemList(list: any) {
+        this.agEventService.itemList  = list;
+    }
     agGridSizeControl = {
         selectedType: 'sizeToFitContinuos', // 'sizeToFit',
         // pageSize: 100
@@ -107,6 +112,7 @@ export class CustomAgGridComponent implements OnInit {
         return this._columns;
     }
     @Output() rowClick: EventEmitter<any> = new EventEmitter();
+    @Output() menuClick: EventEmitter<any> = new EventEmitter();
 
     @HostListener('dblclick')
     onDblClick() {
@@ -130,7 +136,10 @@ export class CustomAgGridComponent implements OnInit {
     onGridReady(params: any) {
         this.gridApi = params.api;
     }
-    constructor(private cdr: ChangeDetectorRef) {
+    constructor(
+        private cdr: ChangeDetectorRef,
+        private agEventService: AgEventService
+    ) {
         this.frameworkComponents = {
             settings: SettingButtonComponent,
             cellTypeDetector: CellTypeDetectorComponent
@@ -139,6 +148,12 @@ export class CustomAgGridComponent implements OnInit {
 
     ngOnInit() {
         this.re_new();
+        this.agEventService.listen().subscribe((data) => {
+            console.log('listening', data)
+            if (data) {
+                this.menuClick.emit(data);
+            }
+        })
     }
     private re_new() {
         this.sizeToFit();
