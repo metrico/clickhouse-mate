@@ -94,7 +94,8 @@ export class HomePageComponent implements OnInit {
     }
 
     onDbChoose(event?: any): void {
-        const sqlStr = `select * from ${event.name} limit 10`;
+        const LIMIT = 50;
+        const sqlStr = `select * from ${event.name} limit ${LIMIT}`;
         if (event?.level === 1) {
             this.SQL(sqlStr)
         }
