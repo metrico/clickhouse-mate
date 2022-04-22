@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, OnInit
 import { cloneObject } from '@app/helper/functions';
 import { GridOptions } from 'ag-grid-community';
 import { AgEventService } from './ag-event.service';
+import { CellHeaderComponent } from './cell-header/cell-header.component';
 import { CellTypeDetectorComponent } from './cell-type-detector/cell-type-detector.component';
 import { SettingButtonComponent } from './setting-button';
 
@@ -16,7 +17,7 @@ const GRID_FIT = 'autoSizeColumns';
 export class CustomAgGridComponent implements OnInit {
     @Input()
     set itemList(list: any) {
-        this.agEventService.itemList  = list;
+        this.agEventService.itemList = list;
     }
     agGridSizeControl = {
         selectedType: 'sizeToFitContinuos', // 'sizeToFit',
@@ -57,35 +58,15 @@ export class CustomAgGridComponent implements OnInit {
                 const [firstItemOfDetails] = this.details;
 
                 this._columns = Object.entries(firstItemOfDetails)
-                    // .filter(([key, value]: any) => typeof value !== 'object' || value instanceof Array)
                     .map(([key]: any) => {
+                        return {
+                            field: key,
+                            hide: !val.includes(key),
+                            filter: 'agTextColumnFilter',
+                            headerComponent: 'cellHeader',
+                            cellRenderer: 'cellTypeDetector'
+                        }
 
-                        const aliasFromKey: any = {
-                            'srcAlias_srcPort': 'SRC IP with Port',
-                            'dstAlias_dstPort': 'DST IP with Port',
-                            'diff': 'Delta',
-                            'id': 'ID',
-                            'create_date': 'Date',
-                            'timeSeconds': 'Timestamp',
-                            'ip_tos': 'IP TOS',
-                            'Msg_Size': 'Msg. Size',
-                        }
-                        // console.log({ key, al: aliasFromKey[key] });
-                        if (aliasFromKey[key]) {
-                            return {
-                                field: key,
-                                headerName: aliasFromKey[key],
-                                hide: !val.includes(key),
-                                cellRenderer: 'cellTypeDetector'
-                            }
-                        } else {
-                            return {
-                                field: key,
-                                hide: !val.includes(key),
-                                filter: 'agTextColumnFilter',
-                                cellRenderer: 'cellTypeDetector'
-                            }
-                        }
                     });
 
                 this._columns.push({
@@ -142,6 +123,7 @@ export class CustomAgGridComponent implements OnInit {
     ) {
         this.frameworkComponents = {
             settings: SettingButtonComponent,
+            cellHeader: CellHeaderComponent,
             cellTypeDetector: CellTypeDetectorComponent
         };
     }

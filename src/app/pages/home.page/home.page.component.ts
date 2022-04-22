@@ -57,6 +57,7 @@ export class HomePageComponent implements OnInit {
         const { data } = result || {}
         const dbTreeData: any[] = [];
         const stack = async ([dbName]: any) => {
+            await promiseWait(20);
             let lvf;
             try {
                 lvf = await _q(QUERY_LIST.useDatabase(dbName));
@@ -67,7 +68,6 @@ export class HomePageComponent implements OnInit {
             }
             if (lvf === null) {
                 const tablesList: any = await _q(QUERY_LIST.getTables);
-
                 dbTreeData.push({
                     name: dbName,
                     type: 'database',

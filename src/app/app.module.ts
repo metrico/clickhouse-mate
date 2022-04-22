@@ -17,6 +17,7 @@ import { CustomAgGridModule } from './components/custom-ag-grid/custom-ag-grid.m
 import { AceEditorModule } from 'ng2-ace-editor';
 import { AceModule, ACE_CONFIG, AceConfigInterface } from 'ngx-ace-wrapper';
 import { LoginFormModule } from './components/login-form/login-form.module';
+import { AlertService } from './services/alert.service';
 const DEFAULT_ACE_CONFIG: AceConfigInterface = {};
 
 
@@ -44,6 +45,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {};
     providers: [
         { provide: APP_BASE_HREF, useValue: (window as any)['base-href'] },
         { provide: ACE_CONFIG, useValue: DEFAULT_ACE_CONFIG },
+        AlertService
     ],
     bootstrap: [AppComponent]
 })

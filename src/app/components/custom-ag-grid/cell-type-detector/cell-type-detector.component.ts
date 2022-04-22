@@ -1,10 +1,9 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
 
 @Component({
     selector: 'app-cell-type-detector',
-    templateUrl: './cell-type-detector.component.html',
-    styleUrls: ['./cell-type-detector.component.scss']
+    templateUrl: './cell-type-detector.component.html'
 })
 export class CellTypeDetectorComponent implements ICellRendererAngularComp {
     public params: any;

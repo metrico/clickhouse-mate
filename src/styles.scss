@@ -7,10 +7,10 @@ body {
     height: 100vh;
     margin: 0;
     overflow: hidden;
+    font-family: monospace !important;
 }
 
 * {
-    font-family: monospace !important;
     font-size: 14px !important;
 
     /** SAFARY SCROLL FIX */
