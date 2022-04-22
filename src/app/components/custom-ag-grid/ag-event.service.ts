@@ -15,6 +15,7 @@ export class AgEventService {
     }
     emit(event: any) {
         this.bo.next(event);
+        this.bo.next(null); // for clear observer
     }
 
 }
