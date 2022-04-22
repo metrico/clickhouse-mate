@@ -26,46 +26,79 @@
 <div style="width: 100%; height: calc(100vh - 4rem)">
     <as-split direction="horizontal" [gutterSize]="5">
         <as-split-area [size]="15" *ngIf="isLeftPanel" [order]="0">
-            <mat-accordion>
-                <mat-expansion-panel [expanded]="true">
-                    <mat-expansion-panel-header>
-                        <mat-panel-title> DB Tree </mat-panel-title>
-                    </mat-expansion-panel-header>
-                    <div *ngIf="this.dbTreeData.length > 0">
-                        <tree-filter
-                            [data]="dbTreeData"
-                            [isFilter]="false"
-                            [fileIcon]="true"
-                            (clickRow)="onDbChoose($event)"
-                        ></tree-filter>
-                    </div>
-                </mat-expansion-panel>
-                <mat-expansion-panel>
-                    <mat-expansion-panel-header>
-                        <mat-panel-title> Query Presets </mat-panel-title>
-                    </mat-expansion-panel-header>
-                    <div
-                        class="archive-line"
-                        *ngFor="let item of PopularQueries"
-                        (click)="SQL(item)"
-                    >
-                        {{ item }}
-                    </div>
-                </mat-expansion-panel>
-                <mat-expansion-panel>
-                    <mat-expansion-panel-header>
-                        <mat-panel-title> Query History </mat-panel-title>
-                    </mat-expansion-panel-header>
+            <as-split direction="vertical" [gutterSize]="5">
+                <as-split-area
+                    [size]="87"
+                    [order]="0"
+                    style="position: relative"
+                >
+                    <mat-accordion>
+                        <mat-expansion-panel [expanded]="true">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title> DB Tree </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <div *ngIf="this.dbTreeData.length > 0">
+                                <tree-filter
+                                    [data]="dbTreeData"
+                                    [isFilter]="false"
+                                    [fileIcon]="true"
+                                    (clickRow)="onDbChoose($event)"
+                                ></tree-filter>
+                            </div>
+                        </mat-expansion-panel>
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    Query Presets
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <div
+                                class="archive-line"
+                                *ngFor="let item of PopularQueries"
+                                (click)="SQL(item)"
+                            >
+                                {{ item }}
+                            </div>
+                        </mat-expansion-panel>
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    Query History
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
 
-                    <div
-                        *ngFor="let item of SqlArchive"
-                        (click)="SQL(item)"
-                        class="archive-line"
-                    >
-                        {{ item }}
+                            <div
+                                *ngFor="let item of SqlArchive"
+                                (click)="SQL(item)"
+                                class="archive-line"
+                            >
+                                {{ item }}
+                            </div>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </as-split-area>
+                <as-split-area
+                    [size]="13"
+                    [order]="0"
+                    style="position: relative"
+                    *ngIf="dataForFile?.statistics"
+                >
+                    <div style="padding: 1rem;">
+                        <div>
+                            <strong>Elapsed: </strong>
+                            <span>{{dataForFile?.statistics?.elapsed | number}} sec</span>
+                        </div>
+                        <div>
+                            <strong>Read rows:</strong>
+                            <span>{{dataForFile?.statistics?.rows_read}}</span>
+                        </div>
+                        <div>
+                            <strong>Data size:</strong>
+                            <span>{{dataForFile?.statistics?.bytes_read}} B.</span>
+                        </div>
                     </div>
-                </mat-expansion-panel>
-            </mat-accordion>
+                </as-split-area>
+            </as-split>
         </as-split-area>
         <as-split-area
             [size]="85"
@@ -115,32 +148,6 @@
                             </button>
                         </ng-container>
                         <ng-template #hasData>
-                            <!-- <div>
-                                <button
-                                    style="margin-right: 0.5rem"
-                                    mat-button
-                                    (click)="save('json')"
-                                    cdkFocusInitial
-                                >
-                                    Save as JSON
-                                </button>
-                                <button
-                                    style="margin-right: 0.5rem"
-                                    mat-button
-                                    (click)="save('json', true)"
-                                    cdkFocusInitial
-                                >
-                                    Save as JSONCompact
-                                </button>
-                                <button
-                                    style="margin-right: 0.5rem"
-                                    mat-button
-                                    (click)="save('csv')"
-                                    cdkFocusInitial
-                                >
-                                    Save as CSV
-                                </button>
-                            </div> -->
                             <custom-ag-grid
                                 *ngIf="isObjectData(); else preText"
                                 class="example-table-containers"
