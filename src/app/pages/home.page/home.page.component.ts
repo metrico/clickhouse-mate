@@ -39,74 +39,71 @@ export class HomePageComponent implements OnInit {
         if (json) {
             this.SqlArchive = JSON.parse(json);
         }
-        if (!this.getHash()) {
-            const auth: any = getStorage('AUTH_DATA');
-            if (auth) {
-                this.dbLink = auth.dbURL;
-                this.dbLogin = auth.login;
-                this.dbPassword = auth.password;
+
+        const auth: any = getStorage('AUTH_DATA');
+        if (auth) {
+            this.dbLink = auth.dbURL;
+            this.dbLogin = auth.login;
+            this.dbPassword = auth.password;
+        }
+
+        this.connectToDB();
+    }
+
+    async initDbTree() {
+        const _q = (q: any) => firstValueFrom(this.apiService.runQuery(q));
+
+        const result = await _q(QUERY_LIST.getDatabases);
+        const { data } = result || {}
+        const dbTreeData: any[] = [];
+        const stack = async ([dbName]: any) => {
+            let lvf;
+            try {
+                lvf = await _q(QUERY_LIST.useDatabase(dbName));
+            } catch (err) {
+                dbTreeData.push({
+                    name: dbName,
+                })
             }
+            if (lvf === null) {
+                const tablesList: any = await _q(QUERY_LIST.getTables);
 
+                dbTreeData.push({
+                    name: dbName,
+                    type: 'database',
+                    children: tablesList?.data?.map((t: any) => {
+                        const [tableName] = t;
+                        return {
+                            name: `${dbName}.${tableName}`,
+                            type: 'table'
+                        }
+                    })
+                });
 
-            this.connectToDB();
+            }
+            if (data.length > 0) {
+                stack(data.shift())
+            } else {
+                this.dbTreeData = dbTreeData;
+                this.cdr.detectChanges();
+            }
+        };
+        if (data.length > 0) {
+            stack(data.shift())
         }
     }
 
-    initDbTree(): void {
-        this.apiService.runQuery(QUERY_LIST.getDatabases).subscribe(async (result) => {
-            const { data } = result || {}
-            const dbTreeData: any[] = [];
-            const stack = async ([dbName]: any) => {
-                let lvf;
-                try {
-                    lvf = await firstValueFrom(this.apiService.runQuery(QUERY_LIST.useDatabase(dbName)))
-                    // console.log({ lvf, dbName });
-                } catch (err) {
-                    dbTreeData.push({
-                        name: dbName,
-                    })
-                }
-                if (lvf === null) {
-                    const tablesList: any = await firstValueFrom(this.apiService.runQuery(QUERY_LIST.getTables))
-
-                    // console.log({ tablesList })
-
-                    dbTreeData.push({
-                        name: dbName,
-                        type: 'database',
-                        children: tablesList?.data?.map((t: any) => {
-                            const [tableName] = t;
-                            return {
-                                name: `${dbName}.${tableName}`,
-                                type: 'table'
-                            }
-                        })
-                    });
-
-                }
-                if (data.length > 0) {
-                    stack(data.shift())
-                } else {
-                    // console.log({ dbTreeData });
-                    this.dbTreeData = dbTreeData;
-                    this.cdr.detectChanges();
-                }
-            };
-            if (data.length > 0) {
-                stack(data.shift())
-            }
-        })
-    }
-
     onDbChoose(event?: any): void {
-        const sqlStr = `select * from ${event.name} limit 10`
+        const sqlStr = `select * from ${event.name} limit 10`;
         if (event?.level === 1) {
             this.SQL(sqlStr)
         }
     }
+
     isObjectData() {
         return typeof this.details === 'object';
     }
+
     formatData(data: any) {
         data = data || (window as any).data || {};
         if (typeof data === 'string') {
@@ -129,34 +126,10 @@ export class HomePageComponent implements OnInit {
         }
         console.log((location.hash + '').replace('#', ''))
         try {
-            const [
-                dbLink,
-                dbLogin,
-                dbPassword,
-                sqlRequest
-            ] = JSON.parse(atob((location.hash + '').replace('#', '')));
-
-            this.dbLink = dbLink;
-            this.dbLogin = dbLogin;
-            this.dbPassword = dbPassword;
+            const sqlRequest = atob((location.hash + '').replace('#', ''));
             this.sqlRequest = sqlRequest;
-
-            const auth = {
-                dbURL: this.dbLink,
-                login: this.dbLogin,
-                password: this.dbPassword,
-            };
-            this.apiService.setLoginData(auth);
-            this.initDbTree();
-
             this.SQL(this.sqlRequest);
             this.isAccess = true;
-
-            console.log('all OK', [dbLink,
-                dbLogin,
-                dbPassword,
-                sqlRequest
-            ]);
 
             return true;
         } catch (error) {
@@ -166,24 +139,17 @@ export class HomePageComponent implements OnInit {
         }
     }
     setHash() {
-        const hashObject = [
-            this.dbLink,
-            this.dbLogin,
-            this.dbPassword,
-            this.sqlRequest
-        ];
-
-        location.hash = '#' + btoa(JSON.stringify(hashObject))
-        console.log(location.hash);
+        location.hash = '#' + btoa(this.sqlRequest);
     }
-    async SQL(sqlStr: string) {
+    async SQL(sqlStr: string, isAuthenticated: boolean = false) {
         this.sqlRequest = sqlStr;
         this.details = [];
-        this.setHash();
+        if (!isAuthenticated) {
+            this.setHash();
+        }
         if (!this.SqlArchive.includes(sqlStr)) {
             this.SqlArchive.unshift(sqlStr);
             localStorage.setItem('SqlArchive', JSON.stringify(this.SqlArchive));
-
         }
         try {
             const response = await lastValueFrom(this.apiService.runQuery(sqlStr));
@@ -195,7 +161,9 @@ export class HomePageComponent implements OnInit {
 
         } catch (error: any) {
             this.details = [];
-            this.errorMessage = error.error || error.message;
+            if (!isAuthenticated) {
+                this.errorMessage = error.error || error.message;
+            }
             this.cdr.detectChanges();
 
             return false;
@@ -220,15 +188,18 @@ export class HomePageComponent implements OnInit {
             password: this.dbPassword,
         };
         this.apiService.setLoginData(auth);
-        if (await this.SQL(QUERY_LIST.getDatabases)) {
+        if (await this.SQL(QUERY_LIST.getDatabases, true)) {
             setStorage('AUTH_DATA', auth)
             this.formatData({ meta: [], data: [] });
             this.errorMessage = '';
+
             this.isAccess = true;
             this.initDbTree();
+            this.getHash();
             this.cdr.detectChanges();
             return true;
         }
+        this.errorMessage = '';
         return false;
     }
 
@@ -239,6 +210,8 @@ export class HomePageComponent implements OnInit {
     save(buttonName: string) {
         let type: string = '';
         let isCompact: boolean = false;
+        const FORMAT = 'FORMAT';
+        const fname = 'tableData.';
         switch (buttonName) {
             case 'Save as JSON':
                 type = 'json';
@@ -253,13 +226,15 @@ export class HomePageComponent implements OnInit {
             default: return;
         }
 
-        let [sqlStr] = this.sqlRequest.split('FORMAT');
-        sqlStr += ' FORMAT ' + (isCompact ? 'JSONCompact' : type.toUpperCase());
+        let [sqlStr] = this.sqlRequest.split(FORMAT);
+
+        sqlStr += ` ${FORMAT} ` + (isCompact ? 'JSONCompact' : type.toUpperCase());
+
         lastValueFrom(this.apiService.runQuery(sqlStr)).then(result => {
             if (type === 'csv') {
-                saveToFile(result, 'tableData.' + type);
+                saveToFile(result, fname + type);
             } else {
-                saveToFile(JSON.stringify(result, null, 2), 'tableData.' + type);
+                saveToFile(JSON.stringify(result, null, 2), fname + type);
 
             }
         })
