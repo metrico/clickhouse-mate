@@ -66,7 +66,6 @@ export class CustomAgGridComponent implements OnInit {
                             headerComponent: 'cellHeader',
                             cellRenderer: 'cellTypeDetector'
                         }
-
                     });
 
                 this._columns.push({

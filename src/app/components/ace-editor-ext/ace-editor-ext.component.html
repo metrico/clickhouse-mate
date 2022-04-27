@@ -1,0 +1,31 @@
+<div class="wrapper-ace-editor">
+    <ace-editor
+        class="editor"
+        [text]="sqlRequest"
+        [mode]="'sql'"
+        [theme]="'sqlserver'"
+        [readOnly]="false"
+        [options]="{enableBasicAutocompletion: true}"
+        [autoUpdateContent]="true"
+        (textChange)="textChange($event)"
+        #editor
+    ></ace-editor>
+    <button
+        class="btn-send"
+        matSuffix
+        mat-icon-button
+        matTooltip="Ctrl + Enter"
+        color="primary"
+        aria-label="Run"
+        (click)="onClickRun()"
+    >
+        <mat-icon>send</mat-icon>
+    </button>
+    <div class="autocomplete-menu" [style.display]="isAutocompleteVisible ? 'block' : 'none'" #autocomplete>
+        <div
+            *ngFor="let item of dictionary; let i=index"
+            class="item"
+            (click)="onItemClick(item)"
+        >{{ item }}</div>
+    </div>
+</div>

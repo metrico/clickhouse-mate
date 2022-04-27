@@ -1,0 +1,41 @@
+.wrapper-ace-editor {
+    position: relative;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+}
+.editor {
+    min-height: 20px;
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+    font-size: 14px;
+    font-family: monospace;
+}
+.btn-send {
+    float: right;
+    position: absolute;
+    right: 1rem;
+    bottom: 1rem;
+}
+.autocomplete-menu {
+    position: absolute;
+    // border: 1px solid red;
+    padding: 0rem;
+    min-width: 200px;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    max-height: 200px;
+    overflow: auto;
+
+    .item {
+        cursor: pointer;
+        padding: 0.3rem;
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+    }
+}
