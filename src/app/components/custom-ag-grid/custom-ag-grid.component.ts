@@ -130,7 +130,7 @@ export class CustomAgGridComponent implements OnInit {
     ngOnInit() {
         this.re_new();
         this.agEventService.listen().subscribe((data) => {
-            console.log('listening', data)
+            // console.log('listening', data)
             if (data) {
                 this.menuClick.emit(data);
             }

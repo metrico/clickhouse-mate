@@ -33,8 +33,6 @@ export class SettingButtonComponent implements ICellRendererAngularComp {
 
         this.menuList = this.agEventService.itemList;
 
-        console.log('this.menuList', this.menuList);
-
         Object.values(this.params.columnApi.getAllGridColumns() as Object)
             .filter((column) => !['', 'id'].includes(column.colDef.field))
             .forEach((column, index) => this.allColumnIds.push({

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, AfterViewInit, HostListener } from '@angular/core';
 import { DictionaryDefault } from './dictionary-default';
 
 @Component({
@@ -59,8 +59,20 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit {
         this.isAutocompleteVisible = !!this.lastWord;
         console.log(this.lastWord, position);
     }
+
+
+
+
+    @HostListener('document:keydown', ['$event'])
     onClickRun(event?: any) {
-        this.ready.emit(event)
+        console.log({event})
+        if (!event || event.code === 'Enter' && event.ctrlKey) {
+            console.log('===========================')
+            console.log('==========['+this.sqlRequest+']==============')
+            console.log('===========================')
+
+            this.ready.emit(this.sqlRequest)
+        }
     }
     onItemClick(event: any) {
         const W = this.sqlRequest.split(/\s+/);
@@ -70,7 +82,7 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit {
             W[W.length - 1] = event;
         }
         this.sqlRequest = W.join(" ") + " ";
-        this.wasClick = true;
+        // this.wasClick = true;
         this.textChange(this.sqlRequest);
         this.isAutocompleteVisible = false;
 

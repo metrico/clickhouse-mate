@@ -121,11 +121,12 @@ export class HomePageComponent implements OnInit {
             });
         }
     }
+
     getHash() {
         if (!location.hash) {
             return false;
         }
-        console.log((location.hash + '').replace('#', ''))
+        // console.log((location.hash + '').replace('#', ''))
         try {
             const sqlRequest = atob((location.hash + '').replace('#', ''));
             this.sqlRequest = sqlRequest;
@@ -139,20 +140,25 @@ export class HomePageComponent implements OnInit {
             return false;
         }
     }
+
     setHash() {
         location.hash = '#' + btoa(this.sqlRequest);
     }
+
     async SQL(sqlStr: string, isAuthenticated: boolean = false) {
         await promiseWait(100);
         this.sqlRequest = sqlStr;
         this.details = [];
+
         if (!isAuthenticated) {
             this.setHash();
         }
+
         if (!this.SqlArchive.includes(sqlStr)) {
             this.SqlArchive.unshift(sqlStr);
             localStorage.setItem('SqlArchive', JSON.stringify(this.SqlArchive));
         }
+
         try {
             const response = await lastValueFrom(this.apiService.runQuery(sqlStr));
             this.dataForFile = response;
@@ -172,11 +178,13 @@ export class HomePageComponent implements OnInit {
         }
     }
 
-    @HostListener('document:keydown', ['$event'])
+    // @HostListener('document:keydown', ['$event'])
     onClickRun(event?: any): void {
-        if (!event || event.code === 'Enter' && event.ctrlKey) {
-            this.SQL(this.sqlRequest);
+        if (event) {
+            console.log(event);
+            this.sqlRequest = event;
         }
+        this.SQL(this.sqlRequest);
     }
     async connectToDB(event?: any) {
         if (event) {

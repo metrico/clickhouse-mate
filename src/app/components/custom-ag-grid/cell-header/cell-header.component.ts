@@ -9,7 +9,7 @@ export class CellHeaderComponent implements ICellRendererAngularComp {
     value: string = '';
     agInit(params: any): void {
         this.params = params;
-        console.log(this.params);
+        // console.log(this.params);
         this.value = params?.column?.colId + '';
     }
     refresh(): boolean {
