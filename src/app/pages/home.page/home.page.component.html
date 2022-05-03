@@ -176,6 +176,8 @@
                                 (menuClick)="save($event)"
                                 [details]="details"
                                 [columns]="columns"
+                                [(pageSize)]="pageSize"
+                                [(isPaginator)]="isPaginator"
                             ></custom-ag-grid>
                             <ng-template #preText>
                                 <pre>{{ details }}</pre>
