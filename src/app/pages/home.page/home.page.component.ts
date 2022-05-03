@@ -17,6 +17,8 @@ export class HomePageComponent implements OnInit {
     dbPassword: string = '';
     sqlRequest: any = 'SHOW DATABASES';
 
+    dictionary: any = [];
+
     dataForFile: any = null;
 
     details: any = [];
@@ -48,9 +50,33 @@ export class HomePageComponent implements OnInit {
             this.dbPassword = auth.password;
         }
 
-        this.connectToDB();
-    }
+        this.connectToDB().then(() => {
+            this.getDynamicDictionary();
+        });
 
+    }
+    getDynamicDictionary() {
+        const queryList = [
+            'select name from system.functions',
+            'select name from system.formats'
+        ];
+
+        const stack = async (query: any) => {
+            const { data } = await lastValueFrom(this.apiService.runQuery(query)) || {};
+
+            const r = data?.map((value: any) => value[0] + '(');
+
+            this.dictionary.push(...r);
+            if (queryList.length > 0) {
+                stack(queryList.shift())
+            } else {
+                // END OF LOOP
+                this.cdr.detectChanges();
+            }
+        };
+
+        stack(queryList.shift())
+    }
     async initDbTree() {
         const _q = (q: any) => firstValueFrom(this.apiService.runQuery(q));
 
@@ -74,8 +100,10 @@ export class HomePageComponent implements OnInit {
                     type: 'database',
                     children: tablesList?.data?.map((t: any) => {
                         const [tableName] = t;
+                        const tableId = `${dbName}.${tableName}`;
+                        this.dictionary.push(tableId);
                         return {
-                            name: `${dbName}.${tableName}`,
+                            name: tableId,
                             type: 'table'
                         }
                     })
@@ -179,7 +207,6 @@ export class HomePageComponent implements OnInit {
         }
     }
 
-    // @HostListener('document:keydown', ['$event'])
     onClickRun(event?: any): void {
         if (event) {
             console.log(event);

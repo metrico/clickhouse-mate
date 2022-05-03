@@ -31,6 +31,10 @@
     max-height: 200px;
     overflow: auto;
 
+    &:focus {
+        background-color: Aqua;
+    }
+
     .item {
         cursor: pointer;
         padding: 0.3rem;
