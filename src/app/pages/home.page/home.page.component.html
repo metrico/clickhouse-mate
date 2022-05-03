@@ -125,7 +125,8 @@
                 >
                     <ace-editor-ext
                         [(sqlRequest)]="sqlRequest"
-                        (ready)="onClickRun($event)">
+                        (ready)="onClickRun($event)"
+                        [dictionaryFull]="dictionary"
                     ></ace-editor-ext>
                     <!-- <ace-editor
                         [(text)]="sqlRequest"
