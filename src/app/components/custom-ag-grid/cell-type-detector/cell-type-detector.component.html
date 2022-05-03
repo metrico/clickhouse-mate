@@ -2,11 +2,13 @@
     <span
         [style.display]="isNULL && 'none'"
         [style.color]="isNumber && 'purple'"
+        [style.whiteSpace]="'pre-wrap'"
+        style="text-overflow: ellipsis;"
     >
         {{ value }}
     </span>
 
-    <span style="color: grey" [style.display]="!isNULL && 'none'">
+    <span style="color: grey;" [style.display]="!isNULL && 'none'">
         <i>NULL</i>
     </span>
 </div>

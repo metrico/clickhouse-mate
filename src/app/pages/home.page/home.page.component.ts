@@ -28,7 +28,8 @@ export class HomePageComponent implements OnInit {
     ];
     SqlArchive: string[] = [];
     dbTreeData: any[] = [];
-
+    pageSize: number = 50;
+    isPaginator: boolean = true;
     constructor(
         private apiService: ApiService,
         private cdr: ChangeDetectorRef

@@ -5,6 +5,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatMenuModule } from '@angular/material/menu';
 import { SettingButtonComponent } from './setting-button';
 import { FormsModule } from '@angular/forms';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatButtonModule } from '@angular/material/button';
 import { AgGridModule } from 'ag-grid-angular';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
@@ -25,7 +26,8 @@ import { far } from '@fortawesome/free-regular-svg-icons';
         MatMenuModule,
         MatCheckboxModule,
         MatCardModule,
-        DragDropModule
+        DragDropModule,
+        MatPaginatorModule
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     declarations: [CustomAgGridComponent, SettingButtonComponent, DragDropListComponent],
