@@ -1,7 +1,9 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { emitWindowResize } from '@app/helper/windowFunctions';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
 import { AgEventService } from './ag-event.service';
+
+type ImportEvents = 'submit' | 'drag' | 'dragstart' | 'dragend' | 'dragover' | 'dragenter' | 'dragleave' | 'drop' | 'change' 
 
 @Component({
     selector: 'app-setting-button',
@@ -10,13 +12,16 @@ import { AgEventService } from './ag-event.service';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SettingButtonComponent implements ICellRendererAngularComp {
+    @ViewChild('fileUpload', { static: false }) fileUpload: ElementRef | null = null;
     public params: any;
     callid: string | null= null;
     isFilterOpened: boolean = false;
     allColumnIds: any[] = [];
     apiColumn: any;
     headerName = '';
-
+    isDragOver: boolean = false;
+    files: Array<any> = [];
+    details: Array<any> = [];
     menuList: any;
 
     @Input() isTab = false;
@@ -43,7 +48,25 @@ export class SettingButtonComponent implements ICellRendererAngularComp {
             }));
         this.cdr.detectChanges();
     }
-
+    ngAfterViewInit() {
+        const hsp = (e: Event) => {
+            this.isDragOver = e.type === 'dragover';
+            e.preventDefault();
+            e.stopPropagation();
+        };
+        const handlerDrop = (e: any) => {
+            hsp(e);
+            this.onImport(e.dataTransfer.files)
+        };
+        const objEvents = {
+            submit: hsp, drag: hsp, dragstart: hsp, dragend: hsp,
+            dragover: hsp, dragenter: hsp, dragleave: hsp,
+            drop: handlerDrop, change: (e: any) => this.onImport(e?.target?.files)
+        };
+        Object.keys(objEvents).forEach((eventName: any) => {
+            this.fileUpload?.nativeElement.addEventListener(eventName, objEvents[eventName as ImportEvents]);
+        });
+    }
     menuClick(item: any) {
         this.agEventService.emit(item);
     }
@@ -81,5 +104,37 @@ export class SettingButtonComponent implements ICellRendererAngularComp {
             this.cdr.detectChanges();
         });
         this.cdr.detectChanges();
+    }
+    onImport(e: any) {
+        for (const property in e) {
+            if (property !== 'length' && property !== 'item') {
+                this.files.push({ data: e[property], inProgress: false, progress: 0, canRetry: false, canCancel: true });
+            }
+        }
+        this.uploadFiles();
+    }
+    private uploadFiles() {
+        if (this.fileUpload) {
+            this.fileUpload.nativeElement.value = '';
+        }
+        this.files.forEach((file: any) => {
+            this.uploadFile(file);
+        });
+    }
+    uploadFile(file: any) {
+        const reader = new FileReader();
+        file.data.text().then((data: any) => {
+            if(file.data.type === 'application/json') {
+                this.details.concat(JSON.parse(data))
+            } else if (file.data.type === 'text/csv') {
+                console.log(data)
+            }
+        })
+        const formData = new FormData();
+        formData.append('file', file.data);
+        console.log(file.data)
+        file.inProgress = true;
+        this.cdr.detectChanges();
+
     }
 }

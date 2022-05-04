@@ -177,6 +177,7 @@ export class CustomAgGridComponent implements OnInit {
         if (this.gridApi) {
             this.totalPages = this.gridApi.paginationGetRowCount();
         }
+        console.log(this.details)
         this.cdr.detectChanges();
     }
     private sizeToFit() {

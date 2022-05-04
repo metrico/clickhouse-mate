@@ -8,16 +8,24 @@
 <span>{{headerName | titlecase}}</span>
 <mat-menu #menu="matMenu">
     <div class="container" (click)="$event.stopPropagation();">
-        <button
-            style="margin-right: 0.5rem"
-            mat-raised-button
-            *ngFor="let item of menuList"
-            (click)="menuClick(item)"
-            cdkFocusInitial
-        >
-            {{item}}
+        <span style="display:block; margin-bottom: 5px;">
+            <button
+                style="margin-right: 0.5rem"
+                mat-raised-button
+                *ngFor="let item of menuList"
+                (click)="menuClick(item)"
+                cdkFocusInitial
+            >
+                {{item}}
+            </button>
+        </span>
+        <button mat-raised-button>
+            Import
         </button>
-
+        <div class="file-upload-container">
+            <label for="fileSelect" [className]="'fileselect' + (isDragOver ? ' dragOver' : '')"></label>
+            <input placeholder="" value="" type="file" id="fileUpload" accept=".csv" #fileUpload multiple="multiple">
+        </div>
         <h3 style="text-align: center">Columns settings</h3>
         <app-drag-drop-list
             [list]="allColumnIds"
