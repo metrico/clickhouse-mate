@@ -2,7 +2,7 @@
     <span
         [style.display]="isNULL && 'none'"
         [style.color]="isNumber && 'purple'"
-        [style.whiteSpace]="'pre-wrap'"
+        [style.whiteSpace]="isMultiLine ? 'pre-wrap' : ''"
         style="text-overflow: ellipsis;"
     >
         {{ value }}
