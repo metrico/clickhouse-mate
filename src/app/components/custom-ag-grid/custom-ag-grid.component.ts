@@ -86,7 +86,7 @@ export class CustomAgGridComponent implements OnInit {
                 this._columns = Object.entries(firstItemOfDetails)
                     .map(([key]: any) => {
                         let isAutoHeight = false;
-                        if ( typeof firstItemOfDetails[key] === 'string' && firstItemOfDetails[key]?.includes('\n')) {
+                        if ( typeof firstItemOfDetails[key] === 'string' && /[\n\r]/.test(firstItemOfDetails[key])) {
                             isAutoHeight = true
                         }
                         return {

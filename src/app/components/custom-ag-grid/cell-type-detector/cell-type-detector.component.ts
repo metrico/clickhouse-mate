@@ -11,9 +11,12 @@ export class CellTypeDetectorComponent implements ICellRendererAngularComp {
     value: any = null;
     isNumber: boolean = false;
     isNULL: boolean = false;
-
+    isMultiLine: boolean = false;
     agInit(params: any): void {
         this.params = params;
+        if(/[\n\r]/.test(params.value)) {
+            this.isMultiLine = true
+        }
         if (!isNaN(+params.value)) {
             this.isNumber = true;
         }
