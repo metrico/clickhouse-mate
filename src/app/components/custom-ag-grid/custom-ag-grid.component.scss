@@ -4,3 +4,6 @@
 .paginator {
     height: 60px;
 }
+.paginator[hidden] {
+    display: none;
+}

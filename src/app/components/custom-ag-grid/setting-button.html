@@ -8,6 +8,7 @@
 <span>{{headerName | titlecase}}</span>
 <mat-menu #menu="matMenu">
     <div class="container" (click)="$event.stopPropagation();">
+
         <button
             style="margin-right: 0.5rem"
             mat-raised-button
@@ -18,6 +19,9 @@
             {{item}}
         </button>
 
+        <h3 style="text-align: center">Grid settings</h3>        
+        <mat-slide-toggle 
+        mat-raised-button (click)="togglePaginator()">Enable pagination</mat-slide-toggle>
         <h3 style="text-align: center">Columns settings</h3>
         <app-drag-drop-list
             [list]="allColumnIds"

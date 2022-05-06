@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { cloneObject } from '@app/helper/functions';
-import { GridOptions } from 'ag-grid-community';
+import { ColumnApi, GridApi, GridOptions } from 'ag-grid-community';
 import { AgEventService } from './ag-event.service';
 import { CellHeaderComponent } from './cell-header/cell-header.component';
 import { CellTypeDetectorComponent } from './cell-type-detector/cell-type-detector.component';
@@ -9,7 +9,14 @@ import { SettingButtonComponent } from './setting-button';
 
 
 const GRID_FIT = 'autoSizeColumns';
-
+export interface gridContext {
+    componentParent: CustomAgGridComponent
+}
+export interface sizeControl {
+    selectedType: string,
+    pageSize: number,
+    isPaginator: boolean
+};
 @Component({
     selector: 'custom-ag-grid',
     templateUrl: './custom-ag-grid.component.html',
@@ -32,19 +39,23 @@ export class CustomAgGridComponent implements OnInit {
     pageSizeChange: EventEmitter<number> = new EventEmitter<number>();
 
     @Input()
-    set isPaginator(size: boolean) {
-        this.agGridSizeControl.isPaginator = size;
+    set isPaginator(state: boolean) {
+        this.agGridSizeControl.isPaginator = state;
+        
+        this.gridApi?.paginationSetPageSize(state ? this.pageSize : this.details?.length);
+        this.cdr.detectChanges()
     }
     get isPaginator(): boolean {
         return this.agGridSizeControl.isPaginator;
     }
     @Output()
     isPaginatorChange: EventEmitter<boolean> = new EventEmitter<boolean>();
-
+    public context: gridContext;
+    // Real defaults are passed as Inputs from Parent component
     agGridSizeControl = {
         selectedType: GRID_FIT,
         pageSize: 50,
-        isPaginator: true
+        isPaginator: false
     };
     agColumnDefs: any[] = [];
     _details: any[] = [];
@@ -60,15 +71,14 @@ export class CustomAgGridComponent implements OnInit {
         rowHeight: 38,
         rowSelection: 'multiple',
         suppressRowClickSelection: true,
-        suppressCellSelection: true,
+        suppressCellFocus: true,
         suppressPaginationPanel: true
     };
     _columns: any[] = [];
-    gridApi: any;
-    gridColumnApi: any;
+    gridApi: GridApi | null = null;
+    gridColumnApi: ColumnApi | null = null;
     totalPages: number = 1;
     @Input() set details(val) {
-        console.log(val)
         this._details = cloneObject(val);
         this.re_new();
     }
@@ -82,7 +92,7 @@ export class CustomAgGridComponent implements OnInit {
         const isDetailsReady = () => {
             if (this.details?.length) {
                 const [firstItemOfDetails] = this.details;
-                console.log(firstItemOfDetails)
+                console.log(this.details)
                 this._columns = Object.entries(firstItemOfDetails)
                     .map(([key]: any) => {
                         let isAutoHeight = false;
@@ -157,6 +167,9 @@ export class CustomAgGridComponent implements OnInit {
         private cdr: ChangeDetectorRef,
         private agEventService: AgEventService
     ) {
+        this.context = {
+            componentParent: this
+        }
         this.frameworkComponents = {
             settings: SettingButtonComponent,
             cellHeader: CellHeaderComponent,
@@ -166,7 +179,6 @@ export class CustomAgGridComponent implements OnInit {
 
     ngOnInit() {
         this.agEventService.listen().subscribe((data) => {
-            // console.log('listening', data)
             if (data) {
                 this.menuClick.emit(data);
             }
@@ -187,17 +199,22 @@ export class CustomAgGridComponent implements OnInit {
     }
     paginationControls(e: PageEvent) {
         if (typeof e.previousPageIndex !== 'undefined' && e.previousPageIndex > e.pageIndex) {
-            this.gridApi.paginationGoToPreviousPage();
+            this.gridApi?.paginationGoToPreviousPage();
         } else if (typeof e.previousPageIndex !== 'undefined' &&  e.previousPageIndex < e.pageIndex) {
-            this.gridApi.paginationGoToNextPage();
+            this.gridApi?.paginationGoToNextPage();
         } else {
-            this.gridApi.paginationGoToPage(e.pageIndex)
+            this.gridApi?.paginationGoToPage(e.pageIndex)
         }
         if (e.pageSize !== this.agGridSizeControl.pageSize) {
-            this.agGridSizeControl.pageSize = e.pageSize;
             this.pageSizeChange.emit(e.pageSize);
-            this.gridApi.paginationSetPageSize(e.pageSize);
+            this.gridApi?.paginationSetPageSize(e.pageSize);
         }
+    }
+    togglePaginator() {
+        const state = !this.isPaginator
+        this.isPaginator = state;
+        this.isPaginatorChange.emit(state);
+        this.cdr.detectChanges();
     }
     public getRowStyle(params: any) {
         const _style: any = {

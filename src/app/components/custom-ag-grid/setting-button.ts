@@ -27,6 +27,7 @@ export class SettingButtonComponent implements ICellRendererAngularComp {
 
     agInit(params: any): void {
         this.params = params;
+        console.log(params.context.componentParent)
         this.callid = this.params.value || null;
         this.headerName = this.params.displayName || '';
         this.apiColumn = this.params.columnApi;
@@ -43,7 +44,9 @@ export class SettingButtonComponent implements ICellRendererAngularComp {
             }));
         this.cdr.detectChanges();
     }
-
+    togglePaginator() {
+        this.params.context.componentParent.togglePaginator();
+    }
     menuClick(item: any) {
         this.agEventService.emit(item);
     }
