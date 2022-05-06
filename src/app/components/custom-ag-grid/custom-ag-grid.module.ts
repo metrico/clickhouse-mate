@@ -16,6 +16,7 @@ import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontaweso
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 @NgModule({
     imports: [
         CommonModule,
@@ -27,7 +28,8 @@ import { far } from '@fortawesome/free-regular-svg-icons';
         MatCheckboxModule,
         MatCardModule,
         DragDropModule,
-        MatPaginatorModule
+        MatPaginatorModule,
+        MatSlideToggleModule
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     declarations: [CustomAgGridComponent, SettingButtonComponent, DragDropListComponent],

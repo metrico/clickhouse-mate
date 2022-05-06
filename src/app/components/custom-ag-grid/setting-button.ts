@@ -32,6 +32,7 @@ export class SettingButtonComponent implements ICellRendererAngularComp {
 
     agInit(params: any): void {
         this.params = params;
+        console.log(params.context.componentParent)
         this.callid = this.params.value || null;
         this.headerName = this.params.displayName || '';
         this.apiColumn = this.params.columnApi;
@@ -47,6 +48,9 @@ export class SettingButtonComponent implements ICellRendererAngularComp {
                 idx: index
             }));
         this.cdr.detectChanges();
+    }
+    togglePaginator() {
+        this.params.context.componentParent.togglePaginator();
     }
     ngAfterViewInit() {
         const hsp = (e: Event) => {

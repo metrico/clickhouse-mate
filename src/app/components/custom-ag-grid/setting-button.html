@@ -26,6 +26,9 @@
             <label for="fileSelect" [className]="'fileselect' + (isDragOver ? ' dragOver' : '')"></label>
             <input placeholder="" value="" type="file" id="fileUpload" accept=".csv" #fileUpload multiple="multiple">
         </div>
+        <h3 style="text-align: center">Grid settings</h3>        
+        <mat-slide-toggle 
+        mat-raised-button (click)="togglePaginator()">Enable pagination</mat-slide-toggle>
         <h3 style="text-align: center">Columns settings</h3>
         <app-drag-drop-list
             [list]="allColumnIds"
