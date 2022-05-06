@@ -53,7 +53,6 @@ export class HomePageComponent implements OnInit {
         this.connectToDB().then(() => {
             this.getDynamicDictionary();
         });
-
     }
     getDynamicDictionary() {
         const queryList = [
