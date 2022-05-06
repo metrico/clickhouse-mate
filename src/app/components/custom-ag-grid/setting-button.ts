@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { JSON_parse } from '@app/helper/functions';
 import { emitWindowResize } from '@app/helper/windowFunctions';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
+import { NgxCsvParser } from 'ngx-csv-parser';
 import { AgEventService } from './ag-event.service';
 
 type ImportEvents = 'submit' | 'drag' | 'dragstart' | 'dragend' | 'dragover' | 'dragenter' | 'dragleave' | 'drop' | 'change' 
@@ -27,7 +29,8 @@ export class SettingButtonComponent implements ICellRendererAngularComp {
     @Input() isTab = false;
     constructor(
         private cdr: ChangeDetectorRef,
-        private agEventService: AgEventService
+        private agEventService: AgEventService,
+        private ngxCsvParse: NgxCsvParser
     ) { }
 
     agInit(params: any): void {
@@ -121,17 +124,28 @@ export class SettingButtonComponent implements ICellRendererAngularComp {
         if (this.fileUpload) {
             this.fileUpload.nativeElement.value = '';
         }
-        this.files.forEach((file: any) => {
-            this.uploadFile(file);
+        this.files.forEach((file: any, index) => {
+            this.uploadFile(file, index);
         });
     }
-    uploadFile(file: any) {
+    uploadFile(file: any, fileIndex: number) {
         const reader = new FileReader();
         file.data.text().then((data: any) => {
+            let meta = [];
             if(file.data.type === 'application/json') {
-                this.details.concat(JSON.parse(data))
+                const parsedJSON = JSON_parse(data);
+                this.details = this.details.concat(parsedJSON.data);
+                meta = parsedJSON.meta
             } else if (file.data.type === 'text/csv') {
                 console.log(data)
+                this.ngxCsvParse.parse(file.data, {header: true, delimiter: ','}).pipe().subscribe({
+                    next: (result:any): void => {
+                        console.log(result);
+                    }
+                })
+            }
+            if (this.files.length === fileIndex + 1) {
+                this.params.context.componentParent.import(this.details, meta)
             }
         })
         const formData = new FormData();

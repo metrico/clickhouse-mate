@@ -246,32 +246,37 @@ export class HomePageComponent implements OnInit {
     }
     save(buttonName: string) {
         let type: string = '';
+        let format: string = '';
         let isCompact: boolean = false;
         const FORMAT = 'FORMAT';
         const fname = 'tableData.';
         switch (buttonName) {
             case 'Save as JSON':
-                type = 'json';
+                type = 'JSON';
+                format = type;
                 break;
             case 'Save as JSONCompact':
-                type = 'json';
+                type = 'JSON';
+                format = type;
                 isCompact = true;
                 break;
             case 'Save as CSV':
-                type = 'csv';
+                type = 'CSVWithNames';
+                format = 'csv'
                 break;
             default: return;
         }
 
         let [sqlStr] = this.sqlRequest.split(FORMAT);
 
-        sqlStr += ` ${FORMAT} ` + (isCompact ? 'JSONCompact' : type.toUpperCase());
+        sqlStr += ` ${FORMAT} ` + (isCompact ? 'JSONCompact' : type);
 
         lastValueFrom(this.apiService.runQuery(sqlStr)).then(result => {
+            console.log(result, sqlStr)
             if (type === 'csv') {
-                saveToFile(result, fname + type);
+                saveToFile(result, fname + format);
             } else {
-                saveToFile(JSON.stringify(result, null, 2), fname + type);
+                saveToFile(JSON.stringify(result, null, 2), fname + format);
 
             }
         })

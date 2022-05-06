@@ -17,6 +17,7 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { NgxCsvParserModule } from 'ngx-csv-parser';
 @NgModule({
     imports: [
         CommonModule,
@@ -29,7 +30,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
         MatCardModule,
         DragDropModule,
         MatPaginatorModule,
-        MatSlideToggleModule
+        MatSlideToggleModule,
+        NgxCsvParserModule
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     declarations: [CustomAgGridComponent, SettingButtonComponent, DragDropListComponent],

@@ -80,12 +80,14 @@ export class CustomAgGridComponent implements OnInit {
     totalPages: number = 1;
     @Input() set details(val) {
         this._details = cloneObject(val);
+        console.log(val)
         this.re_new();
     }
     get details() {
         return this._details;
     }
     @Input() set columns(val: string[]) {
+        console.log(val)
         if (!val) {
             return;
         }
@@ -189,7 +191,6 @@ export class CustomAgGridComponent implements OnInit {
         if (this.gridApi) {
             this.totalPages = this.gridApi.paginationGetRowCount();
         }
-        console.log(this.details)
         this.cdr.detectChanges();
     }
     private sizeToFit() {
@@ -216,6 +217,11 @@ export class CustomAgGridComponent implements OnInit {
         this.isPaginator = state;
         this.isPaginatorChange.emit(state);
         this.cdr.detectChanges();
+    }
+    import(importedData: Array<any>, meta: Array<any>) {
+        this.details = importedData;
+        console.log(meta,meta?.map((i: any) => i.name))
+        this.columns = meta?.map((i: any) => i.name);
     }
     public getRowStyle(params: any) {
         const _style: any = {
