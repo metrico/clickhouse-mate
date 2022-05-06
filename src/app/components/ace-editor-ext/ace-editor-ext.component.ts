@@ -108,10 +108,10 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit {
     onClickRun(event?: any) {
         console.log({ event })
         if (!event || event.ctrlKey) {
-            if (event.code === 'Space') {
+            if (event?.code === 'Space') {
                 this.setFocusMenu();
             }
-            if (event.code === 'Enter') {
+            if (event?.code === 'Enter' || typeof event === 'undefined') {
                 this.ready.emit(this.sqlRequest);
             }
         }
