@@ -67,9 +67,14 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit {
         el.style.left = `${position.left || 0}px`;
         el.style.top = `${position.top || 0}px`;
 
+
+
         if (this.lastWord) {
-            // this.dictionary = this.dictionaryFull.filter(i => i.toLowerCase().includes(this.lastWord.toLowerCase()));
-            this.dictionary = this.dictionaryFull.filter(i => i.toLowerCase().match(new RegExp('^' + this.lastWord.toLowerCase(), 'g')));
+            this.dictionary = this.dictionaryFull.filter(
+                i => i.toLowerCase().match(
+                    new RegExp('^' + this.lastWord.toLowerCase(), 'g')
+                )
+            );
         } else {
             this.dictionary = this.dictionaryFull;
         }
@@ -82,21 +87,17 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit {
         }
         console.log(this.lastWord, position);
     }
-    getTextElement(): HTMLElement {
+    getTextElement(): any {
         return this.wrapperAceEditor?.nativeElement?.querySelector('.ace_text-input');
     }
     setFocusMenu() {
-        return;
+        // return;
         const f = () => {
             requestAnimationFrame(() => {
                 this.isAutocompleteVisible = true;
                 this.autocompleteForm.nativeElement.focus();
-                console.log('this.autocompleteForm.nativeElement.focus();', this.autocompleteForm.nativeElement)
-                console.log(document.activeElement)
-                if (document.activeElement) {
-
-                }
-                // f();
+                this.autocompleteForm.nativeElement.value = this.sqlRequest;
+                this.syncInternalFields();
             })
         }
         f();
@@ -115,8 +116,51 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit {
             }
         }
     }
+    syncInternalFields() {
+        console.log('syncInternalFields' , this.getTextElement().value);
+        // if (this.sqlRequest.length < this.autocompleteForm.nativeElement.value.length) {
+            this.sqlRequest = this.autocompleteForm.nativeElement.value;
+        // } else {
+            // this.autocompleteForm.nativeElement.value = this.sqlRequest;
+        // }
+        // requestAnimationFrame(() => {
+
+        //     // this.syncInternalFields();
+        //     this.sqlRequest = this.autocompleteForm.nativeElement.value;
+        // });
+    }
+    autocompleteSelectorIndex = 0;
     keydown(event: KeyboardEvent) {
-        console.log('keydown', event);
+
+        switch (event.key) {
+            case "ArrowDown":
+                this.autocompleteSelectorIndex++;
+                event.preventDefault();
+                break;
+            case "ArrowUp":
+                this.autocompleteSelectorIndex--;
+                event.preventDefault();
+                break;
+
+            case "Enter":
+            case "Space":
+                this.onItemClick(this.dictionary[this.autocompleteSelectorIndex])
+                event.preventDefault();
+                break;
+
+            default:
+                console.log("event", event);
+                this.syncInternalFields();
+                // event.preventDefault();
+                event.stopPropagation();
+                break;
+        }
+        this.autocompleteSelectorIndex = Math.max(Math.min(this.autocompleteSelectorIndex, this.dictionary.length - 1), 0);
+        console.log('keydown:SelectorIndex', this.autocompleteSelectorIndex);
+        // const newEvent = new CustomEvent('keydown', event);
+        // const txtArea = this.getTextElement();
+        // console.log({ txtArea });
+        // txtArea?.dispatchEvent(newEvent);
     }
 
     onItemClick(event: any) {

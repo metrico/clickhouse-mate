@@ -1,4 +1,4 @@
-<div class="wrapper-ace-editor" (keypress)="keydown($event)" #wrapperAceEditor>
+<div class="wrapper-ace-editor" #wrapperAceEditor>
     <ace-editor
         class="editor"
         [text]="sqlRequest"
@@ -21,24 +21,25 @@
     >
         <mat-icon>send</mat-icon>
     </button>
+
     <div
         class="autocomplete-menu"
         [style.display]="isAutocompleteVisible ? 'block' : 'none'"
-        (keydown)="keydown($event)"
         #autocomplete
     >
-        <form tabindex="0" #autocompleteForm>
-            <!-- <textarea
-                class="autocomplete-list-texta"
-                (keydown)="keydown($event)"
-            ></textarea> -->
-            <div
-                *ngFor="let item of dictionary; let i = index"
-                class="item"
-                (click)="onItemClick(item)"
-            >
-                {{ item }}
-            </div>
-        </form>
+        <textarea
+            class="autocomplete-list-texta"
+            (keydown)="keydown($event)"
+            tabindex="0"
+            #autocompleteForm
+        ></textarea>
+        <div
+            *ngFor="let item of dictionary; let i = index"
+            class="item"
+            [class.selected]="autocompleteSelectorIndex === i"
+            (click)="onItemClick(item)"
+        >
+            {{ item }}
+        </div>
     </div>
 </div>
