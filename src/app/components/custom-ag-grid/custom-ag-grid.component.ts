@@ -92,12 +92,12 @@ export class CustomAgGridComponent implements OnInit {
         const isDetailsReady = () => {
             if (this.details?.length) {
                 const [firstItemOfDetails] = this.details;
-                console.log(this.details)
+                const regex = new RegExp(/[\n\r]/)
                 this._columns = Object.entries(firstItemOfDetails)
                     .map(([key]: any) => {
                         let isAutoHeight = false;
-                        if ( typeof firstItemOfDetails[key] === 'string' && /[\n\r]/.test(firstItemOfDetails[key])) {
-                            isAutoHeight = true
+                        if ( typeof firstItemOfDetails[key] === 'string' && this.details.some(value => regex.test(value[key]))) {
+                            isAutoHeight = true;
                         }
                         return {
                             field: key,
