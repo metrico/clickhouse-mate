@@ -219,9 +219,10 @@ export class CustomAgGridComponent implements OnInit {
         this.cdr.detectChanges();
     }
     import(importedData: Array<any>, meta: Array<any>) {
+        console.log(importedData)
         this.details = importedData;
         console.log(meta,meta?.map((i: any) => i.name))
-        this.columns = meta?.map((i: any) => i.name);
+        this.columns = meta;
     }
     public getRowStyle(params: any) {
         const _style: any = {

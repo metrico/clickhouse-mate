@@ -129,24 +129,26 @@ export class SettingButtonComponent implements ICellRendererAngularComp {
         });
     }
     uploadFile(file: any, fileIndex: number) {
-        const reader = new FileReader();
         file.data.text().then((data: any) => {
             let meta = [];
             if(file.data.type === 'application/json') {
                 const parsedJSON = JSON_parse(data);
                 this.details = this.details.concat(parsedJSON.data);
-                meta = parsedJSON.meta
+                meta = parsedJSON?.meta?.map((i: any) => i.name)           
+                if (this.files.length === fileIndex + 1) {
+                    this.params.context.componentParent.import(this.details, meta)
+                }
             } else if (file.data.type === 'text/csv') {
-                console.log(data)
                 this.ngxCsvParse.parse(file.data, {header: true, delimiter: ','}).pipe().subscribe({
                     next: (result:any): void => {
-                        console.log(result);
+                        if (this.files.length === fileIndex + 1) {
+                            const meta = Object.keys(result[0])
+                            this.params.context.componentParent.import(result, meta)
+                        }
                     }
                 })
             }
-            if (this.files.length === fileIndex + 1) {
-                this.params.context.componentParent.import(this.details, meta)
-            }
+
         })
         const formData = new FormData();
         formData.append('file', file.data);
