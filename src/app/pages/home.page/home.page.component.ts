@@ -63,7 +63,7 @@ export class HomePageComponent implements OnInit {
         const stack = async (query: any) => {
             const { data } = await lastValueFrom(this.apiService.runQuery(query)) || {};
 
-            const r = data?.map((value: any) => value[0] + '(');
+            const r = data?.map((value: any) => value[0] + '()');
 
             this.dictionary.push(...r);
             if (queryList.length > 0) {
@@ -100,7 +100,7 @@ export class HomePageComponent implements OnInit {
                     children: tablesList?.data?.map((t: any) => {
                         const [tableName] = t;
                         const tableId = `${dbName}.${tableName}`;
-                        this.dictionary.push(tableId);
+                        // this.dictionary.push(tableId);
                         return {
                             name: tableId,
                             type: 'table'

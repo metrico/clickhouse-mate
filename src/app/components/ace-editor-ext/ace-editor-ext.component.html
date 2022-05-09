@@ -24,12 +24,14 @@
 
     <div
         class="autocomplete-menu"
-        [style.display]="isAutocompleteVisible ? 'block' : 'none'"
+        [style.display]="isAutocompleteVisible && dictionary.length > 0 ? 'block' : 'none'"
         #autocomplete
     >
         <textarea
-            class="autocomplete-list-texta"
+            class="autocomplete-list-text"
             (keydown)="keydown($event)"
+            (keyup)="syncInternalFields()"
+            (keypress)="syncInternalFields()"
             tabindex="0"
             #autocompleteForm
         ></textarea>

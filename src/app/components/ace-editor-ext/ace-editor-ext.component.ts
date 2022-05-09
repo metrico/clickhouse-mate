@@ -78,6 +78,7 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit {
         } else {
             this.dictionary = this.dictionaryFull;
         }
+        this.dictionary = this.dictionary.slice(0, 100);
 
         this.isAutocompleteVisible = !!this.lastWord;
         if (this.isAutocompleteVisible === false) {
@@ -117,17 +118,7 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit {
         }
     }
     syncInternalFields() {
-        console.log('syncInternalFields' , this.getTextElement().value);
-        // if (this.sqlRequest.length < this.autocompleteForm.nativeElement.value.length) {
-            this.sqlRequest = this.autocompleteForm.nativeElement.value;
-        // } else {
-            // this.autocompleteForm.nativeElement.value = this.sqlRequest;
-        // }
-        // requestAnimationFrame(() => {
-
-        //     // this.syncInternalFields();
-        //     this.sqlRequest = this.autocompleteForm.nativeElement.value;
-        // });
+        this.sqlRequest = this.autocompleteForm.nativeElement.value;
     }
     autocompleteSelectorIndex = 0;
     keydown(event: KeyboardEvent) {
@@ -157,10 +148,8 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit {
         }
         this.autocompleteSelectorIndex = Math.max(Math.min(this.autocompleteSelectorIndex, this.dictionary.length - 1), 0);
         console.log('keydown:SelectorIndex', this.autocompleteSelectorIndex);
-        // const newEvent = new CustomEvent('keydown', event);
-        // const txtArea = this.getTextElement();
-        // console.log({ txtArea });
-        // txtArea?.dispatchEvent(newEvent);
+
+
     }
 
     onItemClick(event: any) {
