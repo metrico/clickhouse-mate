@@ -27,7 +27,7 @@
     padding: 0rem;
     min-width: 200px;
     background-color: white;
-    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     max-height: 200px;
     overflow: auto;
 
@@ -35,9 +35,23 @@
         background-color: Aqua;
     }
 
+    .autocomplete-list-text {
+        position: absolute;
+        width: 0;
+        height: 0;
+        line-height: 0;
+        font-size: 1px;
+        padding: 0;
+        margin: 0;
+        opacity: 0;
+    }
+
     .item {
         cursor: pointer;
         padding: 0.3rem;
+        &.selected {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
         &:hover {
             background-color: rgba(0, 0, 0, 0.1);
         }
