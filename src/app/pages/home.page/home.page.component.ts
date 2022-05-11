@@ -9,7 +9,7 @@ import { saveToFile } from '@app/helper/windowFunctions';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomePageComponent implements OnInit {
-    isAccess = false;
+    isAccess = true;
     isReadonly = true;
     isLeftPanel = true;
     dbLink: string = '';
@@ -48,6 +48,8 @@ export class HomePageComponent implements OnInit {
             this.dbLink = auth.dbURL;
             this.dbLogin = auth.login;
             this.dbPassword = auth.password;
+        } else {
+            this.isAccess = false;
         }
 
         this.connectToDB().then(() => {
@@ -160,7 +162,6 @@ export class HomePageComponent implements OnInit {
             this.sqlRequest = sqlRequest;
             this.SQL(this.sqlRequest);
             this.isAccess = true;
-
             return true;
         } catch (error) {
             console.log('ERROR', error)
@@ -237,6 +238,7 @@ export class HomePageComponent implements OnInit {
             return true;
         }
         this.errorMessage = '';
+        this.isAccess = false;
         return false;
     }
 
