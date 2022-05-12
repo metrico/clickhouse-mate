@@ -1,7 +1,8 @@
-import { Component, HostListener, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ApiService, QUERY_LIST } from 'src/app/services/api.service';
 import { firstValueFrom, lastValueFrom } from 'rxjs';
 import { saveToFile } from '@app/helper/windowFunctions';
+import { Row } from '@app/models/grid.model';
 
 @Component({
     templateUrl: './home.page.component.html',
@@ -9,7 +10,7 @@ import { saveToFile } from '@app/helper/windowFunctions';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomePageComponent implements OnInit {
-    isAccess = false;
+    isAccess = true;
     isReadonly = true;
     isLeftPanel = true;
     dbLink: string = '';
@@ -32,6 +33,7 @@ export class HomePageComponent implements OnInit {
     dbTreeData: any[] = [];
     pageSize: number = 50;
     isPaginator: boolean = true;
+    currentRow: Row = new Map();
     constructor(
         private apiService: ApiService,
         private cdr: ChangeDetectorRef
@@ -48,11 +50,14 @@ export class HomePageComponent implements OnInit {
             this.dbLink = auth.dbURL;
             this.dbLogin = auth.login;
             this.dbPassword = auth.password;
+        } else {
+            this.isAccess = false;
         }
 
         this.connectToDB().then(() => {
             this.getDynamicDictionary();
         });
+        console.log(this.currentRow.size)
     }
     getDynamicDictionary() {
         const queryList = [
@@ -160,7 +165,6 @@ export class HomePageComponent implements OnInit {
             this.sqlRequest = sqlRequest;
             this.SQL(this.sqlRequest);
             this.isAccess = true;
-
             return true;
         } catch (error) {
             console.log('ERROR', error)
@@ -237,9 +241,12 @@ export class HomePageComponent implements OnInit {
             return true;
         }
         this.errorMessage = '';
+        this.isAccess = false;
         return false;
     }
-
+    openRow(event: Map<string, any>) {
+        this.currentRow = event;
+    }
     setReadonly(bool: boolean) {
         this.isReadonly = bool;
         this.apiService.setReadOnly(bool);

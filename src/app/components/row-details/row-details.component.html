@@ -1,0 +1,9 @@
+<div *ngFor="let column of row | keyvalue">
+        <app-object-row [column]="column.key" [value]="column.value" *ngIf="column.value.type === 'JSON' || column.value.type === 'object'; else elseBlock">
+            
+        </app-object-row>
+        <ng-template #elseBlock>
+            <app-normal-row [column]="column.key" [value]="column.value"></app-normal-row>
+        </ng-template>
+    
+</div>
