@@ -9,21 +9,25 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { HtmlPipe } from './html.pipe';
+// import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling'
+import { ScrollingModule } from '@angular/cdk/scrolling';
 @NgModule({
-  imports: [
-    CommonModule,
-    MatTreeModule,
-    MatButtonModule,
-    MatIconModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatTooltipModule,
-    FormsModule
-  ],
-  declarations: [
-    TreeFilterComponent,
-    HtmlPipe
-  ],
-  exports: [TreeFilterComponent]
+    imports: [
+        CommonModule,
+        MatTreeModule,
+        MatButtonModule,
+        MatIconModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatTooltipModule,
+        FormsModule,
+        // CdkVirtualScrollViewport,
+        ScrollingModule
+    ],
+    declarations: [
+        TreeFilterComponent,
+        HtmlPipe
+    ],
+    exports: [TreeFilterComponent]
 })
 export class TreeFilterModule { }

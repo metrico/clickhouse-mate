@@ -3,6 +3,7 @@ import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy, EventEmi
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { Input } from '@angular/core';
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 
 interface TreeNode {
     name: string;
@@ -27,6 +28,7 @@ interface FlatNode {
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TreeFilterComponent implements OnInit, AfterViewInit {
+    fullDatasource: any;
     @Input() isFilterLine = true;
     @Input() noPadding = false;
     @Input() set defaultFilterValue(val: string) {
@@ -67,9 +69,9 @@ export class TreeFilterComponent implements OnInit, AfterViewInit {
         if (!val) {
             return;
         }
-        this.dataSource.data = val;
+        this.fullDatasource = val;
+        this.dataSource.data = this.fullDatasource.slice(0, 2);
         this.dataIndex = [];
-        // console.log('this.dataSource.data = val;')
         const pushToIndex = (i: any) => {
             i.forEach(({ name, description, children }: any) => {
                 const o: any = { name, description: description || name };
@@ -116,6 +118,9 @@ export class TreeFilterComponent implements OnInit, AfterViewInit {
 
     @Output() filter: EventEmitter<any> = new EventEmitter();
     @Output() clickRow: EventEmitter<any> = new EventEmitter();
+
+
+    @ViewChild('virtualScroll') virtualScroll: any;
 
     constructor(private cdr: ChangeDetectorRef) {
         this.dataSource.data = [{ name: 'Loading...' }];
@@ -172,9 +177,13 @@ export class TreeFilterComponent implements OnInit, AfterViewInit {
         setTimeout(() => {
             this.cdr.detectChanges();
         })
+
+        this.virtualScroll.renderedRangeStream.subscribe((range: any) => {
+            this.dataSource.data = this.fullDatasource.slice(range.start, range.end);
+            this.cdr.detectChanges();
+        })
     }
     ngOnInit() {
-        this.cdr.detectChanges();
     }
     onKeyUpFilterTree() {
         const tc = this.tree?.treeControl || {};
@@ -185,7 +194,6 @@ export class TreeFilterComponent implements OnInit, AfterViewInit {
                 tc.collapseAll();
             }
         }
-        // console.log('------------', this.bufferFiltered)
         const b = this.dataIndex.filter(i => !!Math.max(...this.textFilterTree.toLowerCase().split('||').map(f => {
             return (i.description + i.name + (i.children || '')).toLowerCase().includes(f)
         })));
@@ -201,7 +209,6 @@ export class TreeFilterComponent implements OnInit, AfterViewInit {
         this.cdr.detectChanges();
     }
     onClickLine(data: any) {
-        // console.log(data)
         this.clickRow.emit(data);
     }
 }
