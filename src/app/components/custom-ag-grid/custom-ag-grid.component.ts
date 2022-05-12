@@ -1,7 +1,8 @@
 import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { cloneObject } from '@app/helper/functions';
-import { ColumnApi, GridApi, GridOptions } from 'ag-grid-community';
+import { Row } from '@app/models/grid.model';
+import { ColumnApi, GridApi, GridOptions, RowClickedEvent } from 'ag-grid-community';
 import { AgEventService } from './ag-event.service';
 import { CellHeaderComponent } from './cell-header/cell-header.component';
 import { CellTypeDetectorComponent } from './cell-type-detector/cell-type-detector.component';
@@ -132,7 +133,7 @@ export class CustomAgGridComponent implements OnInit {
     get columns(): any {
         return this._columns;
     }
-    @Output() rowClick: EventEmitter<any> = new EventEmitter();
+    @Output() rowClick: EventEmitter<Row> = new EventEmitter();
     @Output() menuClick: EventEmitter<any> = new EventEmitter();
 
     @HostListener('dblclick')
@@ -229,8 +230,31 @@ export class CustomAgGridComponent implements OnInit {
     sortChanged(event?: any) {
         this.cdr.detectChanges();
     }
-    cellClicked(event?: any) {
-        this.rowClick.emit(event);
+    rowClicked(event?: RowClickedEvent) {
+        const details: Row = new Map();
+        Object.entries(event?.data).forEach(column => {
+            let type: string = '';
+            let value = column[1]
+            if (!isNaN(value as any)) {
+                type = 'number';
+                value = parseInt(value as string)
+            } else {
+                type = typeof column[1];
+            }
+            if (type === 'string') {
+                try {
+                    value = JSON.parse(column[1] as string)
+                    type = 'JSON'
+                } catch (error) {
+                    
+                }
+            }
+            details.set(column[0], {
+                value: value,
+                type: type
+            })
+        });
+        this.rowClick.emit(details);
     }
     doOpenFilter() {
 

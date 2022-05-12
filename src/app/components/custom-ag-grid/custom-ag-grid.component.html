@@ -14,7 +14,7 @@ class="ag-theme-material custom"
     (gridReady)="onGridReady($event)"
     (sortChanged)="sortChanged($event)"
     (columnMoved)="sortChanged($event)"
-    (cellClicked)="cellClicked($event)"
+    (rowDoubleClicked)="rowClicked($event)"
 >
 </ag-grid-angular>
 <mat-paginator
