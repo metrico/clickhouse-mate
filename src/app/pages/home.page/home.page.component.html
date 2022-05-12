@@ -75,6 +75,16 @@
                                 {{ item }}
                             </div>
                         </mat-expansion-panel>
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    Row Details
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+
+                            <app-row-details [row]="currentRow">
+                            </app-row-details>
+                        </mat-expansion-panel>
                     </mat-accordion>
                 </as-split-area>
                 <as-split-area
@@ -178,6 +188,7 @@
                                 [columns]="columns"
                                 [(pageSize)]="pageSize"
                                 [(isPaginator)]="isPaginator"
+                                (rowClick)="openRow($event)"
                             ></custom-ag-grid>
                             <ng-template #preText>
                                 <pre>{{ details }}</pre>
