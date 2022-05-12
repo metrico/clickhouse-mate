@@ -1,16 +1,19 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, AfterViewInit, HostListener } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, AfterViewInit, HostListener, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { DictionaryDefault } from './dictionary-default';
 
 @Component({
     selector: 'ace-editor-ext',
     templateUrl: './ace-editor-ext.component.html',
-    styleUrls: ['./ace-editor-ext.component.scss']
+    styleUrls: ['./ace-editor-ext.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AceEditorExtComponent implements OnInit, AfterViewInit {
 
     @Input() sqlRequest: any = '';
 
     _dictionaryFull: any[] = [];
+    delayShowPopup: number = 1500;
+    _awaitInterval: any;
 
     @Input()
     set dictionaryFull(val: any[]) {
@@ -40,7 +43,8 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit {
         enableSnippets: true,
         enableLiveAutocompletion: true
     };
-
+    constructor(private cdr: ChangeDetectorRef) {
+    }
     ngOnInit() {
         this._dictionaryFull.push(...DictionaryDefault);
         this._dictionaryFull.sort();
@@ -52,13 +56,17 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit {
     }
 
     textChange(event?: any) {
+
+        this.sqlRequest = event;
+        this.lastWord = (event + '').split(/\s+/).pop();
+
         if (this.wasClick) {
             this.wasClick = false;
             return;
         }
+        console.log('textChange:type');
 
-        this.sqlRequest = event;
-        this.lastWord = (event + '').split(/\s+/).pop();
+
         const position: any = this.getTextElement()?.getBoundingClientRect() || {
             left: 0,
             right: 0
@@ -78,31 +86,40 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit {
         } else {
             this.dictionary = this.dictionaryFull;
         }
-        this.dictionary = this.dictionary.slice(0, 100);
 
-        this.isAutocompleteVisible = !!this.lastWord;
-        if (this.isAutocompleteVisible === false) {
-            this.getTextElement()?.focus();
-        } else {
-            this.setFocusMenu();
+        this.dictionary = this.dictionary.slice(0, 20);
+
+        if (this._awaitInterval) {
+            clearTimeout(this._awaitInterval);
         }
-        console.log(this.lastWord, position);
+        this._awaitInterval = setTimeout(() => {
+            console.log('textChange:show');
+            this.isAutocompleteVisible = !!this.lastWord;
+            if (this.isAutocompleteVisible === false) {
+                this.getTextElement()?.focus();
+                this.cdr.detectChanges();
+            } else {
+                this.setFocusMenu();
+            }
+            console.log(this.lastWord, position);
+        }, this.delayShowPopup)
     }
     getTextElement(): any {
         return this.wrapperAceEditor?.nativeElement?.querySelector('.ace_text-input');
     }
+
     setFocusMenu() {
-        // return;
         const f = () => {
             requestAnimationFrame(() => {
                 this.isAutocompleteVisible = true;
                 this.autocompleteForm.nativeElement.focus();
                 this.autocompleteForm.nativeElement.value = this.sqlRequest;
                 this.syncInternalFields();
+                this.cdr.detectChanges();
             })
         }
         f();
-
+        this.cdr.detectChanges();
     }
 
     @HostListener('document:keydown', ['$event'])
@@ -115,6 +132,7 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit {
             if (event?.code === 'Enter' || typeof event === 'undefined') {
                 this.ready.emit(this.sqlRequest);
             }
+            this.cdr.detectChanges();
         }
     }
     syncInternalFields() {
@@ -148,8 +166,7 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit {
         }
         this.autocompleteSelectorIndex = Math.max(Math.min(this.autocompleteSelectorIndex, this.dictionary.length - 1), 0);
         console.log('keydown:SelectorIndex', this.autocompleteSelectorIndex);
-
-
+        this.cdr.detectChanges();
     }
 
     onItemClick(event: any) {
@@ -165,5 +182,6 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit {
         this.isAutocompleteVisible = false;
 
         console.log(event, W)
+        this.cdr.detectChanges();
     }
 }
