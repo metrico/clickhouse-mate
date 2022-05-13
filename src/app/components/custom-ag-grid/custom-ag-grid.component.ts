@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { cloneObject } from '@app/helper/functions';
 import { Row } from '@app/models/grid.model';
@@ -21,7 +21,8 @@ export interface sizeControl {
 @Component({
     selector: 'custom-ag-grid',
     templateUrl: './custom-ag-grid.component.html',
-    styleUrls: ['./custom-ag-grid.component.scss']
+    styleUrls: ['./custom-ag-grid.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CustomAgGridComponent implements OnInit {
     @Input()
@@ -42,7 +43,7 @@ export class CustomAgGridComponent implements OnInit {
     @Input()
     set isPaginator(state: boolean) {
         this.agGridSizeControl.isPaginator = state;
-        
+
         this.gridApi?.paginationSetPageSize(state ? this.pageSize : this.details?.length);
         this.cdr.detectChanges()
     }
@@ -246,7 +247,7 @@ export class CustomAgGridComponent implements OnInit {
                     value = JSON.parse(column[1] as string)
                     type = 'JSON'
                 } catch (error) {
-                    
+
                 }
             }
             details.set(column[0], {

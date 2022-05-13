@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
 @Component({
     selector: 'app-cell-header',
-    template: `<span style="font-size: 12px !Important;">{{value}}</span>`
+    template: `<span style="font-size: 12px !Important;">{{value}}</span>`,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CellHeaderComponent implements ICellRendererAngularComp {
     public params: any;

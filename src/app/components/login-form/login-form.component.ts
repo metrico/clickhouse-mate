@@ -1,9 +1,10 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
     selector: 'app-login-form',
     templateUrl: './login-form.component.html',
-    styleUrls: ['./login-form.component.scss']
+    styleUrls: ['./login-form.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginFormComponent {
     @Input() isAccess: boolean = false;

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { RowValue } from '@app/models/grid.model';
 
 @Component({
@@ -6,8 +6,7 @@ import { RowValue } from '@app/models/grid.model';
   template: `
     <ngx-json-viewer [json]='value.value'></ngx-json-viewer>
   `,
-  styles: [
-  ]
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ObjectRowComponent implements OnInit {
     private _value: any;
