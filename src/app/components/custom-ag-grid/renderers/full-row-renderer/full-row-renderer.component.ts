@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { ICellRendererParams } from 'ag-grid-community';
-import { isExapanded } from '../../custom-ag-grid.component';
+import { isExpanded } from '../../custom-ag-grid.component';
 
 @Component({
     selector: 'app-full-row-renderer',
@@ -38,13 +38,13 @@ export class FullRowRendererComponent implements OnInit {
                     type: type
                 }
             }}
-        ).filter(column => column.name.value !== isExapanded);
+        ).filter(column => column.name.value !== isExpanded);
         this.dataSource.data = data;
     }
     ngOnInit(): void {}
     updateRow() {
         if (this.params) {
-            this.params.node.setDataValue(isExapanded, !this.params?.data.isExpanded);
+            this.params.node.setDataValue(isExpanded, !this.params?.data.isExpanded);
             this.params.fullWidth = false;
             this.params?.api.redrawRows({rowNodes: [this.params.node]});
             if(!this.params.context.componentParent.gridColumnApi.columnModel.autoHeightActive) {
