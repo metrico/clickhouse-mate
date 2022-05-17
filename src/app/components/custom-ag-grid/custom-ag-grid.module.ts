@@ -17,6 +17,12 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { NgxCsvParserModule } from 'ngx-csv-parser';
+import { ExpandRendererComponent } from './renderers/expand-renderer/expand-renderer.component';
+import { MatIconModule } from '@angular/material/icon';
+import { FullRowRendererComponent } from './renderers/full-row-renderer/full-row-renderer.component';
+import { MatTableModule } from '@angular/material/table';
+import { NgxJsonViewerModule } from 'ngx-json-viewer';
 @NgModule({
     imports: [
         CommonModule,
@@ -27,12 +33,17 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
         MatMenuModule,
         MatCheckboxModule,
         MatCardModule,
+        MatIconModule,
+        MatButtonModule,
+        MatTableModule,
         DragDropModule,
         MatPaginatorModule,
-        MatSlideToggleModule
+        MatSlideToggleModule,
+        NgxCsvParserModule,
+        NgxJsonViewerModule
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    declarations: [CustomAgGridComponent, SettingButtonComponent, DragDropListComponent],
+    declarations: [CustomAgGridComponent, SettingButtonComponent, DragDropListComponent, ExpandRendererComponent, FullRowRendererComponent],
     exports: [CustomAgGridComponent],
     providers: [AgEventService]
 })

@@ -1,23 +1,38 @@
-import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
+import {
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    HostListener,
+    Input,
+    OnInit,
+    Output,
+} from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { cloneObject } from '@app/helper/functions';
 import { Row } from '@app/models/grid.model';
-import { ColumnApi, GridApi, GridOptions, RowClickedEvent } from 'ag-grid-community';
+import {
+    ColumnApi,
+    GridApi,
+    GridOptions,
+    RowClickedEvent,
+    RowHeightParams,
+} from 'ag-grid-community';
 import { AgEventService } from './ag-event.service';
 import { CellHeaderComponent } from './cell-header/cell-header.component';
 import { CellTypeDetectorComponent } from './cell-type-detector/cell-type-detector.component';
+import { ExpandRendererComponent } from './renderers/expand-renderer/expand-renderer.component';
+import { FullRowRendererComponent } from './renderers/full-row-renderer/full-row-renderer.component';
 import { SettingButtonComponent } from './setting-button';
-
-
+export const isExapanded = 'isExpanded';
 const GRID_FIT = 'autoSizeColumns';
 export interface gridContext {
-    componentParent: CustomAgGridComponent
+    componentParent: CustomAgGridComponent;
 }
 export interface sizeControl {
-    selectedType: string,
-    pageSize: number,
-    isPaginator: boolean
-};
+    selectedType: string;
+    pageSize: number;
+    isPaginator: boolean;
+}
 @Component({
     selector: 'custom-ag-grid',
     templateUrl: './custom-ag-grid.component.html',
@@ -44,8 +59,10 @@ export class CustomAgGridComponent implements OnInit {
     set isPaginator(state: boolean) {
         this.agGridSizeControl.isPaginator = state;
 
-        this.gridApi?.paginationSetPageSize(state ? this.pageSize : this.details?.length);
-        this.cdr.detectChanges()
+        this.gridApi?.paginationSetPageSize(
+            state ? this.pageSize : this.details?.length
+        );
+        this.cdr.detectChanges();
     }
     get isPaginator(): boolean {
         return this.agGridSizeControl.isPaginator;
@@ -57,7 +74,7 @@ export class CustomAgGridComponent implements OnInit {
     agGridSizeControl = {
         selectedType: GRID_FIT,
         pageSize: 50,
-        isPaginator: false
+        isPaginator: false,
     };
     agColumnDefs: any[] = [];
     _details: any[] = [];
@@ -70,11 +87,10 @@ export class CustomAgGridComponent implements OnInit {
         enableCellTextSelection: true,
         ensureDomOrder: true,
         domLayout: 'normal', //'autoHeight',
-        rowHeight: 38,
         rowSelection: 'multiple',
         suppressRowClickSelection: true,
         suppressCellFocus: true,
-        suppressPaginationPanel: true
+        suppressPaginationPanel: true,
     };
     _columns: any[] = [];
     gridApi: GridApi | null = null;
@@ -94,12 +110,16 @@ export class CustomAgGridComponent implements OnInit {
         const isDetailsReady = () => {
             if (this.details?.length) {
                 const [firstItemOfDetails] = this.details;
-                const regex = new RegExp(/[\n\r]/)
-                this._columns = Object.entries(firstItemOfDetails)
-                    .map(([key]: any) => {
+                const regex = new RegExp(/[\n\r]/);
+                this._columns = Object.entries(firstItemOfDetails).map(
+                    ([key]: any) => {
                         let isAutoHeight = false;
-                        if ( typeof firstItemOfDetails[key] === 'string' && this.details.some(value => regex.test(value[key]))) {
+                        if (
+                            typeof firstItemOfDetails[key] === 'string' &&
+                            this.details.some((value) => regex.test(value[key]))
+                        ) {
                             isAutoHeight = true;
+                            this.autoHeightColumns.push(key)
                         }
                         return {
                             field: key,
@@ -107,20 +127,22 @@ export class CustomAgGridComponent implements OnInit {
                             filter: 'agTextColumnFilter',
                             headerComponent: 'cellHeader',
                             cellRenderer: 'cellTypeDetector',
-                            autoHeight: isAutoHeight
-                        }
-                    });
+                            autoHeight: isAutoHeight,
+                        };
+                    }
+                );
 
                 this._columns.push({
-                    field: '',
+                    field: isExapanded,
                     headerName: '',
                     headerComponent: 'settings',
+                    cellRenderer: 'expandRenderer',
                     hide: false,
                     pinned: 'left',
                     lockPinned: true,
                     resizable: false,
                     minWidth: 40,
-                    maxWidth: 40
+                    maxWidth: 40,
                 });
                 this.re_new();
             } else {
@@ -134,11 +156,26 @@ export class CustomAgGridComponent implements OnInit {
     get columns(): any {
         return this._columns;
     }
+    autoHeightColumns: Array<string> = []
     @Output() rowClick: EventEmitter<Row> = new EventEmitter();
     @Output() menuClick: EventEmitter<any> = new EventEmitter();
 
     @HostListener('dblclick')
     onDblClick() {
+        this.resizeGrid();
+    }
+    @HostListener('window:resize')
+    onResize() {
+        if (
+            !this.gridApi ||
+            !this.gridColumnApi ||
+            this.agGridSizeControl.selectedType !== GRID_FIT
+        ) {
+            return;
+        }
+        this.resizeGrid();
+    }
+    public resizeGrid() {
         requestAnimationFrame(() => {
             if (this.agGridSizeControl.selectedType === GRID_FIT) {
                 this.gridColumnApi?.autoSizeAllColumns();
@@ -147,44 +184,49 @@ export class CustomAgGridComponent implements OnInit {
             }
         });
     }
-
-    @HostListener('window:resize')
-    onResize() {
-        if (!this.gridApi || !this.gridColumnApi || this.agGridSizeControl.selectedType !== GRID_FIT) {
-            return;
-        }
-
-        requestAnimationFrame(() => {
-            if (this.agGridSizeControl.selectedType === GRID_FIT) {
-                this.gridColumnApi?.autoSizeAllColumns();
-            }
-        });
-    }
     onGridReady(params: any) {
         this.gridApi = params.api;
         this.gridColumnApi = params.columnApi;
         this.re_new();
     }
+    public fullWidthCellRenderer: any = FullRowRendererComponent;
     constructor(
         private cdr: ChangeDetectorRef,
         private agEventService: AgEventService
     ) {
         this.context = {
-            componentParent: this
-        }
+            componentParent: this,
+        };
         this.frameworkComponents = {
             settings: SettingButtonComponent,
             cellHeader: CellHeaderComponent,
-            cellTypeDetector: CellTypeDetectorComponent
+            cellTypeDetector: CellTypeDetectorComponent,
+            expandRenderer: ExpandRendererComponent,
         };
     }
-
+    public getRowHeight(params: RowHeightParams) {
+        const isFullWidth = params.data.isExpanded;
+        const columnCount = Object.keys(params.data)?.length;
+        // changing defaultRowHeight also requires changing th and tr height in full-row-renderer.component.scss
+        const defaultRowHeight = 38;
+        const margins = 10;
+        const exapndedRowSize = (columnCount * defaultRowHeight) + margins;
+        // changing maxRowHeight also requires changing :host max-height in full-row-renderer.component.scss
+        const maxRowHeight = 228;
+        if (isFullWidth) {
+            return Math.min(exapndedRowSize, maxRowHeight) ;
+        }
+        return defaultRowHeight;
+    }
     ngOnInit() {
         this.agEventService.listen().subscribe((data) => {
             if (data) {
                 this.menuClick.emit(data);
             }
-        })
+        });
+    }
+    isFullWidthRow({ data }: any): boolean {
+        return data.isExpanded;
     }
     private re_new() {
         this.onResize();
@@ -200,12 +242,18 @@ export class CustomAgGridComponent implements OnInit {
         // }, 100);
     }
     paginationControls(e: PageEvent) {
-        if (typeof e.previousPageIndex !== 'undefined' && e.previousPageIndex > e.pageIndex) {
+        if (
+            typeof e.previousPageIndex !== 'undefined' &&
+            e.previousPageIndex > e.pageIndex
+        ) {
             this.gridApi?.paginationGoToPreviousPage();
-        } else if (typeof e.previousPageIndex !== 'undefined' &&  e.previousPageIndex < e.pageIndex) {
+        } else if (
+            typeof e.previousPageIndex !== 'undefined' &&
+            e.previousPageIndex < e.pageIndex
+        ) {
             this.gridApi?.paginationGoToNextPage();
         } else {
-            this.gridApi?.paginationGoToPage(e.pageIndex)
+            this.gridApi?.paginationGoToPage(e.pageIndex);
         }
         if (e.pageSize !== this.agGridSizeControl.pageSize) {
             this.pageSizeChange.emit(e.pageSize);
@@ -213,16 +261,20 @@ export class CustomAgGridComponent implements OnInit {
         }
     }
     togglePaginator() {
-        const state = !this.isPaginator
+        const state = !this.isPaginator;
         this.isPaginator = state;
         this.isPaginatorChange.emit(state);
         this.cdr.detectChanges();
     }
+    import(importedData: Array<any>, meta: Array<any>) {
+        this.details = importedData;
+        this.columns = meta;
+    }
     public getRowStyle(params: any) {
         const _style: any = {
             'border-bottom': '1px solid rgba(0,0,0,0.1)',
-            'cursor': 'pointer'
-        }
+            cursor: 'pointer',
+        };
         if (params.node.rowIndex % 2 === 0) {
             _style.background = '#e4f0ec';
         }
@@ -231,33 +283,5 @@ export class CustomAgGridComponent implements OnInit {
     sortChanged(event?: any) {
         this.cdr.detectChanges();
     }
-    rowClicked(event?: RowClickedEvent) {
-        const details: Row = new Map();
-        Object.entries(event?.data).forEach(column => {
-            let type: string = '';
-            let value = column[1]
-            if (!isNaN(value as any)) {
-                type = 'number';
-                value = parseInt(value as string)
-            } else {
-                type = typeof column[1];
-            }
-            if (type === 'string') {
-                try {
-                    value = JSON.parse(column[1] as string)
-                    type = 'JSON'
-                } catch (error) {
-
-                }
-            }
-            details.set(column[0], {
-                value: value,
-                type: type
-            })
-        });
-        this.rowClick.emit(details);
-    }
-    doOpenFilter() {
-
-    }
+    doOpenFilter() {}
 }

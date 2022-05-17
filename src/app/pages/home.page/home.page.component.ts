@@ -147,6 +147,7 @@ export class HomePageComponent implements OnInit {
             this.details = data.data.map((i: any) => {
                 const itemArray: any[] = i instanceof Array ? i : Object.values(i);
                 let out: any = {};
+                out.isExpanded = false;
                 itemArray.forEach((j: any, k: any) => {
                     out[this.columns[k]] = j;
                 });
