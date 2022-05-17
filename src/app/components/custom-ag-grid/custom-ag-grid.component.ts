@@ -24,7 +24,7 @@ import { CellTypeDetectorComponent } from './cell-type-detector/cell-type-detect
 import { ExpandRendererComponent } from './renderers/expand-renderer/expand-renderer.component';
 import { FullRowRendererComponent } from './renderers/full-row-renderer/full-row-renderer.component';
 import { SettingButtonComponent } from './setting-button';
-export const isExapanded = 'isExpanded';
+export const isExpanded = 'isExpanded';
 const GRID_FIT = 'autoSizeColumns';
 export interface gridContext {
     componentParent: CustomAgGridComponent;
@@ -134,9 +134,8 @@ export class CustomAgGridComponent implements OnInit {
                         };
                     }
                 );
-
                 this._columns.push({
-                    field: isExapanded,
+                    field: isExpanded,
                     headerName: '',
                     headerComponent: 'settings',
                     cellRenderer: 'expandRenderer',
