@@ -1,0 +1,36 @@
+.expandColumn {
+    display: inline-block;
+    box-sizing: border-box;
+    width: 40px;
+    height: 100%;
+    border-right: 1px solid hsl(0, 0%, 83%);
+    button {
+        position: absolute;
+    }
+}
+p {
+    display: inline-block;
+}
+th, tr {
+    box-sizing: border-box;
+    // defaultRowHeight
+    height: 38px !important;
+    width: 50%;
+    border-top: 1px solid;
+    border-color: hsl(0, 0%, 83%);
+}
+.tableWrapper{
+    max-height: calc(100% - 5px);
+    overflow: scroll;
+    display: inline-block;
+    height: 100%;
+    width: calc(100% - 40px);
+    table {
+    padding-top:5px;
+        width: 100%;
+        .data{
+            white-space: pre-wrap;
+        }
+    }
+    
+}

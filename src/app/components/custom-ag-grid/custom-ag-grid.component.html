@@ -10,11 +10,13 @@ class="ag-theme-material custom"
     [gridOptions]="gridOptions"
     [pagination]="true"
     [context]="context"
+    [isFullWidthCell]="isFullWidthRow"
+    [getRowHeight]="getRowHeight"
+    [fullWidthCellRenderer]="fullWidthCellRenderer"
     [frameworkComponents]="frameworkComponents"
     (gridReady)="onGridReady($event)"
     (sortChanged)="sortChanged($event)"
     (columnMoved)="sortChanged($event)"
-    (rowDoubleClicked)="rowClicked($event)"
 >
 </ag-grid-angular>
 <mat-paginator
