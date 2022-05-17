@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { isExpanded } from '../../custom-ag-grid.component';
 
 @Component({
     selector: 'app-expand-renderer',
@@ -14,7 +15,7 @@ export class ExpandRendererComponent implements OnInit {
         this.params = params;
     }
     updateRow() {
-        this.params.node.setDataValue('isExpanded', !this.params.value);
+        this.params.node.setDataValue(isExpanded, !this.params.value);
         this.params.api.redrawRows({rowNodes: [this.params.node]});
         if(!this.params.context.componentParent.gridColumnApi.columnModel.autoHeightActive) {
             this.params?.api.resetRowHeights();
