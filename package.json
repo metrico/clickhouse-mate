@@ -34,6 +34,7 @@
     "ng2-ace-editor": "^0.3.9",
     "ngx-ace-wrapper": "^12.0.0",
     "ngx-json-viewer": "^3.0.2",
+    "ngx-csv-parser": "^1.1.1",
     "rxjs": "^7.3.0",
     "ts-md5": "^1.2.11",
     "tslib": "^2.3.0",
