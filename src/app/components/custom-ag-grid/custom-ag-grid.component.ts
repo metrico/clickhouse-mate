@@ -99,14 +99,14 @@ export class CustomAgGridComponent implements OnInit {
     totalPages: number = 1;
     @Input() set details(val) {
         this._details = cloneObject(val);
-        console.log(val)
+        // console.log(val)
         this.re_new();
     }
     get details() {
         return this._details;
     }
     @Input() set columns(val: string[]) {
-        console.log(val)
+        // console.log(val)
         if (!val) {
             return;
         }

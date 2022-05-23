@@ -5,7 +5,7 @@ import { ICellRendererAngularComp } from 'ag-grid-angular';
 import { NgxCsvParser } from 'ngx-csv-parser';
 import { AgEventService } from './ag-event.service';
 
-type ImportEvents = 'submit' | 'drag' | 'dragstart' | 'dragend' | 'dragover' | 'dragenter' | 'dragleave' | 'drop' | 'change' 
+type ImportEvents = 'submit' | 'drag' | 'dragstart' | 'dragend' | 'dragover' | 'dragenter' | 'dragleave' | 'drop' | 'change'
 
 @Component({
     selector: 'app-setting-button',
@@ -35,7 +35,7 @@ export class SettingButtonComponent implements ICellRendererAngularComp {
 
     agInit(params: any): void {
         this.params = params;
-        console.log(params.context.componentParent)
+        // console.log(params.context.componentParent)
         this.callid = this.params.value || null;
         this.headerName = this.params.displayName || '';
         this.apiColumn = this.params.columnApi;
@@ -134,7 +134,7 @@ export class SettingButtonComponent implements ICellRendererAngularComp {
             if(file.data.type === 'application/json') {
                 const parsedJSON = JSON_parse(data);
                 this.details = this.details.concat(parsedJSON.data);
-                meta = parsedJSON?.meta?.map((i: any) => i.name)           
+                meta = parsedJSON?.meta?.map((i: any) => i.name)
                 if (this.files.length === fileIndex + 1) {
                     this.params.context.componentParent.import(this.details, meta)
                 }

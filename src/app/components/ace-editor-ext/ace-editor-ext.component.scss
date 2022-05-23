@@ -20,16 +20,17 @@
     position: absolute;
     right: 1rem;
     bottom: 1rem;
+    z-index: 3;
 }
 .autocomplete-menu {
     position: absolute;
-    // border: 1px solid red;
     padding: 0rem;
     min-width: 200px;
     background-color: white;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     max-height: 200px;
     overflow: auto;
+    z-index: 2;
 
     &:focus {
         background-color: Aqua;
@@ -48,7 +49,8 @@
 
     .item {
         cursor: pointer;
-        padding: 0.3rem;
+        padding: 0 0.3rem;
+        font-size: 12px !important;
         &.selected {
             background-color: rgba(0, 0, 0, 0.1);
         }
@@ -56,4 +58,27 @@
             background-color: rgba(0, 0, 0, 0.1);
         }
     }
+}
+.hide-text-container {
+    position: absolute;
+    top: 0px;
+    left: 45px;
+    right: 0px;
+    z-index: 2;
+    bottom: 0px;
+    white-space: pre-wrap;
+    line-height: 16px;
+    color: rgba(0, 0, 0, 0.1);
+    caret-color: black;
+}
+.ace-editor-wrapper {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    z-index: 1;
+}
+[contenteditable] {
+    outline: 0px solid transparent;
 }

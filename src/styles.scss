@@ -140,3 +140,11 @@ a:not([href]) {
 .mat-expansion-panel-spacing {
     margin: 0;
 }
+
+.ace-sqlserver .ace_invalid {
+    background-color: transparent !important;
+}
+
+.ace_cursor {
+    color:transparent !important;
+}

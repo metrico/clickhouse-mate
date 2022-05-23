@@ -1,15 +1,25 @@
 <div class="wrapper-ace-editor" #wrapperAceEditor>
-    <ace-editor
-        class="editor"
-        [text]="sqlRequest"
-        [mode]="'sql'"
-        [theme]="'sqlserver'"
-        [readOnly]="false"
-        [options]="{ enableBasicAutocompletion: true }"
-        [autoUpdateContent]="true"
-        (textChange)="textChange($event)"
-        #editor
-    ></ace-editor>
+    <div class="ace-editor-wrapper">
+        <ace-editor
+            class="editor"
+            [text]="sqlRequest"
+            [mode]="'sql'"
+            [theme]="'sqlserver'"
+            [readOnly]="false"
+            [options]="{ enableBasicAutocompletion: true }"
+            [autoUpdateContent]="true"
+            #editor
+        ></ace-editor>
+    </div>
+    <div
+        contenteditable="true"
+        class="hide-text-container"
+        [textContent]="sqlRequest"
+        (input)="setRequestData()"
+        (mouseup)="mouseUp()"
+        (keydown)="keydown($event)"
+        #contenteditableContainer
+    ></div>
     <button
         class="btn-send"
         matSuffix
@@ -17,24 +27,18 @@
         matTooltip="Ctrl + Enter"
         color="primary"
         aria-label="Run"
-        (click)="onClickRun()"
+        (click)="onClickRun('QUERY')"
     >
         <mat-icon>send</mat-icon>
     </button>
 
     <div
         class="autocomplete-menu"
-        [style.display]="isAutocompleteVisible && dictionary.length > 0 ? 'block' : 'none'"
+        [style.display]="
+            isAutocompleteVisible && dictionary.length > 0 ? 'block' : 'none'
+        "
         #autocomplete
     >
-        <textarea
-            class="autocomplete-list-text"
-            (keydown)="keydown($event)"
-            (keyup)="syncInternalFields()"
-            (keypress)="syncInternalFields()"
-            tabindex="0"
-            #autocompleteForm
-        ></textarea>
         <div
             *ngFor="let item of dictionary; let i = index"
             class="item"

@@ -1,4 +1,16 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, AfterViewInit, HostListener, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    Input,
+    Output,
+    EventEmitter,
+    ViewChild,
+    AfterViewInit,
+    HostListener,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    OnDestroy
+} from '@angular/core';
 import { DictionaryDefault } from './dictionary-default';
 
 @Component({
@@ -7,17 +19,17 @@ import { DictionaryDefault } from './dictionary-default';
     styleUrls: ['./ace-editor-ext.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AceEditorExtComponent implements OnInit, AfterViewInit {
+export class AceEditorExtComponent implements OnInit, AfterViewInit, OnDestroy {
 
     @Input() sqlRequest: any = '';
-
+    lastCaretPoint = 0;
     _dictionaryFull: any[] = [];
     delayShowPopup: number = 1500;
     _awaitInterval: any;
 
     @Input()
     set dictionaryFull(val: any[]) {
-        console.log(val);
+        // console.log(val);
         this._dictionaryFull = val;
         this._dictionaryFull.sort();
     }
@@ -31,13 +43,13 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit {
     @ViewChild('editor') editor: any;
     @ViewChild('wrapperAceEditor') wrapperAceEditor: any;
     @ViewChild('autocomplete') autocomplete: any;
-    @ViewChild('autocompleteForm') autocompleteForm: any;
+    @ViewChild('contenteditableContainer') contenteditableContainer: any;
 
     dictionary: any[] = [];
     wasClick: boolean = false;
     lastWord: any;
     isAutocompleteVisible: boolean = false;
-
+    _interval: any;
     options = {
         enableBasicAutocompletion: true,
         enableSnippets: true,
@@ -48,140 +60,231 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit {
     ngOnInit() {
         this._dictionaryFull.push(...DictionaryDefault);
         this._dictionaryFull.sort();
+
+        this._interval = setInterval(() => {
+            this.cdr.detectChanges();
+        }, 1000)
     }
 
     ngAfterViewInit() {
         this.editor.getEditor().$blockScrolling = Infinity;
         document.body.appendChild(this.autocomplete.nativeElement);
     }
+    getCaretPosition() {
+        const sel: any = window.getSelection();
+        console.log('sel.focusOffset', sel.focusOffset, sel?.parentNode?.className);
+        if (sel?.focusNode?.parentNode?.className === 'hide-text-container') {
+            this.lastCaretPoint = sel?.focusOffset;
+        }
 
+        return this.lastCaretPoint;
+    }
+    mouseUp() {
+        this.getCaretPosition();
+        if (this.isAutocompleteVisible) {
+            this.textChange();
+        }
+    }
     textChange(event?: any) {
-
-        this.sqlRequest = event;
-        this.lastWord = (event + '').split(/\s+/).pop();
-
         if (this.wasClick) {
             this.wasClick = false;
             return;
         }
-        console.log('textChange:type');
 
+        if (event && ['ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
+            console.log('textChange', { event });
+            return;
+        }
 
-        const position: any = this.getTextElement()?.getBoundingClientRect() || {
+        this.lastWord = this.getWordByCaretPosition(); // (this.sqlRequest + '').split(/\s+/).pop();
+
+        // console.log('textChange:type');
+        const selection: any = window.getSelection();
+        const range = selection.getRangeAt(0);
+        const [rect] = range.getClientRects();
+
+        console.log({ rect })
+
+        const position: any = rect || this.getTextElement()?.getBoundingClientRect() || {
             left: 0,
             right: 0
         };
         const el = this.autocomplete.nativeElement;
         el.style.left = `${position.left || 0}px`;
-        el.style.top = `${position.top || 0}px`;
-
-
+        el.style.top = `${(position.top || 0) + 15}px`;
 
         if (this.lastWord) {
-            this.dictionary = this.dictionaryFull.filter(
-                i => i.toLowerCase().match(
-                    new RegExp('^' + this.lastWord.toLowerCase(), 'g')
-                )
-            );
+            try {
+                const rx = new RegExp('^' + this.lastWord.toLowerCase(), 'g');
+                this.dictionary = this.dictionaryFull.filter(
+                    i => i.toLowerCase().match(rx)
+                );
+            } catch (_) {
+            }
         } else {
             this.dictionary = this.dictionaryFull;
         }
 
         this.dictionary = this.dictionary.slice(0, 20);
 
-        if (this._awaitInterval) {
-            clearTimeout(this._awaitInterval);
-        }
-        this._awaitInterval = setTimeout(() => {
-            console.log('textChange:show');
-            this.isAutocompleteVisible = !!this.lastWord;
-            if (this.isAutocompleteVisible === false) {
-                this.getTextElement()?.focus();
-                this.cdr.detectChanges();
-            } else {
-                this.setFocusMenu();
-            }
-            console.log(this.lastWord, position);
-        }, this.delayShowPopup)
+        // console.log('textChange:show');
+        this.isAutocompleteVisible = !!this.lastWord && this.dictionary.length > 0;
+        console.log(this.lastWord, position);
+        requestAnimationFrame(() => {
+            this.cdr.detectChanges();
+        })
+
     }
     getTextElement(): any {
-        return this.wrapperAceEditor?.nativeElement?.querySelector('.ace_text-input');
-    }
-
-    setFocusMenu() {
-        const f = () => {
-            requestAnimationFrame(() => {
-                this.isAutocompleteVisible = true;
-                this.autocompleteForm.nativeElement.focus();
-                this.autocompleteForm.nativeElement.value = this.sqlRequest;
-                this.syncInternalFields();
-                this.cdr.detectChanges();
-            })
-        }
-        f();
-        this.cdr.detectChanges();
+        return this.contenteditableContainer.nativeElement;
+        // return this.wrapperAceEditor?.nativeElement?.querySelector('.ace_text-input');
     }
 
     @HostListener('document:keydown', ['$event'])
-    onClickRun(event?: any) {
-        console.log({ event })
-        if (!event || event.ctrlKey) {
-            if (event?.code === 'Space') {
-                this.setFocusMenu();
-            }
-            if (event?.code === 'Enter' || typeof event === 'undefined') {
-                this.ready.emit(this.sqlRequest);
-            }
+    onClickRun(event: any = null) {
+        if (event?.code === 'Escape') {
+            this.isAutocompleteVisible = false;
+            this.cdr.detectChanges();
+        }
+        if (event?.ctrlKey && event?.code === 'Space') {
+            console.log('CTRL + SPACE');
+            this.textChange();
+            this.cdr.detectChanges();
+            return;
+        }
+
+        if (
+            event === 'QUERY' || (event?.ctrlKey && event?.code === 'Enter')
+        ) {
+            console.log('CTRL + ENTER', event);
+            this.isAutocompleteVisible = false;
+            console.log('RUN QUERY SELECTION', event);
+            this.ready.emit(this.sqlRequest);
             this.cdr.detectChanges();
         }
     }
-    syncInternalFields() {
-        this.sqlRequest = this.autocompleteForm.nativeElement.value;
+    setCaret(position = 0) {
+        const el = document.getElementsByClassName("hide-text-container");
+        const range = document.createRange();
+        const sel: any = window.getSelection();
+
+        range.setStart(el[0].childNodes[0], position);
+        range.collapse(true);
+
+        sel.removeAllRanges();
+        sel.addRange(range);
+        this.cdr.detectChanges();
     }
     autocompleteSelectorIndex = 0;
+
     keydown(event: KeyboardEvent) {
+        console.log('keydown', event, this.isAutocompleteVisible);
+
+        if (['Control'].includes(event.key) || event.ctrlKey) {
+            this.onClickRun(event);
+            return;
+        }
 
         switch (event.key) {
             case "ArrowDown":
-                this.autocompleteSelectorIndex++;
-                event.preventDefault();
-                break;
             case "ArrowUp":
-                this.autocompleteSelectorIndex--;
+                if (!this.isAutocompleteVisible) {
+                    return;
+                }
+                this.autocompleteSelectorIndex += (event.key === "ArrowDown" ? 1 : -1);
+                this.autocompleteSelectorIndex = Math.max(Math.min(this.autocompleteSelectorIndex, this.dictionary.length - 1), 0);
+
+                this.textChange();
                 event.preventDefault();
-                break;
+                event.stopPropagation();
+                this.cdr.detectChanges();
+                return;
 
             case "Enter":
-            case "Space":
-                this.onItemClick(this.dictionary[this.autocompleteSelectorIndex])
-                event.preventDefault();
+                if (this.isAutocompleteVisible) {
+                    this.onItemClick(this.dictionary[this.autocompleteSelectorIndex]);
+                    event.stopPropagation();
+                    event.preventDefault();
+                } else {
+                    this.insertCharByCaretPosition(`\n`);
+                    event.stopPropagation();
+                    event.preventDefault();
+                    return;
+                }
                 break;
+
+            case 'Tab':
+                this.insertCharByCaretPosition(`  `);
+                event.stopPropagation();
+                event.preventDefault();
+                return;
+
+            case 'Escape':
+                this.isAutocompleteVisible = false;
+                this.cdr.detectChanges();
+                return;
 
             default:
-                console.log("event", event);
-                this.syncInternalFields();
-                // event.preventDefault();
-                event.stopPropagation();
+                requestAnimationFrame(() => {
+                    console.log("keydown:event", event);
+                    this.textChange(this.sqlRequest)
+                    event.stopPropagation();
+                })
                 break;
         }
-        this.autocompleteSelectorIndex = Math.max(Math.min(this.autocompleteSelectorIndex, this.dictionary.length - 1), 0);
-        console.log('keydown:SelectorIndex', this.autocompleteSelectorIndex);
+
         this.cdr.detectChanges();
     }
-
-    onItemClick(event: any) {
-        const W = this.sqlRequest.split(/\s+/);
-        if (W[W.length - 1] == "") {
-            W.push(event);
-        } else {
-            W[W.length - 1] = event;
-        }
-        this.sqlRequest = W.join(" ") + " ";
-        // this.wasClick = true;
-        this.textChange(this.sqlRequest);
-        this.isAutocompleteVisible = false;
-
-        console.log(event, W)
+    insertCharByCaretPosition(char = '') {
+        this.getCaretPosition();
+        let start = this.sqlRequest.slice(0, this.lastCaretPoint);
+        let end = this.sqlRequest.slice(this.lastCaretPoint);
+        this.sqlRequest = start + char + end;
         this.cdr.detectChanges();
+        this.setCaret((start + char).length);
+    }
+    onItemClick(event: any) {
+        console.log('onItemClick', event);
+
+        this.replaceByPositionCaret(event);
+        this.textChange(this.lastCaretPoint);
+        this.isAutocompleteVisible = false;
+        // requestAnimationFrame(() => {
+        //     this.setCaret(this.sqlRequest.length);
+        // })
+        this.cdr.detectChanges();
+    }
+    replaceByPositionCaret(replacementWord: string) {
+        this.getCaretPosition()
+        let start = this.sqlRequest.slice(0, this.lastCaretPoint);
+        let end = this.sqlRequest.slice(this.lastCaretPoint);
+        start = start.match(/^.+\s/mg)?.join('') || '';
+        end = end.match(/\s.+$/mg)?.join('') || '';
+        this.sqlRequest = start + replacementWord + end;
+        requestAnimationFrame(() => {
+            let inc = 0;
+            if (replacementWord.match(/\)$/g)) {
+                // is a function word
+                inc = -1;
+            }
+            this.setCaret((start + replacementWord).length + inc);
+        })
+    }
+    setRequestData() {
+        this.sqlRequest = this.getTextElement()?.innerText;
+        this.cdr.detectChanges();
+    }
+    private getWordByCaretPosition() {
+        this.getCaretPosition();
+        console.log(this.sqlRequest, this.lastCaretPoint);
+        const [lastWord] = this.sqlRequest.slice(0, this.lastCaretPoint).match(/\S+$/g) || [''];
+        console.log({ lastWord });
+        return lastWord;
+    }
+
+    ngOnDestroy() {
+        if (this._interval) {
+            clearInterval(this._interval);
+        }
     }
 }
