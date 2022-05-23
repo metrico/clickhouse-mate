@@ -1,15 +1,25 @@
 <img src="https://user-images.githubusercontent.com/1423657/162776419-0330af12-7857-40c0-b660-254f8837a910.png" width=420 />
 
 # ClickHouse-Mate
-Clickhouse _"play"_ client prototype in _Angular_ 
+Advanced Clickhouse _"play"_ Client and User-Interface
 
 [Live DEMO](https://metrico.github.io/clickhouse-mate/)
 
+
 <a href="https://metrico.github.io/clickhouse-mate" target="_blank">
-<img src="https://user-images.githubusercontent.com/1423657/162940684-4ae57ea9-6c6e-47d8-8b41-bc3ea6634331.png"  />
+<img src="https://user-images.githubusercontent.com/1423657/169644456-41be26b6-3d9f-4965-9203-3069a01f20c4.png" />
 </a>
 
-## Usage
+### Key Features
+
+- ClickHouse SQL Query autocompletion
+- Fast Database and Table tree navigation
+- Advanced result Filtering and Sorting
+- Query Presets and History
+- HTTP/S connection support
+- 100% Web Client, no server/backend
+
+### Usage
 
 Use the [public version](https://metrico.github.io/clickhouse-mate/) _(no data goes through the server)_ or build your own:
 

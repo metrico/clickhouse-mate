@@ -4,6 +4,7 @@ import { emitWindowResize } from '@app/helper/windowFunctions';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
 import { NgxCsvParser } from 'ngx-csv-parser';
 import { AgEventService } from './ag-event.service';
+import { isExpanded } from './custom-ag-grid.component';
 
 type ImportEvents = 'submit' | 'drag' | 'dragstart' | 'dragend' | 'dragover' | 'dragenter' | 'dragleave' | 'drop' | 'change'
 
@@ -43,7 +44,7 @@ export class SettingButtonComponent implements ICellRendererAngularComp {
         this.menuList = this.agEventService.itemList;
 
         Object.values(this.params.columnApi.getAllGridColumns() as Object)
-            .filter((column) => !['', 'id'].includes(column.colDef.field))
+            .filter((column) => !['', 'id', isExpanded].includes(column.colDef.field))
             .forEach((column, index) => this.allColumnIds.push({
                 name: column.colDef.headerName || column.colDef.field,
                 field: column.colDef.field,
