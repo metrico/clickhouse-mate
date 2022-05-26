@@ -19,7 +19,12 @@
             <th mat-header-cell *matHeaderCellDef mat-sort-header>{{item}}</th>
             <td mat-cell *matCellDef="let element">
                 <span class="data" *ngIf="element[item].type !== 'object'; else jsonViewer">
-                    {{ element[item].value }}
+                    <span style="color: grey;" [style.display]="element[item] !== null && 'none'">
+                        <i>NULL</i>
+                    </span>
+                    <span [style.display]="element[item] === null && 'none'">
+                        {{ element[item].value }}
+                    </span>
                 </span>
                 <ng-template #jsonViewer>
                     
