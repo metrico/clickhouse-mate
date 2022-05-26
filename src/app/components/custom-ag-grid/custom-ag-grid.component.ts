@@ -25,6 +25,10 @@ import { ExpandRendererComponent } from './renderers/expand-renderer/expand-rend
 import { FullRowRendererComponent } from './renderers/full-row-renderer/full-row-renderer.component';
 import { SettingButtonComponent } from './setting-button';
 export const isExpanded = 'isExpanded';
+
+export const defaultRowHeight = 38;
+export const maxRowHeight = 228;   
+
 const GRID_FIT = 'autoSizeColumns';
 export interface gridContext {
     componentParent: CustomAgGridComponent;
@@ -91,7 +95,7 @@ export class CustomAgGridComponent implements OnInit {
         rowSelection: 'multiple',
         suppressRowClickSelection: true,
         suppressCellFocus: true,
-        suppressPaginationPanel: true,
+        suppressPaginationPanel: true
     };
     _columns: any[] = [];
     gridApi: GridApi | null = null;
@@ -104,6 +108,9 @@ export class CustomAgGridComponent implements OnInit {
     }
     get details() {
         return this._details;
+    }
+    test(){
+        console.log('test')
     }
     @Input() set columns(val: string[]) {
         // console.log(val)
@@ -121,8 +128,8 @@ export class CustomAgGridComponent implements OnInit {
                             typeof firstItemOfDetails[key] === 'string' &&
                             this.details.some((value) => regex.test(value[key]))
                         ) {
-                            isAutoHeight = true;
-                            this.autoHeightColumns.push(key)
+                            // isAutoHeight = true;
+                            // this.autoHeightColumns.push(key)
                         }
                         return {
                             field: key,
@@ -181,6 +188,7 @@ export class CustomAgGridComponent implements OnInit {
         requestAnimationFrame(() => {
             if (this.agGridSizeControl.selectedType === GRID_FIT) {
                 this.gridColumnApi?.autoSizeAllColumns();
+                console.log('test')
             } else {
                 this.gridApi?.sizeColumnsToFit();
             }
@@ -208,17 +216,28 @@ export class CustomAgGridComponent implements OnInit {
     }
     public getRowHeight(params: RowHeightParams) {
         const isFullWidth = params.data.isExpanded;
-        const columnCount = Object.keys(params.data)?.length;
         // changing defaultRowHeight also requires changing th and tr height in full-row-renderer.component.scss
-        const defaultRowHeight = 38;
         const margins = 10;
-        const exapndedRowSize = (columnCount * defaultRowHeight) + margins;
         // changing maxRowHeight also requires changing :host max-height in full-row-renderer.component.scss
-        const maxRowHeight = 228;
         if (isFullWidth) {
-            return Math.min(exapndedRowSize, maxRowHeight) ;
+            const columnCount = Object.keys(params.data)?.length;
+            const exapndedRowSize = (columnCount * defaultRowHeight) + margins;     
+            return Math.min(exapndedRowSize, maxRowHeight);
+        } else {
+            let maxNewlineCount = 1; 
+            Object.values(params.data).forEach((element) => {
+                if (typeof element === 'string'){ 
+                    const newLineCount = element.split(/\n|\r\n/).length - 1;
+                    if (newLineCount > maxNewlineCount) {
+                        maxNewlineCount = newLineCount;
+                    }
+                }
+            });
+            const rowHeightWithNewLines = maxNewlineCount * defaultRowHeight;
+            return Math.min(rowHeightWithNewLines, maxRowHeight)
         }
-        return defaultRowHeight;
+
+
     }
     ngOnInit() {
         this.agEventService.listen().subscribe((data) => {
