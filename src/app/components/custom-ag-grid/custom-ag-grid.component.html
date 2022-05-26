@@ -17,6 +17,7 @@ class="ag-theme-material custom"
     (gridReady)="onGridReady($event)"
     (sortChanged)="sortChanged($event)"
     (columnMoved)="sortChanged($event)"
+    (virtualColumnsChanged)="onResize()"
 >
 </ag-grid-angular>
 <mat-paginator

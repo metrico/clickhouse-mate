@@ -2,8 +2,11 @@
     <span
         [style.display]="isNULL && 'none'"
         [style.color]="isNumber && 'purple'"
+        [style.height]="rowHeight+8+'px'"
         [style.whiteSpace]="isMultiLine ? 'pre-wrap' : ''"
-        style="text-overflow: ellipsis;"
+        [style.overflow]="'auto'"
+        [style.display]="'block'"
+        [style.lineHeight]="defaultRowHeight+'px'"
     >
         {{ value }}
     </span>
