@@ -34,7 +34,8 @@
             "
             matTreeNodePadding
         >
-            <button mat-icon-button disabled></button>
+            <button 
+            class="tree-expander" mat-icon-button disabled></button>
             <mat-icon *ngIf="fileIcon" class="files file" color="primary"
                 >insert_drive_file
             </mat-icon>
@@ -60,14 +61,17 @@
             [style.background-color]="
                 noPadding && 'rgba(0,0,0,' + (2.5 - node.level) / 12 + ')'
             "
+            style="cursor:pointer;"
+            
+            matTreeNodeToggle
             matTreeNodePadding
         >
             <button
                 mat-icon-button
-                matTreeNodeToggle
+                class="tree-expander"
                 [attr.aria-label]="'Toggle ' + node.name"
             >
-                <mat-icon class="mat-icon-rtl-mirror">
+                <mat-icon class="mat-icon-rtl-mirror" style="font-size: 16px !important;">
                     {{
                         treeControl.isExpanded(node)
                             ? "expand_more"
@@ -76,11 +80,11 @@
                 </mat-icon>
             </button>
             <mat-icon *ngIf="fileIcon" class="files" color="primary"
+            (click)="onClickLine(node)"
                 >folder</mat-icon
             >
             <span
                 class="line-html"
-                matTreeNodeToggle
                 [attr.aria-label]="'Toggle ' + node.name"
                 [innerHTML]="highlight(node.name) | html"
                 (click)="onClickLine(node)"
