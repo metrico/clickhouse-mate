@@ -6,9 +6,9 @@
     overflow-wrap: anywhere;
     justify-content: space-between;
 
-    &:hover {
-        background-color: rgba(0, 0, 0, 0.2);
-    }
+    // &:hover {
+    //     background-color: rgba(0, 0, 0, 0.2);
+    // }
 }
 
 :host ::ng-deep .mat-tree-node.menu {
@@ -16,6 +16,22 @@
 }
 
 :host {
+    .disabled {
+        cursor: initial;
+        color: #999;
+        position: relative;
+        &::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 1px;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+    }
     .selected {
         background-color: initial;
         color: initial;

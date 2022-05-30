@@ -27,6 +27,7 @@
             *matTreeNodeDef="let node"
             [style.display]="treeFilter(node) ? 'flex' : 'none'"
             [class.selected]="isSelectedHexArray(node)"
+            [class.disabled]="checkedDoubleDot(node)"
             [class.menu]="noPadding"
             [matTreeNodePaddingIndent]="noPadding ? 0 : 20"
             [style.background-color]="
@@ -34,7 +35,7 @@
             "
             matTreeNodePadding
         >
-            <button 
+            <button
             class="tree-expander" mat-icon-button disabled></button>
             <mat-icon *ngIf="fileIcon" class="files file" color="primary"
                 >insert_drive_file
@@ -42,7 +43,7 @@
             <span
                 class="line-html"
                 [innerHTML]="highlight(node.name) | html"
-                (click)="onClickLine(node)"
+                (click)="!checkedDoubleDot(node) && onClickLine(node)"
             ></span>
             <button
                 mat-icon-button
@@ -56,13 +57,14 @@
             *matTreeNodeDef="let node; when: hasChild"
             [style.display]="treeFilter(node) ? 'flex' : 'none'"
             [class.selected]="isSelectedHexArray(node)"
+            [class.disabled]="checkedDoubleDot(node)"
             [class.menu]="noPadding"
             [matTreeNodePaddingIndent]="noPadding ? 0 : 20"
             [style.background-color]="
                 noPadding && 'rgba(0,0,0,' + (2.5 - node.level) / 12 + ')'
             "
             style="cursor:pointer;"
-            
+
             matTreeNodeToggle
             matTreeNodePadding
         >
@@ -80,14 +82,14 @@
                 </mat-icon>
             </button>
             <mat-icon *ngIf="fileIcon" class="files" color="primary"
-            (click)="onClickLine(node)"
+            (click)="!checkedDoubleDot(node) && onClickLine(node)"
                 >folder</mat-icon
             >
             <span
                 class="line-html"
                 [attr.aria-label]="'Toggle ' + node.name"
                 [innerHTML]="highlight(node.name) | html"
-                (click)="onClickLine(node)"
+                (click)="!checkedDoubleDot(node) && onClickLine(node)"
             ></span>
             <button
                 mat-icon-button

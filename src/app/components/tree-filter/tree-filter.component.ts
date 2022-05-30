@@ -152,8 +152,11 @@ export class TreeFilterComponent implements OnInit, AfterViewInit {
         })
         return outText;
     }
-    isSelectedHexArray({ description }: any) {
-        return this.selectedHexArray.map((i: any) => i.description).includes(description);
+    checkedDoubleDot(node: any) {
+        return node.name?.match(/\.\./g) !== null;
+    }
+    isSelectedHexArray(node: any) {
+        return this.selectedHexArray.map((i: any) => i.description).includes(node.description) ;
     }
     treeFilter({ description: d, name: n }: any) {
         if (this.textFilterTree === '') {
