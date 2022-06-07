@@ -46,7 +46,8 @@
                             "node_modules/ace-builds/src-min/ace.js",
                             "node_modules/ace-builds/src-min/theme-sqlserver.js",
                             "node_modules/ace-builds/src-min/mode-sql.js"
-                        ]
+                        ],
+                        "webWorkerTsConfig": "tsconfig.worker.json"
                     },
                     "configurations": {
                         "production": {
@@ -112,7 +113,8 @@
                             "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
                             "src/styles.scss"
                         ],
-                        "scripts": []
+                        "scripts": [],
+                        "webWorkerTsConfig": "tsconfig.worker.json"
                     }
                 }
             }

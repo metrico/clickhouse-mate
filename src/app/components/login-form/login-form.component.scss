@@ -1,3 +1,16 @@
+@keyframes splash {
+    from {
+        opacity: 0;
+        backdrop-filter: saturate(100%) blur(0px);
+    }
+    50% {
+        opacity: 1;
+    }
+    to {
+        backdrop-filter: saturate(200%) blur(6px);
+    }
+}
+
 .login-form-group {
     position: absolute;
     left: 0;
@@ -10,7 +23,10 @@
     align-content: center;
     justify-content: center;
     align-items: center;
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(30, 30, 30, 0.72);
+    backdrop-filter: saturate(200%) blur(6px);
+    animation: splash 1s normal forwards ease-in-out;
+    animation-iteration-count: 1;
 }
 .btn-panel {
     display: flex;

@@ -26,100 +26,60 @@
 <div style="width: 100%; height: calc(100vh - 4rem)">
     <as-split direction="horizontal" [gutterSize]="5">
         <as-split-area [size]="15" *ngIf="isLeftPanel" [order]="0">
-            <as-split direction="vertical" [gutterSize]="5">
-                <as-split-area
-                    [size]="87"
-                    [order]="0"
-                    style="position: relative"
-                >
-                    <mat-accordion>
-                        <mat-expansion-panel [expanded]="true">
-                            <mat-expansion-panel-header>
-                                <mat-panel-title> DB Tree </mat-panel-title>
-                            </mat-expansion-panel-header>
-                            <div *ngIf="this.dbTreeData.length > 0">
-                                <tree-filter
-                                    [data]="dbTreeData"
-                                    [isFilter]="false"
-                                    [fileIcon]="true"
-                                    (clickRow)="onDbChoose($event)"
-                                ></tree-filter>
-                            </div>
-                        </mat-expansion-panel>
-                        <mat-expansion-panel>
-                            <mat-expansion-panel-header>
-                                <mat-panel-title>
-                                    Query Presets
-                                </mat-panel-title>
-                            </mat-expansion-panel-header>
-                            <div
-                                class="archive-line"
-                                *ngFor="let item of PopularQueries"
-                                (click)="SQL(item)"
-                            >
-                                {{ item }}
-                            </div>
-                        </mat-expansion-panel>
-                        <mat-expansion-panel>
-                            <mat-expansion-panel-header>
-                                <mat-panel-title>
-                                    Query History
-                                </mat-panel-title>
-                            </mat-expansion-panel-header>
-
-                            <div
-                                *ngFor="let item of SqlArchive"
-                                (click)="SQL(item)"
-                                class="archive-line"
-                            >
-                                {{ item }}
-                            </div>
-                        </mat-expansion-panel>
-                        <mat-expansion-panel *ngIf="currentRow.size > 0">
-                            {{ currentRow.size }}
-                            <mat-expansion-panel-header>
-                                <mat-panel-title> Row Details </mat-panel-title>
-                            </mat-expansion-panel-header>
-
-                            <app-row-details [row]="currentRow">
-                            </app-row-details>
-                        </mat-expansion-panel>
-                    </mat-accordion>
-                </as-split-area>
-                <as-split-area
-                    [size]="13"
-                    [order]="0"
-                    style="position: relative"
-                    *ngIf="dataForFile?.statistics"
-                >
-                    <div style="padding: 1rem">
-                        <div>
-                            <strong>Elapsed: </strong>
-                            <span
-                                >{{
-                                    dataForFile?.statistics?.elapsed | number
-                                }}
-                                sec</span
-                            >
-                        </div>
-                        <div>
-                            <strong>Read rows:</strong>
-                            <span>{{
-                                dataForFile?.statistics?.rows_read
-                            }}</span>
-                        </div>
-                        <div>
-                            <strong>Data size:</strong>
-                            <span
-                                >{{
-                                    dataForFile?.statistics?.bytes_read
-                                }}
-                                B.</span
-                            >
-                        </div>
+            <mat-accordion>
+                <mat-expansion-panel [expanded]="true">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title> DB Tree </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div
+                        *ngIf="!this.dbTreeData || this.dbTreeData.length === 0"
+                        style="height: 300px"
+                    >
+                        <loading></loading>
                     </div>
-                </as-split-area>
-            </as-split>
+                    <div *ngIf="this.dbTreeData.length > 0">
+                        <tree-filter
+                            [data]="dbTreeData"
+                            [isFilter]="false"
+                            [fileIcon]="true"
+                            (clickRow)="onDbChoose($event)"
+                        ></tree-filter>
+                    </div>
+                </mat-expansion-panel>
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title> Query Presets </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div
+                        class="archive-line"
+                        *ngFor="let item of PopularQueries"
+                        (click)="SQL(item)"
+                    >
+                        {{ item }}
+                    </div>
+                </mat-expansion-panel>
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title> Query History </mat-panel-title>
+                    </mat-expansion-panel-header>
+
+                    <div
+                        *ngFor="let item of SqlArchive"
+                        (click)="SQL(item)"
+                        class="archive-line"
+                    >
+                        {{ item }}
+                    </div>
+                </mat-expansion-panel>
+                <mat-expansion-panel *ngIf="currentRow.size > 0">
+                    {{ currentRow.size }}
+                    <mat-expansion-panel-header>
+                        <mat-panel-title> Row Details </mat-panel-title>
+                    </mat-expansion-panel-header>
+
+                    <app-row-details [row]="currentRow"> </app-row-details>
+                </mat-expansion-panel>
+            </mat-accordion>
         </as-split-area>
         <as-split-area
             [size]="85"
@@ -137,26 +97,6 @@
                         (ready)="onClickRun($event)"
                         [dictionaryFull]="dictionary"
                     ></ace-editor-ext>
-                    <!-- <ace-editor
-                        [(text)]="sqlRequest"
-                        [mode]="'sql'"
-                        [theme]="'sqlserver'"
-                        [readOnly]="false"
-                        class="editor"
-                        #editor
-                    ></ace-editor> -->
-
-                    <!-- <button
-                        class="btn-send"
-                        matSuffix
-                        mat-icon-button
-                        matTooltip="Ctrl + Enter"
-                        color="primary"
-                        aria-label="Run"
-                        (click)="onClickRun()"
-                    >
-                        <mat-icon>send</mat-icon>
-                    </button> -->
                 </as-split-area>
                 <as-split-area [size]="90">
                     <div class="data-place">
@@ -164,16 +104,44 @@
                             *ngIf="details.length === 0; else hasData"
                         >
                             <h1>No Data</h1>
-                            <button
+                            <div
+                                class="error-message"
                                 mat-flat-button
                                 color="warn"
                                 *ngIf="errorMessage"
                                 style="white-space: pre-wrap; width: 100%"
-                            >
-                                {{ errorMessage }}
-                            </button>
+                            >{{
+                                 errorMessage
+                            }}</div>
                         </ng-container>
                         <ng-template #hasData>
+                            <div class="short-stat">
+                                <div>
+                                    <strong>Elapsed: </strong>
+                                    <span
+                                        >{{
+                                            dataForFile?.statistics?.elapsed
+                                                | number
+                                        }}
+                                        sec</span
+                                    >
+                                </div>
+                                <div>
+                                    <strong>Read rows:</strong>
+                                    <span>{{
+                                        dataForFile?.statistics?.rows_read
+                                    }}</span>
+                                </div>
+                                <div>
+                                    <strong>Data size:</strong>
+                                    <span
+                                        >{{
+                                            dataForFile?.statistics?.bytes_read
+                                        }}
+                                        B.</span
+                                    >
+                                </div>
+                            </div>
                             <custom-ag-grid
                                 *ngIf="isObjectData(); else preText"
                                 class="example-table-containers"
@@ -193,6 +161,9 @@
                                 <pre>{{ details }}</pre>
                             </ng-template>
                         </ng-template>
+                        <div class="data-loader" *ngIf="isLoadingDetails">
+                            <loading></loading>
+                        </div>
                     </div>
                 </as-split-area>
             </as-split>

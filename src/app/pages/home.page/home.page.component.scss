@@ -21,7 +21,15 @@ h1 {
         rgba(217, 218, 0, 1) 99%
     );
 }
+.short-stat {
+    padding: 0.3rem;
+    display: flex;
+    justify-content: right;
 
+    & > div {
+        margin: 0 0.3rem;
+    }
+}
 .login-form-group {
     position: absolute;
     left: 0;
@@ -76,6 +84,22 @@ pre {
     padding: 0;
 }
 
+.error-message {
+    background-color: #f44336;
+    box-shadow: 0px 0px 0px 0px rgb(0 0 0 / 20%),
+        0px 0px 0px 0px rgb(0 0 0 / 14%), 0px 0px 0px 0px rgb(0 0 0 / 12%);
+
+    white-space: pre-wrap;
+    width: 100%;
+    color: #fff;
+    min-width: 64px;
+    line-height: 36px;
+    box-sizing: border-box;
+    position: relative;
+    padding: 0 16px;
+    border-radius: 4px;
+}
+
 .btn-send {
     float: right;
     position: absolute;
@@ -87,4 +111,15 @@ pre {
     overflow: hidden;
     height: 100%;
     position: relative;
+}
+.data-loader {
+    flex: 1 1 auto;
+    overflow: hidden;
+    height: 100%;
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
 }

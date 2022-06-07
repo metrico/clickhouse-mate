@@ -1,6 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ApiService, QUERY_LIST } from 'src/app/services/api.service';
-import { firstValueFrom, lastValueFrom } from 'rxjs';
 import { saveToFile } from '@app/helper/windowFunctions';
 import { Row } from '@app/models/grid.model';
 
@@ -21,7 +20,7 @@ export class HomePageComponent implements OnInit {
     dictionary: any = [];
 
     dataForFile: any = null;
-
+    isLoadingDetails = false;
     details: any = [];
     columns: any[] = [];
     errorMessage: string = '';
@@ -66,12 +65,13 @@ export class HomePageComponent implements OnInit {
         ];
 
         const stack = async (query: any) => {
-            const { data } = await lastValueFrom(this.apiService.runQuery(query)) || {};
+            const { data } = await this.apiService.runQuery(query) || {};
 
             const r = data?.map((value: any) => value[0] + '()');
 
             this.dictionary.push(...r);
             if (queryList.length > 0) {
+                await promiseWait(20);
                 stack(queryList.shift())
             } else {
                 // END OF LOOP
@@ -82,23 +82,32 @@ export class HomePageComponent implements OnInit {
         stack(queryList.shift())
     }
     async initDbTree() {
-        const _q = (q: any) => firstValueFrom(this.apiService.runQuery(q));
+        console.log('initDbTree');
 
-        const result = await _q(QUERY_LIST.getDatabases);
+        let result: any;
+        try {
+
+            result = await this.apiService.runQuery(QUERY_LIST.getDatabases);
+            console.log('result::QUERY_LIST.getDatabases', result);
+
+        } catch (error) {
+            // throw error;
+            console.log('result|error::QUERY_LIST.getDatabases', result);
+        }
         const { data } = result || {}
         const dbTreeData: any[] = [];
         const stack = async ([dbName]: any) => {
             await promiseWait(20);
             let lvf;
             try {
-                lvf = await _q(QUERY_LIST.useDatabase(dbName));
+                lvf = await this.apiService.runQuery(QUERY_LIST.useDatabase(dbName));
             } catch (err) {
                 dbTreeData.push({
                     name: dbName,
                 })
             }
             if (lvf === null) {
-                const tablesList: any = await _q(QUERY_LIST.getTables);
+                const tablesList: any = await this.apiService.runQuery(QUERY_LIST.getTables);
                 dbTreeData.push({
                     name: dbName,
                     type: 'database',
@@ -106,9 +115,13 @@ export class HomePageComponent implements OnInit {
                         const [tableName] = t;
                         const tableId = `${dbName}.${tableName}`;
                         // this.dictionary.push(tableId);
+                        let type = 'table';
+                        if (tableId.match(/\.\./g)) {
+                            type = 'non-table';
+                        }
                         return {
                             name: tableId,
-                            type: 'table'
+                            type
                         }
                     })
                 });
@@ -140,11 +153,12 @@ export class HomePageComponent implements OnInit {
 
     formatData(data: any) {
         data = data || (window as any).data || {};
+        console.log(data);
         if (typeof data === 'string') {
             this.details = data;
         } else {
             this.columns = data.meta?.map((i: any) => i.name);
-            this.details = data.data.map((i: any) => {
+            this.details = data.data?.map((i: any) => {
                 const itemArray: any[] = i instanceof Array ? i : Object.values(i);
                 let out: any = {};
                 itemArray.forEach((j: any, k: any) => {
@@ -180,6 +194,8 @@ export class HomePageComponent implements OnInit {
     async SQL(sqlStr: string, isAuthenticated: boolean = false) {
         await promiseWait(100);
         this.sqlRequest = sqlStr;
+        this.isLoadingDetails = true;
+        this.cdr.detectChanges();
         this.details = [];
 
         if (!isAuthenticated) {
@@ -192,18 +208,21 @@ export class HomePageComponent implements OnInit {
         }
 
         try {
-            const response = await lastValueFrom(this.apiService.runQuery(sqlStr));
+            const response = await this.apiService.runQuery(sqlStr);
             this.dataForFile = response;
             this.formatData(response);
             this.errorMessage = '';
+            this.isLoadingDetails = false;
             this.cdr.detectChanges();
             return true;
 
         } catch (error: any) {
+            console.error(error);
             this.details = [];
             if (!isAuthenticated) {
                 this.errorMessage = error.error || error.message;
             }
+            this.isLoadingDetails = false;
             this.cdr.detectChanges();
 
             return false;
@@ -236,7 +255,12 @@ export class HomePageComponent implements OnInit {
 
             this.isAccess = true;
             this.initDbTree();
+
+            this.isLoadingDetails = true;
+            this.cdr.detectChanges();
+            await promiseWait(3000);
             this.getHash();
+            this.isLoadingDetails = false;
             this.cdr.detectChanges();
             return true;
         }
@@ -278,7 +302,7 @@ export class HomePageComponent implements OnInit {
 
         sqlStr += ` ${FORMAT} ` + (isCompact ? 'JSONCompact' : type);
 
-        lastValueFrom(this.apiService.runQuery(sqlStr)).then(result => {
+        this.apiService.runQuery(sqlStr).then(result => {
             console.log(result, sqlStr)
             if (type === 'csv') {
                 saveToFile(result, fname + format);

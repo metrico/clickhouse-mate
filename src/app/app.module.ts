@@ -17,6 +17,7 @@ import { TreeFilterModule } from './components/tree-filter/tree-filter.module';
 import { CustomAgGridModule } from './components/custom-ag-grid/custom-ag-grid.module';
 import { LoginFormModule } from './components/login-form/login-form.module';
 import { AlertService } from './services/alert.service';
+import { LoadingCircleModule } from './components/loading-circle/loading-circle.module';
 
 
 @NgModule({
@@ -36,7 +37,8 @@ import { AlertService } from './services/alert.service';
         TreeFilterModule,
         CustomAgGridModule,
         LoginFormModule,
-        AceEditorExtModule
+        AceEditorExtModule,
+        LoadingCircleModule
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     providers: [
