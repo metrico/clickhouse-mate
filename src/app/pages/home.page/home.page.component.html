@@ -174,5 +174,6 @@
 <app-login-form
     [isAccess]="isAccess"
     [settings]="{ dbLink, dbLogin, dbPassword }"
+    [errorMessage]="authErrorMessage"
     (ready)="connectToDB($event)"
 ></app-login-form>

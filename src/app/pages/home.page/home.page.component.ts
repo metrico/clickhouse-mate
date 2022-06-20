@@ -24,6 +24,8 @@ export class HomePageComponent implements OnInit {
     details: any = [];
     columns: any[] = [];
     errorMessage: string = '';
+    authErrorMessage: string = '';
+
     PopularQueries: string[] = [
         'SHOW DATABASES',
         'SHOW TABLES',
@@ -82,18 +84,7 @@ export class HomePageComponent implements OnInit {
         stack(queryList.shift())
     }
     async initDbTree() {
-        console.log('initDbTree');
-
-        let result: any;
-        try {
-
-            result = await this.apiService.runQuery(QUERY_LIST.getDatabases);
-            console.log('result::QUERY_LIST.getDatabases', result);
-
-        } catch (error) {
-            // throw error;
-            console.log('result|error::QUERY_LIST.getDatabases', result);
-        }
+        const result: any = await this.apiService.runQuery(QUERY_LIST.getDatabases);
         const { data } = result || {}
         const dbTreeData: any[] = [];
         const stack = async ([dbName]: any) => {
@@ -221,6 +212,9 @@ export class HomePageComponent implements OnInit {
             this.details = [];
             if (!isAuthenticated) {
                 this.errorMessage = error.error || error.message;
+            } else {
+                this.authErrorMessage = error.error || error.message;
+                console.error({ authErrorMessage: this.authErrorMessage });
             }
             this.isLoadingDetails = false;
             this.cdr.detectChanges();
@@ -248,11 +242,12 @@ export class HomePageComponent implements OnInit {
             password: this.dbPassword,
         };
         this.apiService.setLoginData(auth);
-        if (await this.SQL(QUERY_LIST.getDatabases, true)) {
+        const res = await this.SQL(QUERY_LIST.getDatabases, true);
+        if (res) {
             setStorage('AUTH_DATA', auth)
             this.formatData({ meta: [], data: [] });
             this.errorMessage = '';
-
+            this.authErrorMessage = '';
             this.isAccess = true;
             this.initDbTree();
 
@@ -263,6 +258,10 @@ export class HomePageComponent implements OnInit {
             this.isLoadingDetails = false;
             this.cdr.detectChanges();
             return true;
+        } else {
+            this.isLoadingDetails = true;
+            this.authErrorMessage = 'Can not connect to DB server, check login / password / link to DB, please';
+            this.cdr.detectChanges();
         }
         this.errorMessage = '';
         this.isAccess = false;

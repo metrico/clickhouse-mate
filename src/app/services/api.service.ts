@@ -34,14 +34,19 @@ export class ApiService {
         this.password = password;
     }
     private params(postData: any) {
-        if (!this.bufferParams &&
+        if (
+            // !this.bufferParams &&
             this.login !== postData.login &&
             this.password !== postData.password
         ) {
+            console.log({ bufferParams: this.bufferParams });
             const {
                 login = this.login,
                 password = this.password
             } = postData;
+
+            this.login = postData.login;
+            this.password = postData.password;
 
             const SESSION_ID = ApiService.SESSION_ID;
             const queryObject: any = {
@@ -69,12 +74,10 @@ export class ApiService {
     post(dbURL: string = this.dbURL, postData: any) {
         const { query = '' } = postData;
         const getStr = this.params(postData);
-        console.log('[0]query', query);
         return new Observable<any>((observer) => {
             this.work.post(`${dbURL}${getStr}`, query, [
                 { 'Content-Type': 'text/plain; charset=utf-8' }
             ]).then((response) => {
-                console.log('this.work.post', { response });
                 if (response === '') {
                     return observer.next(null);
                 }
@@ -95,7 +98,6 @@ export class ApiService {
     }
 
     runQuery(query: string) {
-        console.log('query', query)
         return lastValueFrom(this.post(this.dbURL, { query }))
     }
 }

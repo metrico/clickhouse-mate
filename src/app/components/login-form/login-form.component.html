@@ -8,6 +8,13 @@
                         style="max-width: 90vw"
                     />
                 </div>
+                <div
+                    class="error-message"
+                    mat-flat-button
+                    *ngIf="errorMessage"
+                >
+                    {{ errorMessage }}
+                </div>
                 <mat-form-field appearance="fill">
                     <mat-label>ClickHouse HTTP URL</mat-label>
                     <input
@@ -28,7 +35,11 @@
 
                 <mat-form-field appearance="fill">
                     <mat-label>Password</mat-label>
-                    <input type="password" matInput [(ngModel)]="settings.dbPassword" />
+                    <input
+                        type="password"
+                        matInput
+                        [(ngModel)]="settings.dbPassword"
+                    />
                 </mat-form-field>
                 <div class="btn-panel">
                     <button

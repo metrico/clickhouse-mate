@@ -20,7 +20,7 @@ addEventListener('message', ({ data: config }) => {
             // console.log("http.post", data);
             postMessage(data.response);
         }, err => {
-            console.log("worker::error::", err);
+            // console.log("worker::error::", err);
             postMessage(JSON.stringify({
                 isError: true,
                 message: err.responseText

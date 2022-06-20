@@ -27,7 +27,7 @@ export class WorkerManagerService {
         return new Promise<any>((resolve, reject) => {
             const w: Worker = this.makeNewWorkerInstance();
             w.onmessage = (res: any) => {
-                console.log(`async post[${query}]`, res);
+                // console.log(`async post[${query}]`, res);
                 if (res.data === "") {
                     resolve(null);
                     return;

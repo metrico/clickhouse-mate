@@ -13,6 +13,7 @@ export class LoginFormComponent {
         dbLogin: '',
         dbLink: ''
     };
+    @Input() errorMessage: any = '';
     @Output() ready: EventEmitter<any> = new EventEmitter();
 
     connectToDB() {

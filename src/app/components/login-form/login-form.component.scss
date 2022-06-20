@@ -11,6 +11,16 @@
     }
 }
 
+@keyframes err_showing {
+    0% {
+        transform: scaleY(0);
+        height: 0;
+    }
+    100% {
+        transform: scaleY(1);
+        height: 36px;
+    }
+}
 .login-form-group {
     position: absolute;
     left: 0;
@@ -33,4 +43,21 @@
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content: space-between;
+}
+.error-message {
+    background-color: #f44336;
+    box-shadow: 0px 0px 0px 0px rgb(0 0 0 / 20%),
+        0px 0px 0px 0px rgb(0 0 0 / 14%), 0px 0px 0px 0px rgb(0 0 0 / 12%);
+    white-space: pre-wrap;
+    min-width: 64px;
+    line-height: 36px;
+    position: relative;
+    padding: 0 16px;
+    border-radius: 4px;
+    margin: 1rem;
+    box-sizing: border-box;
+    color: yellow;
+    font-weight: 500;
+    animation: err_showing 0.3s normal forwards ease-in-out;
+    animation-iteration-count: 1;
 }
