@@ -34,6 +34,7 @@
 
     <div
         class="autocomplete-menu"
+        [ngClass]="{ dark: isDarkMode }"
         [style.display]="
             isAutocompleteVisible && dictionary.length > 0 ? 'block' : 'none'
         "
@@ -43,9 +44,29 @@
             *ngFor="let item of dictionary; let i = index"
             class="item"
             [class.selected]="autocompleteSelectorIndex === i"
-            (click)="onItemClick(item)"
         >
-            {{ item }}
+            <div (click)="onItemClick(item)">
+                <mat-icon class="customIconSize" *ngIf="item?.icon === 0"
+                    >line_style</mat-icon
+                >
+                <mat-icon class="customIconSize" *ngIf="item?.icon === 1"
+                    >category</mat-icon
+                >
+                <mat-icon class="customIconSize" *ngIf="item?.icon === 2"
+                    >bubble_chart</mat-icon
+                >
+                <mat-icon class="customIconSize" *ngIf="item?.icon === 3"
+                    >hdr_weak</mat-icon
+                >
+                <mat-icon class="customIconSize" *ngIf="item?.icon === 4"
+                    >subject</mat-icon
+                >
+
+                {{ item.name }}
+            </div>
+            <span style="float: right; flex: 1; text-align: end" *ngIf="!!item.doc_link">
+                <mat-icon class="customIconSize" (click)="setInfo(item.doc_link)">info</mat-icon>
+            </span>
         </div>
     </div>
 </div>

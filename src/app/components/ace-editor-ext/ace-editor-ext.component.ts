@@ -1,3 +1,4 @@
+import { DocsService } from './../../services/docs.service';
 import {
     Component,
     OnInit,
@@ -22,6 +23,7 @@ import { DictionaryDefault } from './dictionary-default';
 export class AceEditorExtComponent implements OnInit, AfterViewInit, OnDestroy {
 
     @Input() sqlRequest: any = '';
+    @Input() isDarkMode = false;
     lastCaretPoint = 0;
     _dictionaryFull: any[] = [];
     delayShowPopup: number = 1500;
@@ -55,8 +57,11 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit, OnDestroy {
         enableSnippets: true,
         enableLiveAutocompletion: true
     };
-    constructor(private cdr: ChangeDetectorRef) {
-    }
+    constructor(
+        private docsService: DocsService,
+        private cdr: ChangeDetectorRef
+    ) { }
+
     ngOnInit() {
         this._dictionaryFull.push(...DictionaryDefault);
         this._dictionaryFull.sort();
@@ -117,7 +122,7 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit, OnDestroy {
             try {
                 const rx = new RegExp('^' + this.lastWord.toLowerCase(), 'g');
                 this.dictionary = this.dictionaryFull.filter(
-                    i => i.toLowerCase().match(rx)
+                    i => i.name.toLowerCase().match(rx)
                 );
             } catch (_) {
             }
@@ -125,7 +130,7 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit, OnDestroy {
             this.dictionary = this.dictionaryFull;
         }
 
-        this.dictionary = this.dictionary.slice(0, 20);
+        // this.dictionary = this.dictionary.slice(0, 20);
 
         // console.log('textChange:show');
         this.isAutocompleteVisible = !!this.lastWord && this.dictionary.length > 0;
@@ -246,7 +251,7 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit, OnDestroy {
     onItemClick(event: any) {
         console.log('onItemClick', event);
 
-        this.replaceByPositionCaret(event);
+        this.replaceByPositionCaret(event?.name);
         this.textChange(this.lastCaretPoint);
         this.isAutocompleteVisible = false;
         // requestAnimationFrame(() => {
@@ -281,7 +286,9 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit, OnDestroy {
         console.log({ lastWord });
         return lastWord;
     }
-
+    setInfo(doc_link: string) {
+        this.docsService.setLink(doc_link);
+    }
     ngOnDestroy() {
         if (this._interval) {
             clearInterval(this._interval);

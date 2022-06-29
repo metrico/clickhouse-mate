@@ -1,7 +1,9 @@
+import { DocsService } from './../../services/docs.service';
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ApiService, QUERY_LIST } from 'src/app/services/api.service';
 import { saveToFile } from '@app/helper/windowFunctions';
 import { Row } from '@app/models/grid.model';
+import { Dictionary } from '@app/components/ace-editor-ext/dictionary-default';
 
 @Component({
     templateUrl: './home.page.component.html',
@@ -11,13 +13,16 @@ import { Row } from '@app/models/grid.model';
 export class HomePageComponent implements OnInit {
     isAccess = true;
     isReadonly = true;
+    isDarkMode = false;
+    isDocsShows = false;
+
     isLeftPanel = true;
     dbLink: string = '';
     dbLogin: string = '';
     dbPassword: string = '';
     sqlRequest: any = 'SHOW DATABASES';
 
-    dictionary: any = [];
+    dictionary: Dictionary[] = [];
 
     dataForFile: any = null;
     isLoadingDetails = false;
@@ -37,6 +42,7 @@ export class HomePageComponent implements OnInit {
     currentRow: Row = new Map();
     constructor(
         private apiService: ApiService,
+        private docsService: DocsService,
         private cdr: ChangeDetectorRef
     ) { }
 
@@ -59,17 +65,25 @@ export class HomePageComponent implements OnInit {
             this.getDynamicDictionary();
         });
         console.log(this.currentRow.size)
+        this.docsService.listen().subscribe(doc_link => {
+            this.isDocsShows = !!doc_link;
+            this.isLeftPanel = !doc_link;
+        })
     }
     getDynamicDictionary() {
-        const queryList = [
+        const queryList: string[] = [
             'select name from system.functions',
             'select name from system.formats'
         ];
 
         const stack = async (query: any) => {
             const { data } = await this.apiService.runQuery(query) || {};
-
-            const r = data?.map((value: any) => value[0] + '()');
+            const bool = query.includes('system.functions');
+            const r: Dictionary[] = data?.map((value: any) => ({
+                name: value[0] + '()',
+                icon: bool ? 1: 2,
+                type: bool ? 'function' : 'format'
+            }));
 
             this.dictionary.push(...r);
             if (queryList.length > 0) {
@@ -105,7 +119,11 @@ export class HomePageComponent implements OnInit {
                     children: tablesList?.data?.map((t: any) => {
                         const [tableName] = t;
                         const tableId = `${dbName}.${tableName}`;
-                        // this.dictionary.push(tableId);
+                        this.dictionary.push({
+                            name: tableId,
+                            icon: 3,
+                            type: 'table',
+                        });
                         let type = 'table';
                         if (tableId.match(/\.\./g)) {
                             type = 'non-table';

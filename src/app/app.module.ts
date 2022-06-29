@@ -1,3 +1,4 @@
+import { ChHelpModule } from './components/ch-help/ch-help.module';
 import { AceEditorExtModule } from './components/ace-editor-ext/ace-editor-ext.module';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -38,7 +39,8 @@ import { LoadingCircleModule } from './components/loading-circle/loading-circle.
         CustomAgGridModule,
         LoginFormModule,
         AceEditorExtModule,
-        LoadingCircleModule
+        LoadingCircleModule,
+        ChHelpModule
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     providers: [
