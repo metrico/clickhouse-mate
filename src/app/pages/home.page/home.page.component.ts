@@ -53,17 +53,19 @@ export class HomePageComponent implements OnInit {
         }
 
         const auth: any = getStorage('AUTH_DATA');
-        if (auth) {
+        console.log("auth", !!auth.dbURL)
+        if (auth.dbURL) {
             this.dbLink = auth.dbURL;
             this.dbLogin = auth.login;
             this.dbPassword = auth.password;
         } else {
             this.isAccess = false;
         }
-
-        this.connectToDB().then(() => {
-            this.getDynamicDictionary();
-        });
+        if (!!auth.dbURL) {
+            this.connectToDB().then(() => {
+                this.getDynamicDictionary();
+            });
+        }
         console.log(this.currentRow.size)
         this.docsService.listen().subscribe(doc_link => {
             this.isDocsShows = !!doc_link;
