@@ -25,12 +25,13 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-        
-    - name: get-npm-version
-      id: package-version
-      uses: martinbeentjes/npm-get-version-action@main
+    - name: 'Automated Version Bump'
+      id: version-bump
+      uses: 'phips28/gh-action-bump-version@master'
       with:
-        path: packages/<yourpackage>
+        tag-prefix: 'v'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - run: npm install
     - run: npm run build --if-present
 
@@ -45,7 +46,7 @@ jobs:
       uses: thedoctor0/zip-release@main
       with:
         type: 'zip'
-        filename: '${{steps.package-version.outputs.current-version}}.zip'
+        filename: '${{ steps.version-bump.outputs.newTag }}.zip'
         directory: 'dist/ClickHousePlay'
         
     - name: Get Timestamp
@@ -63,8 +64,9 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         release_config: |
-            release.zip
-        release_name: chmate_${{ steps.package-version.outputs.current-version}}_${{ steps.time.outputs.time }}
+            dist/ClickHousePlay/${{ steps.version-bump.outputs.newTag }}.zip
+            ${{ steps.version-bump.outputs.newTag }}.zip
+        release_name: chmate_${{ steps.version-bump.outputs.newTag }}
         tag_name: ${{ steps.time.outputs.time }}
         draft: false
         prerelease: false
