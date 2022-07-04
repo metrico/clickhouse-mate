@@ -22,7 +22,7 @@ Advanced Clickhouse _"play"_ Client and User-Interface
 
 ### Usage
 
-Use the [public version](https://metrico.github.io/clickhouse-mate/) _(no data goes through the server)_ or build your own:
+Use the [public version](https://metrico.github.io/clickhouse-mate/) _(no data goes through the server)_, download the [latest build release](https://github.com/metrico/clickhouse-mate/releases/latest/download/release.zip) or build your own:
 
 ```
 git clone https://github.com/metrico/clickhouse-mate
