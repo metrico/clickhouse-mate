@@ -74,8 +74,8 @@ export class HomePageComponent implements OnInit {
     }
     getDynamicDictionary() {
         const queryList: string[] = [
-            'select name from system.functions',
-            'select name from system.formats'
+            'SELECT name FROM system.functions',
+            'SELECT name FROM system.formats'
         ];
 
         const stack = async (query: any) => {
@@ -152,7 +152,7 @@ export class HomePageComponent implements OnInit {
 
     onDbChoose(event?: any): void {
         const LIMIT = 50;
-        const sqlStr = `select * from ${event.name} limit ${LIMIT}`;
+        const sqlStr = `SELECT * FROM ${event.name} LIMIT ${LIMIT}`;
         if (event?.level === 1) {
             this.SQL(sqlStr)
         }
