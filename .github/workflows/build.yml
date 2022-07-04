@@ -25,6 +25,14 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+    - name: 'Automated Version Bump'
+      id: version-bump
+      if: github.event_name != 'pull_request'
+      uses: 'phips28/gh-action-bump-version@master'
+      with:
+        tag-prefix: 'v'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - run: npm install
     - run: npm run build --if-present
 
@@ -34,3 +42,34 @@ jobs:
       with:
         branch: demo
         folder: dist/ClickHousePlay
+        
+    - name: ZIP Release
+      if: github.event_name != 'pull_request'
+      uses: thedoctor0/zip-release@main
+      with:
+        type: 'zip'
+        filename: 'release.zip'
+        directory: 'dist/ClickHousePlay'
+        
+    - name: Get Timestamp
+      if: github.event_name != 'pull_request'
+      id: time
+      uses: nanzm/get-time-action@v1.1
+      with:
+        timeZone: 0
+        format: 'YYYYMMDDHHmmss'
+        
+    - name: Upload release
+      if: github.event_name != 'pull_request'
+      uses: boxpositron/upload-multiple-releases@1.0.7
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        release_config: |
+            dist/ClickHousePlay/release.zip
+            release.zip
+        release_name: clickhouse-mate_${{ steps.version-bump.outputs.newTag }}
+        tag_name: ${{ steps.time.outputs.time }}
+        draft: false
+        prerelease: false
+        overwrite: true

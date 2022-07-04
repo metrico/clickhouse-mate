@@ -15,13 +15,14 @@ Advanced Clickhouse _"play"_ Client and User-Interface
 - ClickHouse SQL Query autocompletion
 - Fast Database and Table tree navigation
 - Advanced result Filtering and Sorting
+- Inline ClickHouse SQL documentation
 - Query Presets and History
 - HTTP/S connection support
 - 100% Web Client, no server/backend
 
 ### Usage
 
-Use the [public version](https://metrico.github.io/clickhouse-mate/) _(no data goes through the server)_ or build your own:
+Use the [public version](https://metrico.github.io/clickhouse-mate/) _(no data goes through the server)_, download the [latest build release](https://github.com/metrico/clickhouse-mate/releases/latest/download/release.zip) or build your own:
 
 ```
 git clone https://github.com/metrico/clickhouse-mate
@@ -33,4 +34,4 @@ npm start
 
 
 ### License
-Licensed under [AGPLv3](LICENSE), sponsored by [qxip/metrico](https://metrico.in) as part of the [cLoki](https://cloki.org) project
+Licensed under [AGPLv3](LICENSE), sponsored by [qxip/metrico](https://metrico.in) as part of the [qryn](https://cloki.org) project
