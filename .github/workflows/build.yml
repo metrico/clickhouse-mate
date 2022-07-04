@@ -65,6 +65,7 @@ jobs:
         release_config: |
             release.zip
         release_name: chmate_${{ steps.package-version.outputs.current-version}}_${{ steps.time.outputs.time }}
+        tag_name: ${{ steps.time.outputs.time }}
         draft: false
         prerelease: false
         overwrite: true
