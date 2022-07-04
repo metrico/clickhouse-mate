@@ -25,6 +25,12 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+        
+    - name: get-npm-version
+      id: package-version
+      uses: martinbeentjes/npm-get-version-action@main
+      with:
+        path: packages/<yourpackage>
     - run: npm install
     - run: npm run build --if-present
 
@@ -39,11 +45,26 @@ jobs:
       uses: thedoctor0/zip-release@main
       with:
         type: 'zip'
-        filename: 'release.zip'
-        exclusions: 'dist/ClickHousePlay/*'
+        filename: '${{steps.package-version.outputs.current-version}}.zip'
+        directory: 'dist/ClickHousePlay'
         
-    - name: Upload Release
-      uses: ncipollo/release-action@v1
+    - name: Get Timestamp
+      if: github.event_name != 'pull_request'
+      id: time
+      uses: nanzm/get-time-action@v1.1
       with:
-        artifacts: "release.zip"
-        token: ${{ secrets.GITHUB_TOKEN }}
+        timeZone: 0
+        format: 'YYYYMMDDHHmmss'
+        
+    - name: Upload release
+      if: github.event_name != 'pull_request'
+      uses: boxpositron/upload-multiple-releases@1.0.7
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        release_config: |
+            release.zip
+        release_name: chmate_${{ steps.package-version.outputs.current-version}}_${{ steps.time.outputs.time }}
+        draft: false
+        prerelease: false
+        overwrite: true
