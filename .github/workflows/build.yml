@@ -34,3 +34,16 @@ jobs:
       with:
         branch: demo
         folder: dist/ClickHousePlay
+        
+    - name: ZIP Release
+      uses: thedoctor0/zip-release@main
+      with:
+        type: 'zip'
+        filename: 'release.zip'
+        exclusions: 'dist/ClickHousePlay/*'
+        
+    - name: Upload Release
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: "release.zip"
+        token: ${{ secrets.GITHUB_TOKEN }}
