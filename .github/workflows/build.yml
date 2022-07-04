@@ -27,6 +27,7 @@ jobs:
         cache: 'npm'
     - name: 'Automated Version Bump'
       id: version-bump
+      if: github.event_name != 'pull_request'
       uses: 'phips28/gh-action-bump-version@master'
       with:
         tag-prefix: 'v'
@@ -43,6 +44,7 @@ jobs:
         folder: dist/ClickHousePlay
         
     - name: ZIP Release
+      if: github.event_name != 'pull_request'
       uses: thedoctor0/zip-release@main
       with:
         type: 'zip'
