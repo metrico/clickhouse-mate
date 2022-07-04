@@ -48,7 +48,7 @@ jobs:
       uses: thedoctor0/zip-release@main
       with:
         type: 'zip'
-        filename: '${{ steps.version-bump.outputs.newTag }}.zip'
+        filename: 'release.zip'
         directory: 'dist/ClickHousePlay'
         
     - name: Get Timestamp
@@ -66,9 +66,9 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         release_config: |
-            dist/ClickHousePlay/${{ steps.version-bump.outputs.newTag }}.zip
-            ${{ steps.version-bump.outputs.newTag }}.zip
-        release_name: chmate_${{ steps.version-bump.outputs.newTag }}
+            dist/ClickHousePlay/release.zip
+            release.zip
+        release_name: clickhouse-mate_${{ steps.version-bump.outputs.newTag }}
         tag_name: ${{ steps.time.outputs.time }}
         draft: false
         prerelease: false
