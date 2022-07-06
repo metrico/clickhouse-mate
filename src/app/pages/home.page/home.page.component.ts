@@ -69,7 +69,7 @@ export class HomePageComponent implements OnInit {
         console.log(this.currentRow.size)
         this.docsService.listen().subscribe(doc_link => {
             this.isDocsShows = !!doc_link;
-            this.isLeftPanel = !doc_link;
+            // this.isLeftPanel = !doc_link;
         })
     }
     getDynamicDictionary() {
@@ -83,7 +83,7 @@ export class HomePageComponent implements OnInit {
             const bool = query.includes('system.functions');
             const r: Dictionary[] = data?.map((value: any) => ({
                 name: value[0] + '()',
-                icon: bool ? 1: 2,
+                icon: bool ? 1 : 2,
                 type: bool ? 'function' : 'format'
             }));
 
@@ -330,6 +330,37 @@ export class HomePageComponent implements OnInit {
 
             }
         })
+    }
+    bytesToSize(bytes: any): string {
+        const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+        if (bytes === 0) {
+            return 'n/a';
+        }
+        const i = Math.floor(+Math.log(bytes) / +Math.log(1024))
+        if (i === 0) {
+            return `${bytes} ${sizes[i]}`;
+        }
+        return `${(bytes / (1024 ** i)).toFixed(1)} ${sizes[i]}`
+    }
+    timeShorter(sec: number): string {
+        const ms = Math.round((sec) * 1000);
+        const _ = (n: number) => (n + '').length === 1 ? '0' + n : n;
+        const o = {
+            'hours': _(Math.floor(ms / (1000 * 60 * 60))),
+            'min': _(Math.floor(ms / (1000 * 60) % 60)),
+            'sec': _(Math.floor((ms / 1000) % 60)),
+            'ms': ((ms % 1000) / 1000) ? ((ms % 1000) / 1000).toString().replace('0.', '') : '000'
+        };
+        if (ms < 1000) { // ms
+            return `${ms} ms`;
+        } else if (ms < 1000 * 60) { // sec
+            return `${o.sec}.${o.ms} sec`;
+        } else if (ms < 1000 * 60 * 60) { // min
+            return `${o.min}:${o.sec}.${o.ms} min`;
+        } else { // hours
+            return `${o.hours}:${o.min}:${o.sec}.${o.ms} hour(s)`;
+        }
+
     }
 }
 

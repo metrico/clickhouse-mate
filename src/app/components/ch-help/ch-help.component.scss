@@ -1,12 +1,13 @@
 :host {
+    position: relative;
     background-color: #fafafa;
     max-height: calc(100% - 1rem);
     overflow: hidden;
-    flex: 1;
+    // flex: 1;
 }
 .frame {
     border: 0;
     width: calc(100% - 1rem);
-    height: 100%;
+    height: calc(100vh - 13.3rem);
     margin: 0 0 0 1rem;
 }

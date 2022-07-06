@@ -36,10 +36,17 @@
     [ngClass]="{ dark: isDarkMode }"
     style="width: 100%; height: calc(100vh - 4rem)"
 >
-    <as-split direction="horizontal"  >
-        <as-split-area [size]="15" [visible]="isLeftPanel" [useTransition]="true" [order]="0">
+    <as-split direction="horizontal">
+        <as-split-area
+            [size]="15"
+            [visible]="isLeftPanel"
+            [useTransition]="true"
+            [order]="0"
+        >
             <mat-accordion>
-                <mat-expansion-panel [expanded]="!!this.dbTreeData && this.dbTreeData.length > 0">
+                <mat-expansion-panel
+                    [expanded]="!!this.dbTreeData && this.dbTreeData.length > 0"
+                >
                     <mat-expansion-panel-header>
                         <mat-panel-title> DB Tree </mat-panel-title>
                     </mat-expansion-panel-header>
@@ -83,13 +90,26 @@
                         {{ item }}
                     </div>
                 </mat-expansion-panel>
-                <mat-expansion-panel *ngIf="currentRow.size > 0">
+                <!-- <mat-expansion-panel *ngIf="currentRow.size > 0">
                     {{ currentRow.size }}
                     <mat-expansion-panel-header>
                         <mat-panel-title> Row Details </mat-panel-title>
                     </mat-expansion-panel-header>
 
                     <app-row-details [row]="currentRow"> </app-row-details>
+                </mat-expansion-panel> -->
+                <mat-expansion-panel
+                    *ngIf="isDocsShows"
+                    [expanded]="isDocsShows"
+                >
+                    <mat-expansion-panel-header>
+                        <mat-panel-title> Docs </mat-panel-title>
+                    </mat-expansion-panel-header>
+
+                    <!-- <app-row-details [row]="currentRow"> </app-row-details> -->
+                    <app-ch-help
+                        style="height: calc(100% - 8rem)"
+                    ></app-ch-help>
                 </mat-expansion-panel>
             </mat-accordion>
         </as-split-area>
@@ -131,13 +151,12 @@
                             <div class="short-stat">
                                 <div>
                                     <strong>Elapsed: </strong>
-                                    <span
-                                        >{{
-                                            dataForFile?.statistics?.elapsed
-                                                | number
-                                        }}
-                                        sec</span
-                                    >
+                                    <span>{{
+                                        timeShorter(
+                                            dataForFile?.statistics?.elapsed ||
+                                                0
+                                        )
+                                    }}</span>
                                 </div>
                                 <div>
                                     <strong>Rows: </strong>
@@ -147,12 +166,14 @@
                                 </div>
                                 <div>
                                     <strong>Size: </strong>
-                                    <span
-                                        >{{
-                                            dataForFile?.statistics?.bytes_read
+                                    <span>
+                                        {{
+                                            bytesToSize(
+                                                dataForFile?.statistics
+                                                    ?.bytes_read || 0
+                                            )
                                         }}
-                                        B.</span
-                                    >
+                                    </span>
                                 </div>
                             </div>
                             <custom-ag-grid
@@ -181,14 +202,14 @@
                 </as-split-area>
             </as-split>
         </as-split-area>
-        <as-split-area
+        <!-- <as-split-area
             [visible]="isDocsShows"
             [size]="15"
             [order]="2"
             style="display: flex; overflow: hidden"
         >
             <app-ch-help></app-ch-help>
-        </as-split-area>
+        </as-split-area> -->
     </as-split>
 </div>
 
