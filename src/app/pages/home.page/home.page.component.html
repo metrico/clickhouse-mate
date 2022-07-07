@@ -150,17 +150,19 @@
                         <ng-template #hasData>
                             <div class="short-stat">
                                 <div>
-                                    <strong>Elapsed: </strong>
+                                    <span>{{
+                                        timeShorter(
+                                            dataForFile?.rows ||
+                                                0
+                                        )
+                                    }} rows in set. Elapsed </span>
                                     <span>{{
                                         timeShorter(
                                             dataForFile?.statistics?.elapsed ||
                                                 0
                                         )
-                                    }}</span>
-                                </div>
-                                <div>
-                                    <strong>Processed: </strong>
-                                    <span>{{
+                                    }}. </span>
+                                    <span>Processed {{
                                         dataForFile?.statistics?.rows_read
                                     }} rows, </span>
                                     <span>
