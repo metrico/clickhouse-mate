@@ -150,22 +150,21 @@
                         <ng-template #hasData>
                             <div class="short-stat">
                                 <div>
-                                    <strong>Elapsed: </strong>
+                                    <span>{{
+                                        timeShorter(
+                                            dataForFile?.rows ||
+                                                0
+                                        )
+                                    }} rows in set. Elapsed </span>
                                     <span>{{
                                         timeShorter(
                                             dataForFile?.statistics?.elapsed ||
                                                 0
                                         )
-                                    }}</span>
-                                </div>
-                                <div>
-                                    <strong>Rows: </strong>
-                                    <span>{{
+                                    }}. </span>
+                                    <span>Processed {{
                                         dataForFile?.statistics?.rows_read
-                                    }}</span>
-                                </div>
-                                <div>
-                                    <strong>Size: </strong>
+                                    }} rows, </span>
                                     <span>
                                         {{
                                             bytesToSize(
@@ -174,6 +173,19 @@
                                             )
                                         }}
                                     </span>
+
+                                    <span>
+                                        ({{
+                                            timeShorter(
+                                              (dataForFile?.statistics?.elapsed || 0) / ( parseFloat(dataForFile?.statistics?.elapsed || 0) || 0.001 )
+                                            )
+                                        }} rows/s. {{
+                                            bytesToSize(
+                                                (dataForFile?.statistics?.bytes_read || 0) / ( parseFloat(dataForFile?.statistics?.elapsed || 0) || 0.001 )
+                                            )
+                                        }}/s.)
+                                    </span>
+
                                 </div>
                             </div>
                             <custom-ag-grid
