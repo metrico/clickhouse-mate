@@ -368,6 +368,21 @@ export class HomePageComponent implements OnInit {
         }
 
     }
+
+    getStatistic(dataForFile: any): string {
+        const stat = dataForFile?.statistics;
+        const rows = dataForFile?.rows || 0;
+        const elapsed = this.timeShorter(stat?.elapsed || 0);
+        const rows_read = stat?.rows_read;
+        const bytes_read = this.bytesToSize(stat?.bytes_read || 0)
+        const rowsPerSec = Math.floor(rows / ((stat?.elapsed || 0) || 0.001));
+
+        const bytesPerSec = this.bytesToSize(
+            (stat?.bytes_read || 0) /
+            (parseFloat(stat?.elapsed || 0) || 0.001)
+        );
+        return `${rows} rows in set. Elapsed ${elapsed}. Processed ${rows_read} rows, ${bytes_read} (${rowsPerSec} rows/s. ${bytesPerSec}/s.)`;
+    }
 }
 
 export function promiseWait(sec = 1000): Promise<any> {

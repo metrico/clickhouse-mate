@@ -149,44 +149,7 @@
                         </ng-container>
                         <ng-template #hasData>
                             <div class="short-stat">
-                                <div>
-                                    <span>{{
-                                        timeShorter(
-                                            dataForFile?.rows ||
-                                                0
-                                        )
-                                    }} rows in set. Elapsed </span>
-                                    <span>{{
-                                        timeShorter(
-                                            dataForFile?.statistics?.elapsed ||
-                                                0
-                                        )
-                                    }}. </span>
-                                    <span>Processed {{
-                                        dataForFile?.statistics?.rows_read
-                                    }} rows, </span>
-                                    <span>
-                                        {{
-                                            bytesToSize(
-                                                dataForFile?.statistics
-                                                    ?.bytes_read || 0
-                                            )
-                                        }}
-                                    </span>
-
-                                    <span>
-                                        ({{
-                                            timeShorter(
-                                              (dataForFile?.statistics?.elapsed || 0) / ( parseFloat(dataForFile?.statistics?.elapsed || 0) || 0.001 )
-                                            )
-                                        }} rows/s. {{
-                                            bytesToSize(
-                                                (dataForFile?.statistics?.bytes_read || 0) / ( parseFloat(dataForFile?.statistics?.elapsed || 0) || 0.001 )
-                                            )
-                                        }}/s.)
-                                    </span>
-
-                                </div>
+                                {{ getStatistic(dataForFile) }}
                             </div>
                             <custom-ag-grid
                                 *ngIf="isObjectData(); else preText"
