@@ -173,19 +173,19 @@
                                             )
                                         }}
                                     </span>
-                                    
+
                                     <span>
                                         ({{
                                             timeShorter(
-                                              (dataForFile?.statistics?.elapsed || 0) / ( parseFloat(dataForFile?.statistics?.elapsed) || 0.001 )
+                                              (dataForFile?.statistics?.elapsed || 0) / ( parseFloat(dataForFile?.statistics?.elapsed || 0) || 0.001 )
                                             )
                                         }} rows/s. {{
                                             bytesToSize(
-                                                (dataForFile?.statistics?.bytes_read || 0) / ( parseFloat(dataForFile?.statistics?.elapsed) || 0.001 )
+                                                (dataForFile?.statistics?.bytes_read || 0) / ( parseFloat(dataForFile?.statistics?.elapsed || 0) || 0.001 )
                                             )
                                         }}/s.)
                                     </span>
-                                    
+
                                 </div>
                             </div>
                             <custom-ag-grid

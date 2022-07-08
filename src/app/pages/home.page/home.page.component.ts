@@ -40,6 +40,7 @@ export class HomePageComponent implements OnInit {
     pageSize: number = 50;
     isPaginator: boolean = true;
     currentRow: Row = new Map();
+    parseFloat = parseFloat;
     constructor(
         private apiService: ApiService,
         private docsService: DocsService,
