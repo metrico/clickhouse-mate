@@ -127,15 +127,18 @@ a:not([href]) {
     font-family: "Material Icons" !important;
     font-size: 24px !important;
 }
-.mat-expansion-panel-header {
-    height: 30px;
+.dashboard-accordion {
 
-    &.mat-expanded {
+    .mat-expansion-panel-header {
         height: 30px;
+
+        &.mat-expanded {
+            height: 30px;
+        }
     }
-}
-.mat-expansion-panel-spacing {
-    margin: 0;
+    .mat-expansion-panel-spacing {
+        margin: 0;
+    }
 }
 
 .ace-sqlserver .ace_invalid {

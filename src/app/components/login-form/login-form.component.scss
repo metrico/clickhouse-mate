@@ -43,6 +43,7 @@
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content: space-between;
+    margin: 2rem;
 }
 .error-message {
     background-color: #f44336;
@@ -60,4 +61,8 @@
     font-weight: 500;
     animation: err_showing 0.3s normal forwards ease-in-out;
     animation-iteration-count: 1;
+}
+.flex-column {
+    display: flex;
+    flex-direction: column;
 }

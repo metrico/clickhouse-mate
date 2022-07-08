@@ -1,46 +1,122 @@
 <div class="login-form-group" *ngIf="!isAccess" #login>
     <mat-card class="card">
         <mat-card-content>
-            <div style="display: flex; flex-direction: column">
+            <div class="flex-column">
                 <div>
                     <img
                         src="assets/image/big-logo.png"
                         style="max-width: 90vw"
                     />
                 </div>
-                <div
-                    class="error-message"
-                    mat-flat-button
-                    *ngIf="errorMessage"
-                >
+                <div class="error-message" mat-flat-button *ngIf="errorMessage">
                     {{ errorMessage }}
                 </div>
-                <mat-form-field appearance="fill">
-                    <mat-label>ClickHouse HTTP URL</mat-label>
-                    <input
-                        matInput
-                        [(ngModel)]="settings.dbLink"
-                        placeholder="//localhost:8123"
-                    />
-                </mat-form-field>
 
-                <mat-form-field appearance="fill">
-                    <mat-label>Username</mat-label>
-                    <input
-                        matInput
-                        [(ngModel)]="settings.dbLogin"
-                        placeholder="readonly"
-                    />
-                </mat-form-field>
+                <mat-accordion>
+                    <mat-expansion-panel [expanded]="true">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Recent databases
+                            </mat-panel-title>
+                            <mat-panel-description *ngIf="!!shoes.selectedOptions.selected[0]?.value?.viewValue">
+                                <div style="text-align: center; color: green" *ngIf="!!shoes.selectedOptions.selected[0]?.value?.viewValue">
+                                   {{shoes.selectedOptions.selected[0]?.value?.viewValue}}
+                                </div>
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                        <div class="flex-column">
+                            <mat-selection-list #shoes [multiple]="false">
+                                <mat-list-option
+                                    *ngFor="let shoe of dbItems"
+                                    [value]="shoe"
+                                >
+                                    {{ shoe.viewValue }}
+                                </mat-list-option>
+                            </mat-selection-list>
 
-                <mat-form-field appearance="fill">
-                    <mat-label>Password</mat-label>
-                    <input
-                        type="password"
-                        matInput
-                        [(ngModel)]="settings.dbPassword"
-                    />
-                </mat-form-field>
+                            <div class="btn-panel" *ngIf="!!shoes.selectedOptions.selected[0]?.value?.viewValue">
+                                <button
+                                    style="margin-right: 0.5rem"
+                                    mat-raised-button
+                                    (click)="isAccess = !isAccess"
+                                    color="primary"
+                                    cdkFocusInitial
+                                >
+                                    Test connection
+                                </button>
+                                <button
+                                    mat-raised-button
+                                    (click)="connectToDB()"
+                                    color="warn"
+                                    cdkFocusInitial
+                                >
+                                    Edit connection
+                                </button>
+
+                                <button
+                                    mat-raised-button
+                                    (click)="connectToDB()"
+                                    color="accent"
+                                    cdkFocusInitial
+                                >
+                                    Remove connection
+                                </button>
+
+                            </div>
+
+                            <!-- <div style="text-align: center; color: green" *ngIf="!!shoes.selectedOptions.selected[0]?.value?.viewValue">
+                                Option selected: {{shoes.selectedOptions.selected[0]?.value?.viewValue}}
+                            </div> -->
+                            <!-- <mat-form-field appearance="fill">
+                                <mat-label>Favorite food</mat-label>
+                                <mat-select>
+                                    <mat-option
+                                        *ngFor="let dbItem of dbItems; let k = key"
+                                        [value]="dbItem.value"
+                                        [selected]="k === 0"
+                                    >
+                                        {{ dbItem.viewValue }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field> -->
+                        </div>
+                    </mat-expansion-panel>
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Create a new connection to DB
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <div class="flex-column">
+                            <mat-form-field appearance="fill">
+                                <mat-label>ClickHouse HTTP URL</mat-label>
+                                <input
+                                    matInput
+                                    [(ngModel)]="settings.dbLink"
+                                    placeholder="//localhost:8123"
+                                />
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill">
+                                <mat-label>Username</mat-label>
+                                <input
+                                    matInput
+                                    [(ngModel)]="settings.dbLogin"
+                                    placeholder="readonly"
+                                />
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill">
+                                <mat-label>Password</mat-label>
+                                <input
+                                    type="password"
+                                    matInput
+                                    [(ngModel)]="settings.dbPassword"
+                                />
+                            </mat-form-field>
+                        </div>
+                    </mat-expansion-panel>
+                </mat-accordion>
                 <div class="btn-panel">
                     <button
                         style="margin-right: 0.5rem"
