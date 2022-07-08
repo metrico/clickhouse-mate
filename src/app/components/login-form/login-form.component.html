@@ -12,7 +12,7 @@
                     {{ errorMessage }}
                 </div>
 
-                <mat-accordion>
+                <!-- <mat-accordion>
                     <mat-expansion-panel [expanded]="true">
                         <mat-expansion-panel-header>
                             <mat-panel-title>
@@ -64,21 +64,7 @@
 
                             </div>
 
-                            <!-- <div style="text-align: center; color: green" *ngIf="!!shoes.selectedOptions.selected[0]?.value?.viewValue">
-                                Option selected: {{shoes.selectedOptions.selected[0]?.value?.viewValue}}
-                            </div> -->
-                            <!-- <mat-form-field appearance="fill">
-                                <mat-label>Favorite food</mat-label>
-                                <mat-select>
-                                    <mat-option
-                                        *ngFor="let dbItem of dbItems; let k = key"
-                                        [value]="dbItem.value"
-                                        [selected]="k === 0"
-                                    >
-                                        {{ dbItem.viewValue }}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field> -->
+
                         </div>
                     </mat-expansion-panel>
                     <mat-expansion-panel>
@@ -86,7 +72,7 @@
                             <mat-panel-title>
                                 Create a new connection to DB
                             </mat-panel-title>
-                        </mat-expansion-panel-header>
+                        </mat-expansion-panel-header> -->
                         <div class="flex-column">
                             <mat-form-field appearance="fill">
                                 <mat-label>ClickHouse HTTP URL</mat-label>
@@ -115,9 +101,9 @@
                                 />
                             </mat-form-field>
                         </div>
-                    </mat-expansion-panel>
-                </mat-accordion>
-                <div class="btn-panel">
+                    <!-- </mat-expansion-panel>
+                </mat-accordion> -->
+                <div class="btn-panel" style="margin: 0rem">
                     <button
                         style="margin-right: 0.5rem"
                         mat-raised-button

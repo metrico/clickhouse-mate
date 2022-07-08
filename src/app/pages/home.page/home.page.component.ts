@@ -69,7 +69,12 @@ export class HomePageComponent implements OnInit {
         }
         console.log(this.currentRow.size)
         this.docsService.listen().subscribe(doc_link => {
-            this.isDocsShows = !!doc_link;
+            this.isDocsShows = false;
+            this.cdr.detectChanges();
+            requestAnimationFrame(() => {
+                this.isDocsShows = !!doc_link;
+                this.cdr.detectChanges();
+            })
             // this.isLeftPanel = !doc_link;
         })
     }
