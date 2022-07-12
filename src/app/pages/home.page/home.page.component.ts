@@ -375,7 +375,7 @@ export class HomePageComponent implements OnInit {
         const elapsed = this.timeShorter(stat?.elapsed || 0);
         const rows_read = stat?.rows_read;
         const bytes_read = this.bytesToSize(stat?.bytes_read || 0)
-        const rowsPerSec = Math.floor(rows / ((stat?.elapsed || 0) || 0.001));
+        const rowsPerSec = Math.ceil((rows > 0 ? (stat?.elapsed || 0) / rows : 0) * 1000) / 1000;
 
         const bytesPerSec = this.bytesToSize(
             (stat?.bytes_read || 0) /
