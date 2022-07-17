@@ -1,9 +1,10 @@
 import { DocsService } from './../../services/docs.service';
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ApiService, QUERY_LIST } from 'src/app/services/api.service';
-import { saveToFile } from '@app/helper/windowFunctions';
+import { getStorage, saveToFile, setStorage } from '@app/helper/windowFunctions';
 import { Row } from '@app/models/grid.model';
 import { Dictionary } from '@app/components/ace-editor-ext/dictionary-default';
+import { promiseWait } from '@app/helper/functions';
 
 @Component({
     templateUrl: './home.page.component.html',
@@ -15,13 +16,28 @@ export class HomePageComponent implements OnInit {
     isReadonly = true;
     isDarkMode = false;
     isDocsShows = false;
-
+    dbItems: any[] = [];
     isLeftPanel = true;
     dbLink: string = '';
     dbLogin: string = '';
     dbPassword: string = '';
     sqlRequest: any = 'SHOW DATABASES';
-
+    _selectedDB: any;
+    set selectedDB(val: any) {
+        console.log('set new value', val);
+        if (this._selectedDB && this._selectedDB?.value?.dbLink !== val?.value?.dbLink) {
+            this._selectedDB = val;
+            this.connectToDB(this._selectedDB.value);
+            this.cdr.detectChanges();
+        } else if (!this._selectedDB) {
+            // start app
+            this._selectedDB = val;
+            this.cdr.detectChanges();
+        }
+    }
+    get selectedDB() {
+        return this._selectedDB;
+    }
     dictionary: Dictionary[] = [];
 
     dataForFile: any = null;
@@ -30,7 +46,7 @@ export class HomePageComponent implements OnInit {
     columns: any[] = [];
     errorMessage: string = '';
     authErrorMessage: string = '';
-
+    authSuccessMessage: string = '';
     PopularQueries: string[] = [
         'SHOW DATABASES',
         'SHOW TABLES',
@@ -54,15 +70,15 @@ export class HomePageComponent implements OnInit {
         }
 
         const auth: any = getStorage('AUTH_DATA');
-        console.log("auth", !!auth.dbURL)
-        if (auth.dbURL) {
+        console.log("auth", !!auth?.dbURL)
+        if (auth?.dbURL) {
             this.dbLink = auth.dbURL;
             this.dbLogin = auth.login;
             this.dbPassword = auth.password;
         } else {
             this.isAccess = false;
         }
-        if (!!auth.dbURL) {
+        if (!!auth?.dbURL) {
             this.connectToDB().then(() => {
                 this.getDynamicDictionary();
             });
@@ -126,7 +142,7 @@ export class HomePageComponent implements OnInit {
                     type: 'database',
                     children: tablesList?.data?.map((t: any) => {
                         const [tableName] = t;
-                        const tableId = `${dbName}.${tableName}`;
+                        const tableId = `${dbName}."${tableName}"`;
                         this.dictionary.push({
                             name: tableId,
                             icon: 3,
@@ -137,7 +153,8 @@ export class HomePageComponent implements OnInit {
                             type = 'non-table';
                         }
                         return {
-                            name: tableId,
+                            name: tableName,
+                            description: tableId,
                             type
                         }
                     })
@@ -158,7 +175,7 @@ export class HomePageComponent implements OnInit {
 
     onDbChoose(event?: any): void {
         const LIMIT = 50;
-        const sqlStr = `SELECT * FROM ${event.name} LIMIT ${LIMIT}`;
+        const sqlStr = `SELECT * FROM ${event.description} LIMIT ${LIMIT}`;
         if (event?.level === 1) {
             this.SQL(sqlStr)
         }
@@ -256,7 +273,7 @@ export class HomePageComponent implements OnInit {
         }
         this.SQL(this.sqlRequest);
     }
-    async connectToDB(event?: any) {
+    async connectToDB(event?: any, isTestConnection = false) {
         if (event) {
             this.dbLink = event.dbLink;
             this.dbLogin = event.dbLogin;
@@ -270,18 +287,28 @@ export class HomePageComponent implements OnInit {
         this.apiService.setLoginData(auth);
         const res = await this.SQL(QUERY_LIST.getDatabases, true);
         if (res) {
-            setStorage('AUTH_DATA', auth)
-            this.formatData({ meta: [], data: [] });
-            this.errorMessage = '';
             this.authErrorMessage = '';
-            this.isAccess = true;
-            this.initDbTree();
+            this.errorMessage = '';
+            this.authSuccessMessage = '';
+            if (!isTestConnection) {
+                setStorage('AUTH_DATA', auth)
+                this.formatData({ meta: [], data: [] });
+                this.isAccess = true;
+                this.initDbTree();
 
-            this.isLoadingDetails = true;
-            this.cdr.detectChanges();
-            await promiseWait(3000);
-            this.getHash();
-            this.isLoadingDetails = false;
+                this.isLoadingDetails = true;
+                this.cdr.detectChanges();
+                await promiseWait(3000);
+                this.getHash();
+                this.isLoadingDetails = false;
+            } else {
+                this.authSuccessMessage = 'Connection is successfully established.';
+                setTimeout(() => {
+                    this.authSuccessMessage = '';
+                    this.cdr.detectChanges();
+                }, 5000);
+            }
+            // this.isAccess = false;
             this.cdr.detectChanges();
             return true;
         } else {
@@ -290,7 +317,6 @@ export class HomePageComponent implements OnInit {
             this.cdr.detectChanges();
         }
         this.errorMessage = '';
-        this.isAccess = false;
         return false;
     }
     openRow(event: Map<string, any>) {
@@ -383,20 +409,12 @@ export class HomePageComponent implements OnInit {
         );
         return `${rows} rows in set. Elapsed ${elapsed}. Processed ${rows_read} rows, ${bytes_read} (${rowsPerSec} rows/s. ${bytesPerSec}/s.)`;
     }
+    setDBItems(DBItems: any) {
+        this.dbItems = DBItems;
+        this.selectedDB = DBItems.find((item: any) => {
+            return item.value.dbLink === this.dbLink
+        })
+        console.log(this.dbItems, this.selectedDB);
+        this.cdr.detectChanges();
+    }
 }
-
-export function promiseWait(sec = 1000): Promise<any> {
-    return new Promise<any>((require) => {
-        setTimeout(() => {
-            require(true);
-        }, sec)
-    })
-}
-export function setStorage(key: string, value: any): void {
-    localStorage.setItem(key, JSON.stringify(value));
-}
-
-export function getStorage(key: string) {
-    return JSON.parse(localStorage.getItem(key) || '{}');
-}
-

@@ -7,8 +7,18 @@
         <mat-icon>menu</mat-icon>
     </button>
     <span style="font-size: 20px !important">ClickHouse Mate</span>
+    <span style="margin-left: 1rem;margin-bottom: -15px;" *ngIf="dbItems && dbItems.length > 1">
+        <mat-form-field appearance="outline" >
+            <mat-label>Current DataBase</mat-label>
+            <mat-select [(value)]="selectedDB">
+                <mat-option *ngFor="let item of dbItems" [value]="item" [disabled]="item.value.isSucceeded !== true">
+                    {{ item.viewValue }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </span>
     <span class="example-spacer"></span>
-    <!-- <span> {{ dbLink }} : {{ dbLogin }} </span> -->
+
     <button
         [matTooltip]="'READONLY TURN ' + (isReadonly ? 'ON' : 'OFF') + ''"
         mat-icon-button
@@ -45,18 +55,18 @@
         >
             <mat-accordion class="dashboard-accordion">
                 <mat-expansion-panel
-                    [expanded]="!!this.dbTreeData && this.dbTreeData.length > 0"
+                    [expanded]="!!dbTreeData && dbTreeData.length > 0"
                 >
                     <mat-expansion-panel-header>
                         <mat-panel-title> DB Tree </mat-panel-title>
                     </mat-expansion-panel-header>
                     <div
-                        *ngIf="!this.dbTreeData || this.dbTreeData.length === 0"
+                        *ngIf="!dbTreeData || dbTreeData.length === 0"
                         style="height: 300px"
                     >
                         <loading></loading>
                     </div>
-                    <div *ngIf="this.dbTreeData.length > 0">
+                    <div *ngIf="dbTreeData && dbTreeData.length > 0">
                         <tree-filter
                             [data]="dbTreeData"
                             [isFilter]="false"
@@ -90,14 +100,7 @@
                         {{ item }}
                     </div>
                 </mat-expansion-panel>
-                <!-- <mat-expansion-panel *ngIf="currentRow.size > 0">
-                    {{ currentRow.size }}
-                    <mat-expansion-panel-header>
-                        <mat-panel-title> Row Details </mat-panel-title>
-                    </mat-expansion-panel-header>
 
-                    <app-row-details [row]="currentRow"> </app-row-details>
-                </mat-expansion-panel> -->
                 <mat-expansion-panel
                     *ngIf="isDocsShows"
                     [expanded]="isDocsShows"
@@ -106,7 +109,6 @@
                         <mat-panel-title> Docs </mat-panel-title>
                     </mat-expansion-panel-header>
 
-                    <!-- <app-row-details [row]="currentRow"> </app-row-details> -->
                     <app-ch-help
                         style="height: calc(100% - 8rem)"
                     ></app-ch-help>
@@ -177,14 +179,6 @@
                 </as-split-area>
             </as-split>
         </as-split-area>
-        <!-- <as-split-area
-            [visible]="isDocsShows"
-            [size]="15"
-            [order]="2"
-            style="display: flex; overflow: hidden"
-        >
-            <app-ch-help></app-ch-help>
-        </as-split-area> -->
     </as-split>
 </div>
 
@@ -192,5 +186,8 @@
     [isAccess]="isAccess"
     [settings]="{ dbLink, dbLogin, dbPassword }"
     [errorMessage]="authErrorMessage"
+    [successMessage]="authSuccessMessage"
     (ready)="connectToDB($event)"
+    (testConnection)="connectToDB($event, true)"
+    (changeDbItems)="setDBItems($event)"
 ></app-login-form>

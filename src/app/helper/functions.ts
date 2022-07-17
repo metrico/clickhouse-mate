@@ -34,6 +34,14 @@ export class Functions {
 
 }
 
+export function promiseWait(sec = 1000): Promise<any> {
+    return new Promise<any>((require) => {
+        setTimeout(() => {
+            require(true);
+        }, sec)
+    })
+}
+
 export function hash(str: string, lenHash: number = 32) {
     lenHash = lenHash || 32;
     str = str || "";
