@@ -1,7 +1,7 @@
 <div class="login-form-group" *ngIf="!isAccess" #login>
     <mat-card class="card">
         <mat-card-content>
-            <div class="flex-column">
+            <div class="flex-column" style="width: 750px">
                 <div>
                     <img
                         src="assets/image/big-logo.png"
@@ -11,68 +11,87 @@
                 <div class="error-message" mat-flat-button *ngIf="errorMessage">
                     {{ errorMessage }}
                 </div>
-
-                <!-- <mat-accordion>
-                    <mat-expansion-panel [expanded]="true">
-                        <mat-expansion-panel-header>
-                            <mat-panel-title>
-                                Recent databases
-                            </mat-panel-title>
-                            <mat-panel-description *ngIf="!!shoes.selectedOptions.selected[0]?.value?.viewValue">
-                                <div style="text-align: center; color: green" *ngIf="!!shoes.selectedOptions.selected[0]?.value?.viewValue">
-                                   {{shoes.selectedOptions.selected[0]?.value?.viewValue}}
-                                </div>
-                            </mat-panel-description>
-                        </mat-expansion-panel-header>
+                <div
+                    class="success-message"
+                    mat-flat-button
+                    *ngIf="successMessage && !errorMessage"
+                >
+                    {{ successMessage }}
+                </div>
+                <mat-progress-bar
+                    mode="indeterminate"
+                    *ngIf="inProcess"
+                ></mat-progress-bar>
+                <mat-grid-list cols="7" rowHeight="1:2">
+                    <mat-grid-tile [colspan]="2">
                         <div class="flex-column">
-                            <mat-selection-list #shoes [multiple]="false">
+                            <mat-selection-list #dbServer [multiple]="false">
                                 <mat-list-option
-                                    *ngFor="let shoe of dbItems"
-                                    [value]="shoe"
+                                    *ngFor="let dbServer of dbItems"
+                                    [value]="dbServer"
+                                    (click)="selectConnection()"
                                 >
-                                    {{ shoe.viewValue }}
+                                    <div style="display: flex">
+                                        <span>
+                                            {{ dbServer.viewValue }}
+                                        </span>
+                                        <span class="example-spacer"></span>
+                                        <span>
+                                            <mat-icon
+                                                class="success-icon false"
+                                                [ngStyle]="
+                                                    (!isSucceeded(
+                                                        dbServer,
+                                                        false
+                                                    ) && { display: 'none' }) ||
+                                                    {}
+                                                "
+                                                >error_outline</mat-icon
+                                            >
+                                            <mat-icon
+                                                class="success-icon true"
+                                                [ngStyle]="
+                                                    (!isSucceeded(
+                                                        dbServer,
+                                                        true
+                                                    ) && { display: 'none' }) ||
+                                                    {}
+                                                "
+                                                >check</mat-icon
+                                            >
+                                            <mat-icon
+                                                class="success-icon null"
+                                                [ngStyle]="
+                                                    (!isSucceeded(
+                                                        dbServer,
+                                                        null
+                                                    ) && { display: 'none' }) ||
+                                                    {}
+                                                "
+                                                >warning</mat-icon
+                                            >
+                                        </span>
+                                    </div>
+                                </mat-list-option>
+                                <mat-divider></mat-divider>
+                                <mat-list-option (click)="addNew()">
+                                    <div
+                                        class="flex-column"
+                                        style="
+                                            flex-direction: row;
+                                            align-items: end;
+                                        "
+                                    >
+                                        <div style="flex: 1">
+                                            ADD CONNECTION
+                                        </div>
+                                        <mat-icon style="flex: 0">add</mat-icon>
+                                    </div>
                                 </mat-list-option>
                             </mat-selection-list>
-
-                            <div class="btn-panel" *ngIf="!!shoes.selectedOptions.selected[0]?.value?.viewValue">
-                                <button
-                                    style="margin-right: 0.5rem"
-                                    mat-raised-button
-                                    (click)="isAccess = !isAccess"
-                                    color="primary"
-                                    cdkFocusInitial
-                                >
-                                    Test connection
-                                </button>
-                                <button
-                                    mat-raised-button
-                                    (click)="connectToDB()"
-                                    color="warn"
-                                    cdkFocusInitial
-                                >
-                                    Edit connection
-                                </button>
-
-                                <button
-                                    mat-raised-button
-                                    (click)="connectToDB()"
-                                    color="accent"
-                                    cdkFocusInitial
-                                >
-                                    Remove connection
-                                </button>
-
-                            </div>
-
-
                         </div>
-                    </mat-expansion-panel>
-                    <mat-expansion-panel>
-                        <mat-expansion-panel-header>
-                            <mat-panel-title>
-                                Create a new connection to DB
-                            </mat-panel-title>
-                        </mat-expansion-panel-header> -->
+                    </mat-grid-tile>
+                    <mat-grid-tile [colspan]="5">
                         <div class="flex-column">
                             <mat-form-field appearance="fill">
                                 <mat-label>ClickHouse HTTP URL</mat-label>
@@ -80,6 +99,7 @@
                                     matInput
                                     [(ngModel)]="settings.dbLink"
                                     placeholder="//localhost:8123"
+                                    (ngModelChange)="selectConnection()"
                                 />
                             </mat-form-field>
 
@@ -101,20 +121,46 @@
                                 />
                             </mat-form-field>
                         </div>
-                    <!-- </mat-expansion-panel>
-                </mat-accordion> -->
-                <div class="btn-panel" style="margin: 0rem">
+                    </mat-grid-tile>
+                </mat-grid-list>
+
+                <div class="btn-panel" style="margin: 0rem; margin-top: 2rem">
                     <button
                         style="margin-right: 0.5rem"
                         mat-raised-button
                         (click)="isAccess = !isAccess"
                         cdkFocusInitial
+                        [disabled]="!checkIfHasOneConnect()"
                     >
                         cancel
                     </button>
                     <button
+                        style="margin-right: 0.5rem"
+                        mat-raised-button
+                        (click)="
+                            testToConnect(
+                                dbServer.selectedOptions.selected[0]?.value
+                            )
+                        "
+                        [disabled]="!(dbServer.selectedOptions?.selected?.[0])"
+                        color="primary"
+                        cdkFocusInitial
+                    >
+                        Test connection
+                    </button>
+                    <button
+                        mat-raised-button
+                        (click)="removeConnection()"
+                        color="accent"
+                        [disabled]="!(dbServer.selectedOptions?.selected?.[0])"
+                        cdkFocusInitial
+                    >
+                        Remove connection
+                    </button>
+                    <button
                         mat-raised-button
                         (click)="connectToDB()"
+                        [disabled]="!(dbServer.selectedOptions?.selected?.[0] && checkIfHasOneConnect())"
                         color="primary"
                         cdkFocusInitial
                     >

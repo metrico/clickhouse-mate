@@ -8,6 +8,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatListModule } from '@angular/material/list';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 @NgModule({
     imports: [
         CommonModule,
@@ -17,7 +20,10 @@ import { MatListModule } from '@angular/material/list';
         MatButtonModule,
         MatSelectModule,
         MatExpansionModule,
-        MatListModule
+        MatListModule,
+        MatGridListModule,
+        MatIconModule,
+        MatProgressBarModule
     ],
     declarations: [LoginFormComponent],
     exports: [LoginFormComponent]
