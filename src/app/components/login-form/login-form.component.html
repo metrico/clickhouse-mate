@@ -137,11 +137,7 @@
                     <button
                         style="margin-right: 0.5rem"
                         mat-raised-button
-                        (click)="
-                            testToConnect(
-                                dbServer.selectedOptions.selected[0]?.value
-                            )
-                        "
+                        (click)="testToConnect()"
                         [disabled]="!(dbServer.selectedOptions?.selected?.[0])"
                         color="primary"
                         cdkFocusInitial

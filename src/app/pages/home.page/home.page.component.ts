@@ -25,6 +25,15 @@ export class HomePageComponent implements OnInit {
     _selectedDB: any;
     set selectedDB(val: any) {
         console.log('set new value', val);
+
+        if (this.dbLink === val?.value?.dbLink &&
+            this.dbLogin === val?.value?.dbLogin &&
+            this.dbPassword === val?.value?.dbPassword
+        ) {
+            this._selectedDB = val;
+            return;
+        }
+
         if (this._selectedDB && this._selectedDB?.value?.dbLink !== val?.value?.dbLink) {
             this._selectedDB = val;
             this.connectToDB(this._selectedDB.value);
@@ -409,12 +418,16 @@ export class HomePageComponent implements OnInit {
         );
         return `${rows} rows in set. Elapsed ${elapsed}. Processed ${rows_read} rows, ${bytes_read} (${rowsPerSec} rows/s. ${bytesPerSec}/s.)`;
     }
-    setDBItems(DBItems: any) {
-        this.dbItems = DBItems;
+    setDBItems(DBItems: any = null) {
+        if (DBItems) {
+            this.dbItems = DBItems;
+        }
         this.selectedDB = DBItems.find((item: any) => {
             return item.value.dbLink === this.dbLink
         })
         console.log(this.dbItems, this.selectedDB);
-        this.cdr.detectChanges();
+        requestAnimationFrame(() => {
+            this.cdr.detectChanges();
+        })
     }
 }

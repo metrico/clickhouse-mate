@@ -184,14 +184,16 @@ export class LoginFormComponent implements OnInit, AfterViewInit {
         this.changeDbList();
     }
     connectToDB() {
+        this.testToConnect();
         this.changeDbList();
         this.ready.emit(this.settings);
     }
     changeDbList() {
         setStorage('dbItems', this.dbItems);
         this.changeDbItems.emit(this.dbItems);
+        this.cdr.detectChanges();
     }
-    testToConnect(item: any) {
+    testToConnect() {
         this.inProcess = true;
         this.cdr.detectChanges();
         // this.changeDbList();

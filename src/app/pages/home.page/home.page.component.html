@@ -9,7 +9,7 @@
     <span style="font-size: 20px !important">ClickHouse Mate</span>
     <span style="margin-left: 1rem;margin-bottom: -15px;" *ngIf="dbItems && dbItems.length > 1">
         <mat-form-field appearance="outline" >
-            <mat-label>Current DataBase</mat-label>
+            <!-- <mat-label>Connection</mat-label> -->
             <mat-select [(value)]="selectedDB">
                 <mat-option *ngFor="let item of dbItems" [value]="item" [disabled]="item.value.isSucceeded !== true">
                     {{ item.viewValue }}
