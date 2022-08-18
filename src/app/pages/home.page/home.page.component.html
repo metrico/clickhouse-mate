@@ -7,8 +7,25 @@
         <mat-icon>menu</mat-icon>
     </button>
     <span style="font-size: 20px !important">ClickHouse Mate</span>
+    <span
+        style="margin-left: 1rem; margin-bottom: -15px"
+        *ngIf="dbItems && dbItems.length > 1"
+    >
+        <mat-form-field appearance="outline">
+            <!-- <mat-label>Connection</mat-label> -->
+            <mat-select [(value)]="selectedDB">
+                <mat-option
+                    *ngFor="let item of dbItems"
+                    [value]="item"
+                    [disabled]="item.value.isSucceeded !== true"
+                >
+                    {{ item.viewValue }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </span>
     <span class="example-spacer"></span>
-    <!-- <span> {{ dbLink }} : {{ dbLogin }} </span> -->
+
     <button
         [matTooltip]="'READONLY TURN ' + (isReadonly ? 'ON' : 'OFF') + ''"
         mat-icon-button
@@ -43,20 +60,20 @@
             [useTransition]="true"
             [order]="0"
         >
-            <mat-accordion>
+            <mat-accordion class="dashboard-accordion">
                 <mat-expansion-panel
-                    [expanded]="!!this.dbTreeData && this.dbTreeData.length > 0"
+                    [expanded]="!!dbTreeData && dbTreeData.length > 0"
                 >
                     <mat-expansion-panel-header>
                         <mat-panel-title> DB Tree </mat-panel-title>
                     </mat-expansion-panel-header>
                     <div
-                        *ngIf="!this.dbTreeData || this.dbTreeData.length === 0"
+                        *ngIf="!dbTreeData || dbTreeData.length === 0"
                         style="height: 300px"
                     >
                         <loading></loading>
                     </div>
-                    <div *ngIf="this.dbTreeData.length > 0">
+                    <div *ngIf="dbTreeData && dbTreeData.length > 0">
                         <tree-filter
                             [data]="dbTreeData"
                             [isFilter]="false"
@@ -90,14 +107,7 @@
                         {{ item }}
                     </div>
                 </mat-expansion-panel>
-                <!-- <mat-expansion-panel *ngIf="currentRow.size > 0">
-                    {{ currentRow.size }}
-                    <mat-expansion-panel-header>
-                        <mat-panel-title> Row Details </mat-panel-title>
-                    </mat-expansion-panel-header>
 
-                    <app-row-details [row]="currentRow"> </app-row-details>
-                </mat-expansion-panel> -->
                 <mat-expansion-panel
                     *ngIf="isDocsShows"
                     [expanded]="isDocsShows"
@@ -106,7 +116,6 @@
                         <mat-panel-title> Docs </mat-panel-title>
                     </mat-expansion-panel-header>
 
-                    <!-- <app-row-details [row]="currentRow"> </app-row-details> -->
                     <app-ch-help
                         style="height: calc(100% - 8rem)"
                     ></app-ch-help>
@@ -131,85 +140,65 @@
                         [dictionaryFull]="dictionary"
                     ></ace-editor-ext>
                 </as-split-area>
-                <as-split-area [size]="90">
-                    <div class="data-place">
-                        <ng-container
-                            *ngIf="details.length === 0; else hasData"
-                        >
-                            <h1>No Data</h1>
-                            <div
-                                class="error-message"
-                                mat-flat-button
-                                color="warn"
-                                *ngIf="errorMessage"
-                                style="white-space: pre-wrap; width: 100%"
-                            >
-                                {{ errorMessage }}
+                <as-split-area [size]="90" #containerSplitter>
+                    <mat-tab-group class="mini-tabs">
+                        <mat-tab label="Table">
+                            <div class="data-place" [style.height.px]="containerSplitter.offsetHeight - 22">
+                                <ng-container
+                                    *ngIf="details.length === 0; else hasData"
+                                >
+                                    <h1>No Data</h1>
+                                    <div
+                                        class="error-message"
+                                        mat-flat-button
+                                        color="warn"
+                                        *ngIf="errorMessage"
+                                        style="
+                                            white-space: pre-wrap;
+                                            width: 100%;
+                                        "
+                                    >
+                                        {{ errorMessage }}
+                                    </div>
+                                </ng-container>
+                                <ng-template #hasData>
+                                    <div class="short-stat">
+                                        {{ getStatistic(dataForFile) }}
+                                    </div>
+                                    <custom-ag-grid
+                                        *ngIf="isObjectData(); else preText"
+                                        class="example-table-containers"
+                                        [itemList]="[
+                                            'Save as JSON',
+                                            'Save as JSONCompact',
+                                            'Save as CSV'
+                                        ]"
+                                        (menuClick)="save($event)"
+                                        [details]="details"
+                                        [columns]="columns"
+                                        [(pageSize)]="pageSize"
+                                        [(isPaginator)]="isPaginator"
+                                        (rowClick)="openRow($event)"
+                                    ></custom-ag-grid>
+                                    <ng-template #preText>
+                                        <pre>{{ details }}</pre>
+                                    </ng-template>
+                                </ng-template>
+                                <div
+                                    class="data-loader"
+                                    *ngIf="isLoadingDetails"
+                                >
+                                    <loading></loading>
+                                </div>
                             </div>
-                        </ng-container>
-                        <ng-template #hasData>
-                            <div class="short-stat">
-                                <div>
-                                    <strong>Elapsed: </strong>
-                                    <span>{{
-                                        timeShorter(
-                                            dataForFile?.statistics?.elapsed ||
-                                                0
-                                        )
-                                    }}</span>
-                                </div>
-                                <div>
-                                    <strong>Rows: </strong>
-                                    <span>{{
-                                        dataForFile?.statistics?.rows_read
-                                    }}</span>
-                                </div>
-                                <div>
-                                    <strong>Size: </strong>
-                                    <span>
-                                        {{
-                                            bytesToSize(
-                                                dataForFile?.statistics
-                                                    ?.bytes_read || 0
-                                            )
-                                        }}
-                                    </span>
-                                </div>
-                            </div>
-                            <custom-ag-grid
-                                *ngIf="isObjectData(); else preText"
-                                class="example-table-containers"
-                                [itemList]="[
-                                    'Save as JSON',
-                                    'Save as JSONCompact',
-                                    'Save as CSV'
-                                ]"
-                                (menuClick)="save($event)"
-                                [details]="details"
-                                [columns]="columns"
-                                [(pageSize)]="pageSize"
-                                [(isPaginator)]="isPaginator"
-                                (rowClick)="openRow($event)"
-                            ></custom-ag-grid>
-                            <ng-template #preText>
-                                <pre>{{ details }}</pre>
-                            </ng-template>
-                        </ng-template>
-                        <div class="data-loader" *ngIf="isLoadingDetails">
-                            <loading></loading>
-                        </div>
-                    </div>
+                        </mat-tab>
+                        <mat-tab label="Chart">
+                            <ngx-uplot [data]="dataForFile"></ngx-uplot>
+                        </mat-tab>
+                    </mat-tab-group>
                 </as-split-area>
             </as-split>
         </as-split-area>
-        <!-- <as-split-area
-            [visible]="isDocsShows"
-            [size]="15"
-            [order]="2"
-            style="display: flex; overflow: hidden"
-        >
-            <app-ch-help></app-ch-help>
-        </as-split-area> -->
     </as-split>
 </div>
 
@@ -217,5 +206,8 @@
     [isAccess]="isAccess"
     [settings]="{ dbLink, dbLogin, dbPassword }"
     [errorMessage]="authErrorMessage"
+    [successMessage]="authSuccessMessage"
     (ready)="connectToDB($event)"
+    (testConnection)="connectToDB($event, true)"
+    (changeDbItems)="setDBItems($event)"
 ></app-login-form>

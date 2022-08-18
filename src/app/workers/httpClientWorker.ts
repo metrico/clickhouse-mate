@@ -32,7 +32,7 @@ export class HttpClientWorker {
                 }
 
                 xhr.onload = (data) => {
-                    console.log({ data });
+                    // console.log({ data });
                     if (xhr.status === 200) {
                         resolve(xhr);
                     } else {
