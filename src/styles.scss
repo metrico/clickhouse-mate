@@ -40,6 +40,7 @@ body {
 
 @import "~ag-grid-community/dist/styles/ag-grid.css";
 @import "~ag-grid-community/src/styles/ag-theme-material/sass/ag-theme-material";
+@import "uplot-css.css";
 
 .ag-row-selected {
     background-color: #eee !important;
@@ -152,4 +153,9 @@ a:not([href]) {
 .dark {
     filter: invert(0.85) hue-rotate(136deg) brightness(1.5) contrast(1.3);
     background-color: white;
+}
+.mini-tabs {
+    .mat-tab-label {
+        height: 20px;
+    }
 }

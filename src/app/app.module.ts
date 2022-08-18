@@ -19,6 +19,7 @@ import { CustomAgGridModule } from './components/custom-ag-grid/custom-ag-grid.m
 import { LoginFormModule } from './components/login-form/login-form.module';
 import { AlertService } from './services/alert.service';
 import { LoadingCircleModule } from './components/loading-circle/loading-circle.module';
+import { NgxUplotModule } from './components/ngx-uplot/ngx-uplot.module';
 
 
 @NgModule({
@@ -40,7 +41,8 @@ import { LoadingCircleModule } from './components/loading-circle/loading-circle.
         LoginFormModule,
         AceEditorExtModule,
         LoadingCircleModule,
-        ChHelpModule
+        ChHelpModule,
+        NgxUplotModule
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     providers: [
