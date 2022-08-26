@@ -13,8 +13,8 @@ function shallowClone(obj: any) {
 const NEW_CONNECT = '(new connect)';
 @Component({
     selector: 'app-login-form',
-    templateUrl: './login-form.component.html',
-    styleUrls: ['./login-form.component.scss'],
+    templateUrl: 'login-form.component.html',
+    styleUrls: ['login-form.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginFormComponent implements OnInit, AfterViewInit {
@@ -118,7 +118,7 @@ export class LoginFormComponent implements OnInit, AfterViewInit {
         const s = this.connectionList?.selectedOptions?.selected?.[0]?.value?.value;
         const b = s?.isSucceeded === true;
         const c = s?.dbLink !== '';
-        console.log({ b, c, s:this.connectionList?.selectedOptions?.selected });
+        // console.log({ b, c, s:this.connectionList?.selectedOptions?.selected });
         return b && c;
     }
     ngAfterViewInit() {

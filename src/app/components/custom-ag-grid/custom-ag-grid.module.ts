@@ -29,7 +29,7 @@ import { NgxJsonViewerModule } from 'ngx-json-viewer';
         FontAwesomeModule,
         MatButtonModule,
         FormsModule,
-        AgGridModule.withComponents([]),
+        AgGridModule,
         MatMenuModule,
         MatCheckboxModule,
         MatCardModule,
@@ -43,7 +43,13 @@ import { NgxJsonViewerModule } from 'ngx-json-viewer';
         NgxJsonViewerModule
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    declarations: [CustomAgGridComponent, SettingButtonComponent, DragDropListComponent, ExpandRendererComponent, FullRowRendererComponent],
+    declarations: [
+        CustomAgGridComponent,
+        SettingButtonComponent,
+        DragDropListComponent,
+        ExpandRendererComponent,
+        FullRowRendererComponent
+    ],
     exports: [CustomAgGridComponent],
     providers: [AgEventService]
 })

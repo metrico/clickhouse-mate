@@ -1,4 +1,4 @@
-<mat-toolbar color="primary" class="ukranian-bg">
+<mat-toolbar color="primary" class="ukranian-bg" *ngIf="!getParam.kiosk">
     <button
         mat-icon-button
         class="example-icon"
@@ -25,7 +25,9 @@
         </mat-form-field>
     </span>
     <span class="example-spacer"></span>
-
+    <button mat-icon-button class="example-icon" (click)="openDialog()">
+        <mat-icon>link</mat-icon>
+    </button>
     <button
         [matTooltip]="'READONLY TURN ' + (isReadonly ? 'ON' : 'OFF') + ''"
         mat-icon-button
@@ -51,12 +53,17 @@
 
 <div
     [ngClass]="{ dark: isDarkMode }"
-    style="width: 100%; height: calc(100vh - 4rem)"
+    [ngStyle]="{
+        width: '100%',
+        height: getParam.kiosk ? '100vh' : 'calc(100vh - 4rem)'
+    }"
 >
     <as-split direction="horizontal">
         <as-split-area
             [size]="15"
-            [visible]="isLeftPanel"
+            [visible]="
+                isLeftPanel && (getParam.kiosk ? !!getParam.panel : true)
+            "
             [useTransition]="true"
             [order]="0"
         >
@@ -129,6 +136,11 @@
         >
             <as-split direction="vertical" [gutterSize]="5">
                 <as-split-area
+                    [ngStyle]="{
+                        display:
+                            !(getParam.kiosk ? !!getParam.query_field : true) &&
+                            'none'
+                    }"
                     [size]="10"
                     [order]="0"
                     style="position: relative"
@@ -140,10 +152,21 @@
                         [dictionaryFull]="dictionary"
                     ></ace-editor-ext>
                 </as-split-area>
-                <as-split-area [size]="90" #containerSplitter>
+                <as-split-area
+                    [size]="90"
+                    #containerSplitter
+                >
                     <mat-tab-group class="mini-tabs">
-                        <mat-tab label="Table">
-                            <div class="data-place" [style.height.px]="containerSplitter.offsetHeight - 22">
+                        <mat-tab label="Table" *ngIf="getParam.kiosk ? getParam.table : true" >
+                            <div
+                                class="data-place"
+                                [style.height.px]="
+                                    (getParam.kiosk &&
+                                        !getParam.query_field &&
+                                        containerSplitter.offsetHeight) ||
+                                    containerSplitter.offsetHeight - 22
+                                "
+                            >
                                 <ng-container
                                     *ngIf="details.length === 0; else hasData"
                                 >
@@ -192,7 +215,7 @@
                                 </div>
                             </div>
                         </mat-tab>
-                        <mat-tab label="Chart">
+                        <mat-tab label="Chart" *ngIf="getParam.kiosk ? getParam.chart : true">
                             <ngx-uplot [data]="dataForFile"></ngx-uplot>
                         </mat-tab>
                     </mat-tab-group>

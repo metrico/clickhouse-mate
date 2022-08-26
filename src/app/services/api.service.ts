@@ -71,6 +71,7 @@ export class ApiService {
         }
         return this.bufferParams;
     }
+
     post(dbURL: string = this.dbURL, postData: any) {
         const { query = '' } = postData;
         const getStr = this.params(postData);

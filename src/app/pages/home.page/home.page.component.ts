@@ -1,10 +1,14 @@
+import { HashParams } from './../../app.component';
 import { DocsService } from './../../services/docs.service';
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, Inject } from '@angular/core';
 import { ApiService, QUERY_LIST } from 'src/app/services/api.service';
 import { getStorage, saveToFile, setStorage } from '@app/helper/windowFunctions';
 import { Row } from '@app/models/grid.model';
 import { Dictionary } from '@app/components/ace-editor-ext/dictionary-default';
 import { promiseWait } from '@app/helper/functions';
+import { getParam } from '@app/app.component';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogKioskComponent } from '../dialogs/dialog-kiosk/dialog-kiosk.component';
 
 @Component({
     templateUrl: './home.page.component.html',
@@ -12,6 +16,7 @@ import { promiseWait } from '@app/helper/functions';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomePageComponent implements OnInit {
+    getParam: HashParams = getParam;
     isAccess = true;
     isReadonly = true;
     isDarkMode = false;
@@ -69,8 +74,13 @@ export class HomePageComponent implements OnInit {
     constructor(
         private apiService: ApiService,
         private docsService: DocsService,
-        private cdr: ChangeDetectorRef
-    ) { }
+        private cdr: ChangeDetectorRef,
+        public dialog: MatDialog
+    ) {
+        if (getParam.kiosk) {
+            this.isDarkMode = getParam.mode === 'dark';
+        }
+    }
 
     ngOnInit(): void {
         const json = localStorage.getItem('SqlArchive');
@@ -78,8 +88,13 @@ export class HomePageComponent implements OnInit {
             this.SqlArchive = JSON.parse(json);
         }
 
-        const auth: any = getStorage('AUTH_DATA');
+        const auth: any = getParam.kiosk ? {
+            dbURL: getParam.db_host,
+            login: getParam.db_login,
+            password: getParam.db_pass
+        } : getStorage('AUTH_DATA');
         console.log("auth", !!auth?.dbURL)
+
         if (auth?.dbURL) {
             this.dbLink = auth.dbURL;
             this.dbLogin = auth.login;
@@ -88,8 +103,8 @@ export class HomePageComponent implements OnInit {
             this.isAccess = false;
         }
         if (!!auth?.dbURL) {
-            this.connectToDB().then(() => {
-                this.getDynamicDictionary();
+            this.connectToDB().then(async () => {
+                await this.getDynamicDictionary();
             });
         }
         console.log(this.currentRow.size)
@@ -101,9 +116,12 @@ export class HomePageComponent implements OnInit {
                 this.cdr.detectChanges();
             })
             // this.isLeftPanel = !doc_link;
-        })
+        });
     }
-    getDynamicDictionary() {
+    async getDynamicDictionary() {
+        if (getParam.kiosk && !getParam.query_field) {
+            return await promiseWait(0);
+        }
         const queryList: string[] = [
             'SELECT name FROM system.functions',
             'SELECT name FROM system.formats'
@@ -131,6 +149,10 @@ export class HomePageComponent implements OnInit {
         stack(queryList.shift())
     }
     async initDbTree() {
+        if (getParam.kiosk && !getParam.panel) {
+
+            return await promiseWait(0);
+        }
         const result: any = await this.apiService.runQuery(QUERY_LIST.getDatabases);
         const { data } = result || {}
         const dbTreeData: any[] = [];
@@ -218,20 +240,23 @@ export class HomePageComponent implements OnInit {
         }
         // console.log((location.hash + '').replace('#', ''))
         try {
-            const sqlRequest = atob((location.hash + '').replace('#', ''));
+            // const sqlRequest = atob((location.hash + '').replace('#', ''));
+            const sqlRequest = getParam.query;
             this.sqlRequest = sqlRequest;
             this.SQL(this.sqlRequest);
             this.isAccess = true;
             return true;
         } catch (error) {
             console.log('ERROR', error)
-            location.hash = '';
+            // location.hash = '';
             return false;
         }
     }
 
     setHash() {
-        location.hash = '#' + btoa(this.sqlRequest);
+        if (!getParam.kiosk) {
+            location.hash = '#query=' + encodeURI(this.sqlRequest);
+        }
     }
 
     async SQL(sqlStr: string, isAuthenticated: boolean = false) {
@@ -429,5 +454,23 @@ export class HomePageComponent implements OnInit {
         requestAnimationFrame(() => {
             this.cdr.detectChanges();
         })
+    }
+    openDialog(): void {
+        const dialogRef = this.dialog.open(DialogKioskComponent, {
+            width: '650px',
+            data: {
+                dbLink: this.dbLink,
+                dbLogin: this.dbLogin,
+                dbPassword: this.dbPassword,
+                sqlRequest: this.sqlRequest
+            },
+        });
+
+        dialogRef.afterClosed().subscribe((result: any) => {
+            console.log('The dialog was closed', { result });
+            requestAnimationFrame(() => {
+                this.cdr.detectChanges();
+            });
+        });
     }
 }

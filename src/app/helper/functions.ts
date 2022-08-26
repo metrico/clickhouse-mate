@@ -1,4 +1,4 @@
-import { Md5 } from 'ts-md5/dist/md5';
+// import { Md5 } from 'ts-md5/dist/md5';
 
 export class Functions {
     static JSON_parse(jsonString: string): any {
@@ -24,7 +24,7 @@ export class Functions {
     }
     static md5(str: string): string {
         str = str || '';
-        return Md5.hashAsciiStr(str) + '';
+        return hash(str) + '';
     }
     static emitWindowResize(): void {
         setTimeout(() => {

@@ -137,7 +137,7 @@
                         style="margin-right: 0.5rem"
                         mat-raised-button
                         (click)="testToConnect()"
-                        [disabled]="!(dbServer.selectedOptions?.selected?.[0])"
+                        [disabled]="!(dbServer.selectedOptions.selected[0])"
                         color="primary"
                         cdkFocusInitial
                     >
@@ -147,7 +147,7 @@
                         mat-raised-button
                         (click)="removeConnection()"
                         color="accent"
-                        [disabled]="!(dbServer.selectedOptions?.selected?.[0])"
+                        [disabled]="!(dbServer.selectedOptions.selected[0])"
                         cdkFocusInitial
                     >
                         Remove connection
@@ -155,7 +155,7 @@
                     <button
                         mat-raised-button
                         (click)="connectToDB()"
-                        [disabled]="!(dbServer.selectedOptions?.selected?.[0] && checkIfHasOneConnect())"
+                        [disabled]="!(dbServer.selectedOptions.selected[0] && checkIfHasOneConnect())"
                         color="primary"
                         cdkFocusInitial
                     >

@@ -1,13 +1,11 @@
-import { Component, OnInit, ViewChild, AfterViewInit, HostListener, Input } from '@angular/core';
+import { Component, ViewChild, AfterViewInit, Input } from '@angular/core';
 import * as _uPlot from 'uplot';
 
 const uPlot: any = (_uPlot as any)?.default;
 
 @Component({
     selector: 'ngx-uplot',
-    // templateUrl: './ngx-uplot.component.html',
     template: `<div style="margin: 0.5rem;" #chartUPlot></div>`,
-    // styleUrls: ['./ngx-uplot.component.scss']
     styles: [`
     .u-legend.u-inline .u-value {
         width: 150px;
