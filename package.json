@@ -1,6 +1,6 @@
 {
   "name": "click-house-play",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --open",
