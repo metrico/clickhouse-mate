@@ -60,7 +60,7 @@ export class DialogKioskComponent implements OnInit, AfterContentChecked {
         this.dialogRef.close();
     }
     setLink() {
-        this.link = location.origin + '#' +
+        this.link = location.origin + location.pathname + '#' +
             Object.entries(this.config).map(([key, value]: [string, any]) => {
                 if (!value && typeof value !== 'boolean') {
                     return '';
