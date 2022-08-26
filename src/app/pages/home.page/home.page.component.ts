@@ -80,6 +80,9 @@ export class HomePageComponent implements OnInit {
         if (getParam.kiosk) {
             this.isDarkMode = getParam.mode === 'dark';
         }
+        if (getParam.query) {
+            this.sqlRequest = getParam.query;
+        }
     }
 
     ngOnInit(): void {
@@ -157,7 +160,7 @@ export class HomePageComponent implements OnInit {
         const { data } = result || {}
         const dbTreeData: any[] = [];
         const stack = async ([dbName]: any) => {
-            await promiseWait(20);
+            await promiseWait(5);
             let lvf;
             try {
                 lvf = await this.apiService.runQuery(QUERY_LIST.useDatabase(dbName));
@@ -261,9 +264,12 @@ export class HomePageComponent implements OnInit {
 
     async SQL(sqlStr: string, isAuthenticated: boolean = false) {
         await promiseWait(100);
-        this.sqlRequest = sqlStr;
+        if (!isAuthenticated) {
+            this.sqlRequest = sqlStr;
+        }
         this.isLoadingDetails = true;
         this.cdr.detectChanges();
+
         this.details = [];
 
         if (!isAuthenticated) {
@@ -285,13 +291,17 @@ export class HomePageComponent implements OnInit {
             return true;
 
         } catch (error: any) {
-            console.error(error);
+            console.error(error, isAuthenticated);
             this.details = [];
             if (!isAuthenticated) {
                 this.errorMessage = error.error || error.message;
             } else {
                 this.authErrorMessage = error.error || error.message;
+                this.isAccess = false;
                 console.error({ authErrorMessage: this.authErrorMessage });
+                requestAnimationFrame(() => {
+                    this.cdr.detectChanges();
+                })
             }
             this.isLoadingDetails = false;
             this.cdr.detectChanges();
@@ -328,12 +338,17 @@ export class HomePageComponent implements OnInit {
                 setStorage('AUTH_DATA', auth)
                 this.formatData({ meta: [], data: [] });
                 this.isAccess = true;
-                this.initDbTree();
+                this.getHash();
 
                 this.isLoadingDetails = true;
                 this.cdr.detectChanges();
-                await promiseWait(3000);
-                this.getHash();
+
+                await promiseWait(100);
+                this.cdr.detectChanges();
+
+                await this.initDbTree();
+                this.cdr.detectChanges();
+
                 this.isLoadingDetails = false;
             } else {
                 this.authSuccessMessage = 'Connection is successfully established.';
