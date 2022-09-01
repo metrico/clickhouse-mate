@@ -1,4 +1,5 @@
 import {
+    AfterContentChecked,
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
@@ -27,7 +28,7 @@ import { SettingButtonComponent } from './setting-button';
 export const isExpanded = 'isExpanded';
 
 export const defaultRowHeight = 38;
-export const maxRowHeight = 228;   
+export const maxRowHeight = 228;
 
 const GRID_FIT = 'autoSizeColumns';
 export interface gridContext {
@@ -44,7 +45,7 @@ export interface sizeControl {
     styleUrls: ['./custom-ag-grid.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CustomAgGridComponent implements OnInit {
+export class CustomAgGridComponent implements OnInit, AfterContentChecked {
     @Input()
     set itemList(list: any) {
         this.agEventService.itemList = list;
@@ -109,11 +110,9 @@ export class CustomAgGridComponent implements OnInit {
     get details() {
         return this._details;
     }
-    test(){
-        console.log('test')
-    }
+
     @Input() set columns(val: string[]) {
-        // console.log(val)
+
         if (!val) {
             return;
         }
@@ -169,6 +168,11 @@ export class CustomAgGridComponent implements OnInit {
     @Output() rowClick: EventEmitter<Row> = new EventEmitter();
     @Output() menuClick: EventEmitter<any> = new EventEmitter();
 
+    // @HostListener('mouseover')
+    // onMouseOver() {
+    //     this.resizeGrid();
+    // }
+
     @HostListener('dblclick')
     onDblClick() {
         this.resizeGrid();
@@ -188,7 +192,7 @@ export class CustomAgGridComponent implements OnInit {
         requestAnimationFrame(() => {
             if (this.agGridSizeControl.selectedType === GRID_FIT) {
                 this.gridColumnApi?.autoSizeAllColumns();
-                console.log('test')
+
             } else {
                 this.gridApi?.sizeColumnsToFit();
             }
@@ -221,12 +225,12 @@ export class CustomAgGridComponent implements OnInit {
         // changing maxRowHeight also requires changing :host max-height in full-row-renderer.component.scss
         if (isFullWidth) {
             const columnCount = Object.keys(params.data)?.length;
-            const exapndedRowSize = (columnCount * defaultRowHeight) + margins;     
+            const exapndedRowSize = (columnCount * defaultRowHeight) + margins;
             return Math.min(exapndedRowSize, maxRowHeight);
         } else {
-            let maxNewlineCount = 1; 
+            let maxNewlineCount = 1;
             Object.values(params.data).forEach((element) => {
-                if (typeof element === 'string'){ 
+                if (typeof element === 'string'){
                     const newLineCount = element.split(/\n|\r\n/).length - 1;
                     if (newLineCount > maxNewlineCount) {
                         maxNewlineCount = newLineCount;
@@ -245,6 +249,9 @@ export class CustomAgGridComponent implements OnInit {
                 this.menuClick.emit(data);
             }
         });
+    }
+    ngAfterContentChecked() {
+        this.resizeGrid();
     }
     isFullWidthRow({ data }: any): boolean {
         return data.isExpanded;
