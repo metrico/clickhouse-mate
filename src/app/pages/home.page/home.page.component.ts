@@ -2,7 +2,7 @@ import { HashParams } from './../../app.component';
 import { DocsService } from './../../services/docs.service';
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, Inject } from '@angular/core';
 import { ApiService, QUERY_LIST } from 'src/app/services/api.service';
-import { getStorage, saveToFile, setStorage } from '@app/helper/windowFunctions';
+import { getStorage, saveToFile, setLink, setStorage } from '@app/helper/windowFunctions';
 import { Row } from '@app/models/grid.model';
 import { Dictionary } from '@app/components/ace-editor-ext/dictionary-default';
 import { promiseWait } from '@app/helper/functions';
@@ -259,6 +259,9 @@ export class HomePageComponent implements OnInit {
     setHash() {
         if (!getParam.kiosk) {
             location.hash = '#query=' + encodeURI(this.sqlRequest);
+        } else {
+            location.hash = setLink(this.sqlRequest);
+            console.log(location.hash)
         }
     }
 
