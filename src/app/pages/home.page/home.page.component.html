@@ -66,9 +66,11 @@
             "
             [useTransition]="true"
             [order]="0"
+            style="background: #ededed"
         >
             <mat-accordion class="dashboard-accordion">
                 <mat-expansion-panel
+                    hideToggle
                     [expanded]="!!dbTreeData && dbTreeData.length > 0"
                 >
                     <mat-expansion-panel-header>
@@ -89,7 +91,7 @@
                         ></tree-filter>
                     </div>
                 </mat-expansion-panel>
-                <mat-expansion-panel>
+                <mat-expansion-panel hideToggle>
                     <mat-expansion-panel-header>
                         <mat-panel-title> Query Presets </mat-panel-title>
                     </mat-expansion-panel-header>
@@ -101,7 +103,7 @@
                         {{ item }}
                     </div>
                 </mat-expansion-panel>
-                <mat-expansion-panel>
+                <mat-expansion-panel hideToggle>
                     <mat-expansion-panel-header>
                         <mat-panel-title> Query History </mat-panel-title>
                     </mat-expansion-panel-header>
@@ -116,6 +118,7 @@
                 </mat-expansion-panel>
 
                 <mat-expansion-panel
+                    hideToggle
                     *ngIf="isDocsShows"
                     [expanded]="isDocsShows"
                 >
@@ -152,12 +155,12 @@
                         [dictionaryFull]="dictionary"
                     ></ace-editor-ext>
                 </as-split-area>
-                <as-split-area
-                    [size]="90"
-                    #containerSplitter
-                >
+                <as-split-area [size]="90" #containerSplitter>
                     <mat-tab-group class="mini-tabs">
-                        <mat-tab label="Table" *ngIf="getParam.kiosk ? getParam.table : true" >
+                        <mat-tab
+                            label="Table"
+                            *ngIf="getParam.kiosk ? getParam.table : true"
+                        >
                             <div
                                 class="data-place"
                                 [style.height.px]="
@@ -215,7 +218,10 @@
                                 </div>
                             </div>
                         </mat-tab>
-                        <mat-tab label="Chart" *ngIf="getParam.kiosk ? getParam.chart : true">
+                        <mat-tab
+                            label="Chart"
+                            *ngIf="getParam.kiosk ? getParam.chart : true"
+                        >
                             <ngx-uplot [data]="dataForFile"></ngx-uplot>
                         </mat-tab>
                     </mat-tab-group>
