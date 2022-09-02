@@ -1,11 +1,12 @@
 import { Component, ViewChild, AfterViewInit, Input } from '@angular/core';
+import { cloneObject } from '@app/helper/functions';
 import * as _uPlot from 'uplot';
 
 const uPlot: any = (_uPlot as any)?.default;
 
 @Component({
     selector: 'ngx-uplot',
-    template: `<div style="margin: 0.5rem;" #chartUPlot></div>`,
+    templateUrl: './ngx-uplot.component.html',
     styles: [`
     .u-legend.u-inline .u-value {
         width: 150px;
@@ -14,6 +15,10 @@ const uPlot: any = (_uPlot as any)?.default;
     `]
 })
 export class NgxUplotComponent implements AfterViewInit {
+    // filters
+    isHideNaNData: boolean = true;
+
+
     chartData: any;
     uPlotChart: any;
     opts: any = {
@@ -83,8 +88,25 @@ export class NgxUplotComponent implements AfterViewInit {
         console.log(this.data);
     }
     randColor() {
-        return "#000000".replace(/0/g, function () { return (~~(Math.random() * 16)).toString(16); });
+        return "#000000".replace(/0/g, () => (~~(Math.random() * 16)).toString(16));
     }
+    indexOfField: boolean[] = [];
+    filterOfData(): any {
+        if (this.isHideNaNData) {
+            this.indexOfField = [];
+            const outData = this.data.filter((i: any[]) => {
+                const out: boolean = !!i.reduce((a, b) => a + +b, 0);
+                this.indexOfField.push(out);
+                return out;
+            })
+            console.log('<< outData >>', outData);
+            return outData;
+        } else {
+            console.log('<< this.data >>', this.data);
+            return this.data
+        }
+    }
+
     makeChart(data: any = this.chartData) {
         if (data) {
             this.chartData = data;
@@ -93,12 +115,16 @@ export class NgxUplotComponent implements AfterViewInit {
         }
 
         this.chartUPlot.nativeElement.innerHTML = '';
-
-        const opts = this.opts;
+        const filteredData = this.filterOfData();
+        const opts: any = cloneObject(this.opts);
+        if (this.isHideNaNData && opts?.series) {
+            opts.series = opts.series.filter((i: any, k: number) => this.indexOfField[k]);
+            console.log('opts.series', opts.series)
+        }
         opts.width = this.chartUPlot.nativeElement.clientWidth;
         opts.height = this.chartUPlot.nativeElement.clientHeight || 600;
 
-        this.uPlotChart = new uPlot(opts, data, this.chartUPlot.nativeElement);
+        this.uPlotChart = new uPlot(opts, filteredData, this.chartUPlot.nativeElement);
     }
 
     __hostWidth = 0;
@@ -115,5 +141,8 @@ export class NgxUplotComponent implements AfterViewInit {
         this.makeChart(this.data);
         this.updateChecker()
     }
-
+    hide(event: any) {
+        this.makeChart(this.data)
+        console.log(event);
+    }
 }

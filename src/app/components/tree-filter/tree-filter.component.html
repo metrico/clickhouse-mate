@@ -17,12 +17,7 @@
 
 <cdk-virtual-scroll-viewport itemSize="48" style="height: 60vh" #virtualScroll>
     <ng-container *cdkVirtualFor="let item of fullDatasource"></ng-container>
-    <mat-tree
-        [dataSource]="dataSource"
-        [treeControl]="treeControl"
-
-        #tree
-    >
+    <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" #tree>
         <mat-tree-node
             *matTreeNodeDef="let node"
             [style.display]="treeFilter(node) ? 'flex' : 'none'"
@@ -35,10 +30,9 @@
             "
             matTreeNodePadding
         >
-            <button
-            class="tree-expander" mat-icon-button disabled></button>
+            <button class="tree-expander" mat-icon-button disabled></button>
             <mat-icon *ngIf="fileIcon" class="files file" color="primary"
-                >insert_drive_file
+                >grid_on
             </mat-icon>
             <span
                 class="line-html"
@@ -63,8 +57,7 @@
             [style.background-color]="
                 noPadding && 'rgba(0,0,0,' + (2.5 - node.level) / 12 + ')'
             "
-            style="cursor:pointer;"
-
+            style="cursor: pointer"
             matTreeNodeToggle
             matTreeNodePadding
         >
@@ -73,7 +66,10 @@
                 class="tree-expander"
                 [attr.aria-label]="'Toggle ' + node.name"
             >
-                <mat-icon class="mat-icon-rtl-mirror" style="font-size: 16px !important;">
+                <mat-icon
+                    class="mat-icon-rtl-mirror"
+                    style="font-size: 16px !important"
+                >
                     {{
                         treeControl.isExpanded(node)
                             ? "expand_more"
@@ -81,10 +77,14 @@
                     }}
                 </mat-icon>
             </button>
-            <mat-icon *ngIf="fileIcon" class="files" color="primary"
-            (click)="!checkedDoubleDot(node) && onClickLine(node)"
-                >folder</mat-icon
+            <mat-icon
+                *ngIf="fileIcon"
+                class="files"
+                color="primary"
+                (click)="!checkedDoubleDot(node) && onClickLine(node)"
             >
+                storage
+            </mat-icon>
             <span
                 class="line-html"
                 [attr.aria-label]="'Toggle ' + node.name"

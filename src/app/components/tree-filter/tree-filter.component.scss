@@ -21,7 +21,7 @@
         color: #999;
         position: relative;
         &::before {
-            content: '';
+            content: "";
             position: absolute;
             left: 0;
             right: 0;
@@ -67,9 +67,9 @@
         line-height: 28px;
     }
     .files {
-        transform: scale(0.8);
-        margin-left: -0.5rem;
-        margin-right: 0.5rem;
+        // transform: scale(1.2);
+        margin-left: -0.1rem;
+        margin-right: 0.7rem;
         cursor: pointer;
         &.file {
             opacity: 0.7;

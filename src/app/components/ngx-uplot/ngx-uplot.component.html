@@ -1,0 +1,8 @@
+<div>
+    <mat-slide-toggle color="primary"
+     [(ngModel)]="isHideNaNData"
+     (ngModelChange)="hide($event)"
+        >Hide labels with not a number data</mat-slide-toggle
+    >
+</div>
+<div style="margin: 0.5rem" #chartUPlot></div>

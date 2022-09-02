@@ -14,7 +14,7 @@ p {
 th, tr {
     box-sizing: border-box;
     // defaultRowHeight
-    height: 38px !important;
+    height: 24px !important;
     width: 50%;
     border-top: 1px solid;
     border-color: hsl(0, 0%, 83%);
@@ -32,5 +32,5 @@ th, tr {
             white-space: pre-wrap;
         }
     }
-    
+
 }

@@ -1,4 +1,7 @@
-/* This is for charts (uPlot), Copyright (c) 2022 Leon Sorokin, MIT License, https://github.com/leeoniya/uPlot/ */
+/* .my-chart {
+    display: flex;
+} */
+
 .u-wrap {
     position: relative;
     user-select: none;
@@ -24,6 +27,7 @@
     font-family: Liberation Mono, DejaVu Sans Mono, MonoLisa, Consolas, monospace;
 }
 .u-inline {
+    /* position: absolute; */
     display: block;
 }
 .u-inline * {
@@ -31,20 +35,24 @@
 }
 .u-inline tr {
     border-radius: 5rem;
-    background: rgba(0,0,0,0.05);
-    margin: 4px;
-    padding: 0 7px;
+    /* background: rgba(0,0,0,0.05); */
+    /* margin: 4px; */
+    /* padding: 0 7px; */
     /* margin-right: 16px; */
 }
 .u-legend th {
     font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .u-legend th > * {
     vertical-align: middle;
     display: inline-block;
 }
 .u-legend td {
-    /* min-width: 13em; */
+    min-width: 13em;
+    /* margin-top: -1rem; */
 }
 .u-legend .u-marker {
     width: 1em;
@@ -52,10 +60,10 @@
     margin-right: 4px;
     background-clip: padding-box !important;
 }
-.u-inline.u-live th::after {
+/* .u-inline.u-live th::after {
     content: ":";
     vertical-align: middle;
-}
+} */
 .u-inline:not(.u-live) .u-value {
     display: none;
 }
@@ -69,7 +77,7 @@
     opacity: 0.3;
 }
 .u-select {
-    background: rgba(0, 0, 0, 0.07);
+    background: rgba(0, 0, 0, 0.09);
     position: absolute;
     pointer-events: none;
 }

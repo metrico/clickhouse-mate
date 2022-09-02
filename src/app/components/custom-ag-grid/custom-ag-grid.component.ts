@@ -90,6 +90,7 @@ export class CustomAgGridComponent implements OnInit, AfterContentChecked {
             sortable: true,
             resizable: true,
         },
+        // rowStyle: { background: 'black' },
         enableCellTextSelection: true,
         ensureDomOrder: true,
         domLayout: 'normal', //'autoHeight',
@@ -304,7 +305,7 @@ export class CustomAgGridComponent implements OnInit, AfterContentChecked {
             cursor: 'pointer',
         };
         if (params.node.rowIndex % 2 === 0) {
-            _style.background = '#e4f0ec';
+            // _style.background = '#e4f0ec';
         }
         return _style;
     }
