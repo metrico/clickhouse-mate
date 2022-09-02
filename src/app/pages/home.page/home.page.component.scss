@@ -17,18 +17,14 @@ h1 {
     }
 }
 .ukranian-bg {
-    background: rgb(255, 255, 255);
+    // background: rgb(80,116,255);
     background: linear-gradient(
         175deg,
-        rgb(80, 116, 255) 0%,
-        rgb(80, 116, 255) 61%,
-        rgb(216, 216, 0) 62%,
-        rgb(224, 224, 0) 99%
+        rgb(80,116,255) 0%,
+        rgb(80,116,255) 61%,
+        rgb(221 221 0) 62%,
+        rgb(255 255 112) 99%
     );
-    background-image: url(/assets/image/ua-flag-3.jpg);
-    background-position: center;
-    background-size: cover;
-    background-blend-mode: hard-light;
 }
 .short-stat {
     padding: 0.3rem;
