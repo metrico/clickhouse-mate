@@ -1,4 +1,4 @@
-import { Component, ViewChild, AfterViewInit, Input } from '@angular/core';
+import { Component, ViewChild, AfterViewInit, Input, HostListener } from '@angular/core';
 import { cloneObject } from '@app/helper/functions';
 import * as _uPlot from 'uplot';
 
@@ -28,19 +28,32 @@ export class NgxUplotComponent implements AfterViewInit {
         //		x: false,
         //		y: false,
         //	},
-        scales: {
-            "x": {
-                time: false,
-            }
-        },
+        // scales: {
+        //     "x": {
+        //         time: false,
+        //         range: [0, 10]
+        //     },
+        //     "%": {
+        //         auto: false,
+        //         range: [0, 100],
+        //     }
+        // },
+        axes: [
+            {},
+            {
+                scale: "%",
+                values: (self: any, ticks: any) => ticks.map((rawValue: any) => rawValue.toFixed(1) + "%"),
+            },
+            {
+                scale: "mb",
+                values: (self: any, ticks: any) => ticks.map((rawValue: any) => rawValue.toFixed(2) + "MB"),
+                side: 1,
+                grid: { show: false },
+            },
+        ],
         series: [{}]
     };
-    _details: any = [
-        [1, 3, 2, 4],
-        [2, 3, 4, 1],
-        [3, 4, 1, 2],
-        [4, 1, 2, 3]
-    ];
+    _details: any = [];
     @Input()
     set data(value: any) {
         this._details = value?.data;
@@ -106,6 +119,10 @@ export class NgxUplotComponent implements AfterViewInit {
             return this.data
         }
     }
+    @HostListener('window:resize', ['$event'])
+    resize(event: any) {
+        this.updateChecker();
+    }
 
     makeChart(data: any = this.chartData) {
         if (data) {
@@ -119,19 +136,19 @@ export class NgxUplotComponent implements AfterViewInit {
         const opts: any = cloneObject(this.opts);
         if (this.isHideNaNData && opts?.series) {
             opts.series = opts.series.filter((i: any, k: number) => this.indexOfField[k]);
-            console.log('opts.series', opts.series)
+            // console.log('opts.series', opts.series)
         }
         opts.width = this.chartUPlot.nativeElement.clientWidth;
-        opts.height = this.chartUPlot.nativeElement.clientHeight || 600;
-
+        opts.height = this.chartUPlot.nativeElement.clientHeight * 0.6 || window.innerHeight * 0.6 - 64;
+        // alert('opts.height ' + opts.height)
         this.uPlotChart = new uPlot(opts, filteredData, this.chartUPlot.nativeElement);
     }
 
     __hostWidth = 0;
     updateChecker() {
         requestAnimationFrame(() => {
-            if (this.__hostWidth !== this.chartUPlot.nativeElement.clientWidth) {
-                this.__hostWidth = this.chartUPlot.nativeElement.clientWidth;
+            if (this.__hostWidth !== this.chartUPlot.nativeElement.clientWidth + window.innerHeight) {
+                this.__hostWidth = this.chartUPlot.nativeElement.clientWidth + window.innerHeight;
                 this.makeChart(this.data)
             }
             this.updateChecker();
