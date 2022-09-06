@@ -184,11 +184,11 @@ a:not([href]) {
 }
 
 .mat-expansion-panel .mat-expansion-panel-header, .mat-expansion-panel:not(.mat-expanded) .mat-expansion-panel-header:hover:not([aria-disabled=true]) {
-    background: #e4f0ec; // rgba(0,0,0,.04);
+    background: #f4f5f5; // rgba(0,0,0,.04);
     border-bottom: 1px solid #ccc;
 }
 .mat-expansion-panel-header {
-    background-color: #d8e8ff !important;
+    background-color: #f4f5f5 !important;
     border-radius: 0;
 
 }
