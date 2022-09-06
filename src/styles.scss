@@ -30,7 +30,7 @@ body {
 
 * {
     font-size: 14px !important;
-
+    font-family: monospace !important;
     /** SAFARY SCROLL FIX */
     ::-webkit-scrollbar {
         -webkit-appearance: none;
@@ -190,5 +190,10 @@ a:not([href]) {
 .mat-expansion-panel-header {
     background-color: #f4f5f5 !important;
     border-radius: 0;
+    // font-family: Roboto, "Helvetica Neue", sans-serif;
 
+}
+.mat-expansion-panel-header {
+    font-size: 15px;
+    font-weight: 400;
 }

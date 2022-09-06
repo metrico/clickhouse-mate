@@ -20,8 +20,8 @@ h1 {
     // background: rgb(80,116,255);
     background: linear-gradient(
         175deg,
-        rgb(80,116,255) 0%,
-        rgb(80,116,255) 61%,
+        rgb(80, 116, 255) 0%,
+        rgb(80, 116, 255) 61%,
         rgb(221 221 0) 62%,
         rgb(255 255 112) 99%
     );
@@ -63,9 +63,22 @@ h1 {
     margin: 2px;
     border: 1px solid #f5f5f5;
     cursor: pointer;
-
+    position: relative;
+    span {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 0;
+        .mat-icon {
+            transform: scale(0.5);
+        }
+    }
     &:hover {
         background-color: rgba(0, 0, 0, 0.2);
+
+        span {
+            display: inline;
+        }
     }
 }
 :host ::ng-deep .mat-expansion-panel-body {

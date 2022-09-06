@@ -66,7 +66,7 @@
             "
             [useTransition]="true"
             [order]="0"
-            style="background: #f4f5f5"
+            style="background: #fff"
         >
             <mat-accordion class="dashboard-accordion">
                 <mat-expansion-panel
@@ -108,12 +108,16 @@
                         <mat-panel-title> Query History </mat-panel-title>
                     </mat-expansion-panel-header>
 
-                    <div
-                        *ngFor="let item of SqlArchive"
-                        (click)="SQL(item)"
-                        class="archive-line"
-                    >
-                        {{ item }}
+                    <div *ngFor="let item of SqlArchive" class="archive-line">
+                        <div (click)="SQL(item)">
+                            {{ item }}
+                        </div>
+                        <span>
+                            <button mat-icon-button (click)="removeItemHistory(item)">
+                                <!-- <mat-icon class="mat-18">ligature</mat-icon> -->
+                                <mat-icon>close</mat-icon>
+                            </button>
+                        </span>
                     </div>
                 </mat-expansion-panel>
 

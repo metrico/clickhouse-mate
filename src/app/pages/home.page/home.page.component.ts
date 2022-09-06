@@ -1,3 +1,4 @@
+import { Functions } from './../../helper/functions';
 import { HashParams } from './../../app.component';
 import { DocsService } from './../../services/docs.service';
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, Inject } from '@angular/core';
@@ -65,7 +66,27 @@ export class HomePageComponent implements OnInit {
         'SHOW DATABASES',
         'SHOW TABLES',
     ];
-    SqlArchive: string[] = [];
+    _SqlArchive: any = [];
+
+    set SqlArchive(value: any) {
+        this._SqlArchive[this.checkSqlHistory()] = value;
+
+    }
+    get SqlArchive(): any[] {
+        return this._SqlArchive[this.checkSqlHistory()];
+    }
+
+    checkSqlHistory() {
+        const key = this.keyOfSqlHistory();
+        if (!this._SqlArchive[key]) {
+            this._SqlArchive[key] = [];
+            const json = localStorage.getItem(key);
+            if (json) {
+                this._SqlArchive[key] = JSON.parse(json);
+            }
+        }
+        return key;
+    }
     dbTreeData: any[] = [];
     pageSize: number = 50;
     isPaginator: boolean = true;
@@ -86,10 +107,7 @@ export class HomePageComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        const json = localStorage.getItem('SqlArchive');
-        if (json) {
-            this.SqlArchive = JSON.parse(json);
-        }
+
 
         const auth: any = getParam.kiosk ? {
             dbURL: getParam.db_host,
@@ -120,6 +138,8 @@ export class HomePageComponent implements OnInit {
             })
             // this.isLeftPanel = !doc_link;
         });
+
+
     }
     async getDynamicDictionary() {
         if (getParam.kiosk && !getParam.query_field) {
@@ -265,6 +285,10 @@ export class HomePageComponent implements OnInit {
         }
     }
 
+    keyOfSqlHistory() {
+        return 'SqlArchive-' + Functions.md5(this.dbLink);
+    }
+
     async SQL(sqlStr: string, isAuthenticated: boolean = false) {
         await promiseWait(100);
         if (!isAuthenticated) {
@@ -281,7 +305,7 @@ export class HomePageComponent implements OnInit {
 
         if (!this.SqlArchive.includes(sqlStr)) {
             this.SqlArchive.unshift(sqlStr);
-            localStorage.setItem('SqlArchive', JSON.stringify(this.SqlArchive));
+            localStorage.setItem(this.keyOfSqlHistory(), JSON.stringify(this.SqlArchive));
         }
 
         try {
@@ -490,5 +514,10 @@ export class HomePageComponent implements OnInit {
                 this.cdr.detectChanges();
             });
         });
+    }
+    removeItemHistory(item: any): void {
+        this.SqlArchive = this.SqlArchive.filter(i => i !== item);
+        console.log(this.SqlArchive, item);
+        localStorage.setItem(this.keyOfSqlHistory(), JSON.stringify(this.SqlArchive));
     }
 }
