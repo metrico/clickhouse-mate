@@ -18,7 +18,7 @@ export class DialogKioskComponent implements OnInit, AfterContentChecked {
         mode: false,
         table: true,
         chart: true,
-        panel: true,
+        panel: false,
         query_field: true,
     }
 
@@ -70,7 +70,7 @@ export class DialogKioskComponent implements OnInit, AfterContentChecked {
                 }
                 if (+this.config.kiosk === 1 && key !== 'query') {
                     if (
-                        (key === 'panel' && +value === 1) ||
+                        (key === 'panel' && +value === 0) ||
                         (key === 'query_field' && +value === 1) ||
                         (key === 'table' && +value === 1) ||
                         (key === 'mode' && value === 'light') ||

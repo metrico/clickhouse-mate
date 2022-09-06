@@ -19,7 +19,7 @@ export let getParam: HashParams = {
     query: "",
     kiosk: false,
     mode: "light",
-    panel: true,
+    panel: false,
     query_field: true,
     table: true,
     chart: true,
