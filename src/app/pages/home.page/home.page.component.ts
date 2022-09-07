@@ -6,7 +6,7 @@ import { ApiService, QUERY_LIST } from 'src/app/services/api.service';
 import { getStorage, saveToFile, setLink, setStorage } from '@app/helper/windowFunctions';
 import { Row } from '@app/models/grid.model';
 import { Dictionary } from '@app/components/ace-editor-ext/dictionary-default';
-import { promiseWait } from '@app/helper/functions';
+import { promiseWait, cloneObject } from '@app/helper/functions';
 import { getParam } from '@app/app.component';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogKioskComponent } from '../dialogs/dialog-kiosk/dialog-kiosk.component';
@@ -157,7 +157,7 @@ export class HomePageComponent implements OnInit {
                 name: value[0] + '()',
                 icon: bool ? 1 : 2,
                 type: bool ? 'function' : 'format'
-            }));
+            })) || [];
 
             this.dictionary.push(...r);
             if (queryList.length > 0) {
@@ -177,7 +177,13 @@ export class HomePageComponent implements OnInit {
             return await promiseWait(0);
         }
         const result: any = await this.apiService.runQuery(QUERY_LIST.getDatabases);
-        const { data } = result || {}
+
+        let { data } = result || {};
+
+        if (!data && typeof result === 'string') {
+            data = result.split('\n').map(i => ([i]));
+        }
+        console.log({ data });
         const dbTreeData: any[] = [];
         const stack = async ([dbName]: any) => {
             await promiseWait(5);
@@ -213,17 +219,21 @@ export class HomePageComponent implements OnInit {
                         }
                     })
                 });
-
             }
-            if (data.length > 0) {
+            if (data?.length > 0) {
                 stack(data.shift())
             } else {
                 this.dbTreeData = dbTreeData;
                 this.cdr.detectChanges();
             }
         };
-        if (data.length > 0) {
+        if (data?.length > 0) {
             stack(data.shift())
+        } else {
+            this.dbTreeData = [{
+                name: '...no data',
+                // type: 'database'
+            }]
         }
     }
 
