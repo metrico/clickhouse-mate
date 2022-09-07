@@ -38,19 +38,19 @@ export class NgxUplotComponent implements AfterViewInit {
         //         range: [0, 100],
         //     }
         // },
-        axes: [
-            {},
-            {
-                scale: "%",
-                values: (self: any, ticks: any) => ticks.map((rawValue: any) => rawValue.toFixed(1) + "%"),
-            },
-            {
-                scale: "mb",
-                values: (self: any, ticks: any) => ticks.map((rawValue: any) => rawValue.toFixed(2) + "MB"),
-                side: 1,
-                grid: { show: false },
-            },
-        ],
+        // axes: [
+        //     {},
+        //     {
+        //         scale: "%",
+        //         values: (self: any, ticks: any) => ticks.map((rawValue: any) => rawValue.toFixed(1) + "%"),
+        //     },
+        //     {
+        //         scale: "mb",
+        //         values: (self: any, ticks: any) => ticks.map((rawValue: any) => rawValue.toFixed(2) + "MB"),
+        //         side: 1,
+        //         grid: { show: false },
+        //     },
+        // ],
         series: [{}]
     };
     _details: any = [];
