@@ -449,10 +449,10 @@ export class HomePageComponent implements OnInit {
             }
         })
     }
-    bytesToSize(bytes: any): string {
+    bytesToSize(bytes: any): string | null{
         const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
         if (bytes === 0) {
-            return 'n/a';
+            return bytes + ' Bytes';
         }
         const i = Math.floor(+Math.log(bytes) / +Math.log(1024))
         if (i === 0) {
@@ -479,13 +479,14 @@ export class HomePageComponent implements OnInit {
             return `${o.hours}:${o.min}:${o.sec}.${o.ms} hour(s)`;
         }
 
+
     }
 
     getStatistic(dataForFile: any): string {
         const stat = dataForFile?.statistics;
         const rows = dataForFile?.rows || 0;
         const elapsed = this.timeShorter(stat?.elapsed || 0);
-        const rows_read = stat?.rows_read;
+        const rows_read = stat?.rows_read || rows;
         const bytes_read = this.bytesToSize(stat?.bytes_read || 0)
         const rowsPerSec = Math.ceil((rows > 0 ? rows / (stat?.elapsed || 1) : 0));
 
@@ -493,7 +494,21 @@ export class HomePageComponent implements OnInit {
             (stat?.bytes_read || 0) /
             (parseFloat(stat?.elapsed || 0) || 0.001)
         );
-        return `${rows} rows in set. Elapsed ${elapsed}. Processed ${rows_read} rows, ${bytes_read} (${rowsPerSec} rows/s. ${bytesPerSec}/s.)`;
+
+        console.log({
+            stat,
+            rows,
+            elapsed,
+            rows_read,
+            bytes_read,
+            rowsPerSec,
+            bytesPerSec
+        })
+        return [
+            `${rows} rows in set. Elapsed ${elapsed}`,
+            rows_read && ` Processed ${rows_read} rows`,
+            `${bytes_read} (${rowsPerSec} rows/s. ${bytesPerSec}/s.)`
+        ].filter(i => !!i).join(', ');
     }
     setDBItems(DBItems: any = null) {
         if (DBItems) {
