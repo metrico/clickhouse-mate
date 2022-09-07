@@ -113,7 +113,10 @@
                             {{ item }}
                         </div>
                         <span>
-                            <button mat-icon-button (click)="removeItemHistory(item)">
+                            <button
+                                mat-icon-button
+                                (click)="removeItemHistory(item)"
+                            >
                                 <!-- <mat-icon class="mat-18">ligature</mat-icon> -->
                                 <mat-icon>close</mat-icon>
                             </button>
@@ -177,12 +180,14 @@
                                 <ng-container
                                     *ngIf="details.length === 0; else hasData"
                                 >
-                                    <h1>No Data</h1>
+                                    <h1 *ngIf="!isLoadingDetails">No Data</h1>
                                     <div
                                         class="error-message"
                                         mat-flat-button
                                         color="warn"
-                                        *ngIf="errorMessage"
+                                        *ngIf="
+                                            errorMessage && !isLoadingDetails
+                                        "
                                         style="
                                             white-space: pre-wrap;
                                             width: 100%;
@@ -227,6 +232,9 @@
                             *ngIf="getParam.kiosk ? getParam.chart : true"
                         >
                             <ngx-uplot [data]="dataForFile"></ngx-uplot>
+                            <div class="data-loader" *ngIf="isLoadingDetails">
+                                <loading></loading>
+                            </div>
                         </mat-tab>
                     </mat-tab-group>
                 </as-split-area>
