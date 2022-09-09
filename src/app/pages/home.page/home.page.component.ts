@@ -28,8 +28,9 @@ export class HomePageComponent implements OnInit {
     dbLink: string = '';
     dbLogin: string = '';
     dbPassword: string = '';
-    sqlRequest: any = 'SHOW DATABASES';
+    sqlRequest: any = '';
     _selectedDB: any;
+    readyToWork = false;
     set selectedDB(val: any) {
         console.log('set new value', val);
 
@@ -57,7 +58,7 @@ export class HomePageComponent implements OnInit {
     dictionary: Dictionary[] = [];
 
     dataForFile: any = null;
-    isLoadingDetails = true;
+    isLoadingDetails = false;
     details: any = [];
     columns: any[] = [];
     errorMessage: string = '';
@@ -68,7 +69,7 @@ export class HomePageComponent implements OnInit {
         'SHOW TABLES',
     ];
     _SqlArchive: any = [];
-
+    isAuthenticated = false;
 
     set SqlArchive(value: any) {
         this._SqlArchive[this.checkSqlHistory()] = value;
@@ -128,6 +129,7 @@ export class HomePageComponent implements OnInit {
         }
         if (!!auth?.dbURL) {
             this.connectToDB().then(async () => {
+                this.readyToWork = true;
                 await this.getDynamicDictionary();
             });
         }
@@ -303,15 +305,18 @@ export class HomePageComponent implements OnInit {
     }
 
     async SQL(sqlStr: string, isAuthenticated: boolean = false) {
-        await promiseWait(100);
+
+
+        // await promiseWait(100);
         if (!sqlStr) {
+            this.isLoadingDetails = false;
             // this.alertService.error('ERROR: SQL query is empty!')
             return false;
         }
         if (!isAuthenticated) {
             this.sqlRequest = sqlStr;
-            this.isLoadingDetails = true;
         }
+        this.isLoadingDetails = true;
 
         this.cdr.detectChanges();
 
@@ -328,12 +333,14 @@ export class HomePageComponent implements OnInit {
 
         try {
             const response = await this.apiService.runQuery(sqlStr);
-            this.dataForFile = response;
-            this.formatData(response);
-            this.errorMessage = '';
             if (!isAuthenticated) {
-                this.isLoadingDetails = false;
+                this.dataForFile = response;
+                this.formatData(response);
             }
+            this.errorMessage = '';
+            // if (!isAuthenticated) {
+            this.isLoadingDetails = false;
+            // }
             this.cdr.detectChanges();
             return true;
 
@@ -350,9 +357,10 @@ export class HomePageComponent implements OnInit {
                     this.cdr.detectChanges();
                 })
             }
-            if (!isAuthenticated) {
-                this.isLoadingDetails = false;
-            }
+
+            // if (!isAuthenticated) {
+            this.isLoadingDetails = false;
+            // }
             this.cdr.detectChanges();
 
             return false;
@@ -378,27 +386,32 @@ export class HomePageComponent implements OnInit {
             password: this.dbPassword,
         };
         this.apiService.setLoginData(auth);
-        const res = await this.SQL(QUERY_LIST.getDatabases, true);
+        // const res = await this.SQL(QUERY_LIST.getDatabases, true);
+        let res;
+        try {
+            await this.apiService.runQuery(QUERY_LIST.getDatabases)
+            res = true;
+        } catch (e) {
+            res = false;
+        }
         if (res) {
             this.authErrorMessage = '';
             this.errorMessage = '';
             this.authSuccessMessage = '';
             if (!isTestConnection) {
                 setStorage('AUTH_DATA', auth)
-                this.formatData({ meta: [], data: [] });
+                // this.formatData({ meta: [], data: [] });
                 this.isAccess = true;
                 this.getHash();
-
-
-                this.cdr.detectChanges();
+                // this.cdr.detectChanges();
 
                 await promiseWait(100);
-                this.cdr.detectChanges();
+                // this.cdr.detectChanges();
 
                 await this.initDbTree();
                 this.cdr.detectChanges();
 
-                // this.isLoadingDetails = false;
+                this.isLoadingDetails = false;
             } else {
                 this.authSuccessMessage = 'Connection is successfully established.';
                 setTimeout(() => {
@@ -410,7 +423,7 @@ export class HomePageComponent implements OnInit {
             this.cdr.detectChanges();
             return true;
         } else {
-            this.isLoadingDetails = true;
+            this.isLoadingDetails = false;
             this.authErrorMessage = 'Can not connect to DB server, check login / password / link to DB, please';
             this.cdr.detectChanges();
         }
