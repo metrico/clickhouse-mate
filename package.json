@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve --open",
     "build": "ng build",
+    "build:demo": "ng build --base-href='/clickhouse-mate/'",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
