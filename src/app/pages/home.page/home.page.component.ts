@@ -10,6 +10,7 @@ import { promiseWait, cloneObject } from '@app/helper/functions';
 import { getParam } from '@app/app.component';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogKioskComponent } from '../dialogs/dialog-kiosk/dialog-kiosk.component';
+import { AlertService } from '@app/services/alert.service';
 
 @Component({
     templateUrl: './home.page.component.html',
@@ -56,7 +57,7 @@ export class HomePageComponent implements OnInit {
     dictionary: Dictionary[] = [];
 
     dataForFile: any = null;
-    isLoadingDetails = false;
+    isLoadingDetails = true;
     details: any = [];
     columns: any[] = [];
     errorMessage: string = '';
@@ -67,6 +68,7 @@ export class HomePageComponent implements OnInit {
         'SHOW TABLES',
     ];
     _SqlArchive: any = [];
+
 
     set SqlArchive(value: any) {
         this._SqlArchive[this.checkSqlHistory()] = value;
@@ -96,7 +98,8 @@ export class HomePageComponent implements OnInit {
         private apiService: ApiService,
         private docsService: DocsService,
         private cdr: ChangeDetectorRef,
-        public dialog: MatDialog
+        public dialog: MatDialog,
+        private alertService: AlertService
     ) {
         if (getParam.kiosk) {
             this.isDarkMode = getParam.mode === 'dark';
@@ -250,7 +253,7 @@ export class HomePageComponent implements OnInit {
     }
 
     formatData(data: any) {
-        data = data || (window as any).data || {};
+        data = data || { meta: [], data: [] };
         console.log(data);
         if (typeof data === 'string') {
             this.details = data;
@@ -301,10 +304,15 @@ export class HomePageComponent implements OnInit {
 
     async SQL(sqlStr: string, isAuthenticated: boolean = false) {
         await promiseWait(100);
+        if (!sqlStr) {
+            // this.alertService.error('ERROR: SQL query is empty!')
+            return false;
+        }
         if (!isAuthenticated) {
             this.sqlRequest = sqlStr;
+            this.isLoadingDetails = true;
         }
-        this.isLoadingDetails = true;
+
         this.cdr.detectChanges();
 
         this.details = [];
@@ -323,7 +331,9 @@ export class HomePageComponent implements OnInit {
             this.dataForFile = response;
             this.formatData(response);
             this.errorMessage = '';
-            this.isLoadingDetails = false;
+            if (!isAuthenticated) {
+                this.isLoadingDetails = false;
+            }
             this.cdr.detectChanges();
             return true;
 
@@ -340,7 +350,9 @@ export class HomePageComponent implements OnInit {
                     this.cdr.detectChanges();
                 })
             }
-            this.isLoadingDetails = false;
+            if (!isAuthenticated) {
+                this.isLoadingDetails = false;
+            }
             this.cdr.detectChanges();
 
             return false;
@@ -348,13 +360,13 @@ export class HomePageComponent implements OnInit {
     }
 
     onClickRun(event?: any): void {
-        if (event) {
-            console.log(event);
-            this.sqlRequest = event;
-        }
+        console.log(event);
+        this.sqlRequest = event;
+
         this.SQL(this.sqlRequest);
     }
     async connectToDB(event?: any, isTestConnection = false) {
+        this.isLoadingDetails = true;
         if (event) {
             this.dbLink = event.dbLink;
             this.dbLogin = event.dbLogin;
@@ -377,7 +389,7 @@ export class HomePageComponent implements OnInit {
                 this.isAccess = true;
                 this.getHash();
 
-                this.isLoadingDetails = true;
+
                 this.cdr.detectChanges();
 
                 await promiseWait(100);
@@ -386,7 +398,7 @@ export class HomePageComponent implements OnInit {
                 await this.initDbTree();
                 this.cdr.detectChanges();
 
-                this.isLoadingDetails = false;
+                // this.isLoadingDetails = false;
             } else {
                 this.authSuccessMessage = 'Connection is successfully established.';
                 setTimeout(() => {
@@ -449,7 +461,7 @@ export class HomePageComponent implements OnInit {
             }
         })
     }
-    bytesToSize(bytes: any): string | null{
+    bytesToSize(bytes: any): string | null {
         const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
         if (bytes === 0) {
             return bytes + ' Bytes';
