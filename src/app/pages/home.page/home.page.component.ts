@@ -30,6 +30,7 @@ export class HomePageComponent implements OnInit {
     dbPassword: string = '';
     sqlRequest: any = '';
     _selectedDB: any;
+    readyToWork = false;
     set selectedDB(val: any) {
         console.log('set new value', val);
 
@@ -128,6 +129,7 @@ export class HomePageComponent implements OnInit {
         }
         if (!!auth?.dbURL) {
             this.connectToDB().then(async () => {
+                this.readyToWork = true;
                 await this.getDynamicDictionary();
             });
         }
@@ -305,7 +307,7 @@ export class HomePageComponent implements OnInit {
     async SQL(sqlStr: string, isAuthenticated: boolean = false) {
 
 
-        await promiseWait(100);
+        // await promiseWait(100);
         if (!sqlStr) {
             this.isLoadingDetails = false;
             // this.alertService.error('ERROR: SQL query is empty!')
@@ -337,7 +339,7 @@ export class HomePageComponent implements OnInit {
             }
             this.errorMessage = '';
             // if (!isAuthenticated) {
-                this.isLoadingDetails = false;
+            this.isLoadingDetails = false;
             // }
             this.cdr.detectChanges();
             return true;
@@ -357,7 +359,7 @@ export class HomePageComponent implements OnInit {
             }
 
             // if (!isAuthenticated) {
-                this.isLoadingDetails = false;
+            this.isLoadingDetails = false;
             // }
             this.cdr.detectChanges();
 
@@ -385,21 +387,26 @@ export class HomePageComponent implements OnInit {
         };
         this.apiService.setLoginData(auth);
         // const res = await this.SQL(QUERY_LIST.getDatabases, true);
-        let res = await this.apiService.runQuery(QUERY_LIST.getDatabases) ? true : false;
-        console.log({res})
+        let res;
+        try {
+            await this.apiService.runQuery(QUERY_LIST.getDatabases)
+            res = true;
+        } catch (e) {
+            res = false;
+        }
         if (res) {
             this.authErrorMessage = '';
             this.errorMessage = '';
             this.authSuccessMessage = '';
             if (!isTestConnection) {
                 setStorage('AUTH_DATA', auth)
-                this.formatData({ meta: [], data: [] });
+                // this.formatData({ meta: [], data: [] });
                 this.isAccess = true;
                 this.getHash();
-                this.cdr.detectChanges();
+                // this.cdr.detectChanges();
 
                 await promiseWait(100);
-                this.cdr.detectChanges();
+                // this.cdr.detectChanges();
 
                 await this.initDbTree();
                 this.cdr.detectChanges();

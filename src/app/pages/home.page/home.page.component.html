@@ -180,7 +180,7 @@
                                 <ng-container
                                     *ngIf="details.length === 0; else hasData"
                                 >
-                                    <h1 *ngIf="!isLoadingDetails && !isAuthenticated">No Data</h1>
+                                    <h1 *ngIf="!isLoadingDetails && readyToWork">No Data</h1>
                                     <div
                                         class="error-message"
                                         mat-flat-button
