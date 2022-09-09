@@ -305,7 +305,7 @@ export class HomePageComponent implements OnInit {
     async SQL(sqlStr: string, isAuthenticated: boolean = false) {
         await promiseWait(100);
         if (!sqlStr) {
-            this.alertService.error('ERROR: SQL query is empty!')
+            // this.alertService.error('ERROR: SQL query is empty!')
             return false;
         }
         if (!isAuthenticated) {
