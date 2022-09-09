@@ -10,6 +10,7 @@ import { promiseWait, cloneObject } from '@app/helper/functions';
 import { getParam } from '@app/app.component';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogKioskComponent } from '../dialogs/dialog-kiosk/dialog-kiosk.component';
+import { AlertService } from '@app/services/alert.service';
 
 @Component({
     templateUrl: './home.page.component.html',
@@ -96,7 +97,8 @@ export class HomePageComponent implements OnInit {
         private apiService: ApiService,
         private docsService: DocsService,
         private cdr: ChangeDetectorRef,
-        public dialog: MatDialog
+        public dialog: MatDialog,
+        private alertService: AlertService
     ) {
         if (getParam.kiosk) {
             this.isDarkMode = getParam.mode === 'dark';
@@ -301,6 +303,10 @@ export class HomePageComponent implements OnInit {
 
     async SQL(sqlStr: string, isAuthenticated: boolean = false) {
         await promiseWait(100);
+        if (!sqlStr) {
+            this.alertService.error('ERROR: SQL query is empty!')
+            return false;
+        }
         if (!isAuthenticated) {
             this.sqlRequest = sqlStr;
         }
@@ -348,10 +354,9 @@ export class HomePageComponent implements OnInit {
     }
 
     onClickRun(event?: any): void {
-        if (event) {
-            console.log(event);
-            this.sqlRequest = event;
-        }
+        console.log(event);
+        this.sqlRequest = event;
+
         this.SQL(this.sqlRequest);
     }
     async connectToDB(event?: any, isTestConnection = false) {

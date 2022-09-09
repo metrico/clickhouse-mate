@@ -6,7 +6,8 @@ import { catchError } from 'rxjs/operators';
 
 // import { AlertService } from '../services/alert.service';
 import { Router } from '@angular/router';
-import { AlertService } from '@app/components/controls/alert/alert.service';
+import { AlertService } from '@app/services/alert.service';
+// import { AlertService } from '@app/components/controls/alert/alert.service';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
