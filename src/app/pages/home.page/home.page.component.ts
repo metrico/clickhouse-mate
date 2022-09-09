@@ -384,7 +384,9 @@ export class HomePageComponent implements OnInit {
             password: this.dbPassword,
         };
         this.apiService.setLoginData(auth);
-        const res = await this.SQL(QUERY_LIST.getDatabases, true);
+        // const res = await this.SQL(QUERY_LIST.getDatabases, true);
+        let res = await this.apiService.runQuery(QUERY_LIST.getDatabases) ? true : false;
+        console.log({res})
         if (res) {
             this.authErrorMessage = '';
             this.errorMessage = '';
