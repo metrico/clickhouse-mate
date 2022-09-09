@@ -57,7 +57,7 @@ export class HomePageComponent implements OnInit {
     dictionary: Dictionary[] = [];
 
     dataForFile: any = null;
-    isLoadingDetails = false;
+    isLoadingDetails = true;
     details: any = [];
     columns: any[] = [];
     errorMessage: string = '';
@@ -68,6 +68,7 @@ export class HomePageComponent implements OnInit {
         'SHOW TABLES',
     ];
     _SqlArchive: any = [];
+
 
     set SqlArchive(value: any) {
         this._SqlArchive[this.checkSqlHistory()] = value;
@@ -309,8 +310,9 @@ export class HomePageComponent implements OnInit {
         }
         if (!isAuthenticated) {
             this.sqlRequest = sqlStr;
+            this.isLoadingDetails = true;
         }
-        this.isLoadingDetails = true;
+
         this.cdr.detectChanges();
 
         this.details = [];
@@ -329,7 +331,9 @@ export class HomePageComponent implements OnInit {
             this.dataForFile = response;
             this.formatData(response);
             this.errorMessage = '';
-            this.isLoadingDetails = false;
+            if (!isAuthenticated) {
+                this.isLoadingDetails = false;
+            }
             this.cdr.detectChanges();
             return true;
 
@@ -346,7 +350,9 @@ export class HomePageComponent implements OnInit {
                     this.cdr.detectChanges();
                 })
             }
-            this.isLoadingDetails = false;
+            if (!isAuthenticated) {
+                this.isLoadingDetails = false;
+            }
             this.cdr.detectChanges();
 
             return false;
@@ -360,6 +366,7 @@ export class HomePageComponent implements OnInit {
         this.SQL(this.sqlRequest);
     }
     async connectToDB(event?: any, isTestConnection = false) {
+        this.isLoadingDetails = true;
         if (event) {
             this.dbLink = event.dbLink;
             this.dbLogin = event.dbLogin;
@@ -382,7 +389,7 @@ export class HomePageComponent implements OnInit {
                 this.isAccess = true;
                 this.getHash();
 
-                this.isLoadingDetails = true;
+
                 this.cdr.detectChanges();
 
                 await promiseWait(100);
@@ -391,7 +398,7 @@ export class HomePageComponent implements OnInit {
                 await this.initDbTree();
                 this.cdr.detectChanges();
 
-                this.isLoadingDetails = false;
+                // this.isLoadingDetails = false;
             } else {
                 this.authSuccessMessage = 'Connection is successfully established.';
                 setTimeout(() => {
