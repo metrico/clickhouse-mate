@@ -3,8 +3,19 @@
 <head>
   <meta charset="utf-8">
   <title>ClickHouse-Mate</title>
-  <base href="/" />
+  <base href="">
+  <script>
+    /**
+        If app running not on root folder, for example: http://domain/sub-folder/
 
+        then window['base-href'] should be equal "/sub-folder/"
+
+        EXAMPLE:
+        window['base-href'] = '/sub-folder/';
+    */
+    window['base-href'] = '/clickhouse-mate/';
+    document.head.querySelector('base').href = window['base-href'];
+</script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="preconnect" href="https://fonts.gstatic.com">
