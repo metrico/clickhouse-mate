@@ -250,7 +250,7 @@ export class HomePageComponent implements OnInit {
     }
 
     formatData(data: any) {
-        data = data || (window as any).data || {};
+        data = data || { meta: [], data: [] };
         console.log(data);
         if (typeof data === 'string') {
             this.details = data;
@@ -449,7 +449,7 @@ export class HomePageComponent implements OnInit {
             }
         })
     }
-    bytesToSize(bytes: any): string | null{
+    bytesToSize(bytes: any): string | null {
         const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
         if (bytes === 0) {
             return bytes + ' Bytes';
