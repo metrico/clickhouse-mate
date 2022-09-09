@@ -178,7 +178,7 @@
                                 "
                             >
                                 <ng-container
-                                    *ngIf="details.length === 0; else hasData"
+                                    *ngIf="details?.length === 0; else hasData"
                                 >
                                     <h1 *ngIf="!isLoadingDetails && readyToWork">No Data</h1>
                                     <div

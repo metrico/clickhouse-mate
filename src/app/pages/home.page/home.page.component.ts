@@ -257,7 +257,7 @@ export class HomePageComponent implements OnInit {
     formatData(data: any) {
         data = data || { meta: [], data: [] };
         console.log(data);
-        if (typeof data === 'string') {
+        if (typeof data !== 'object') {
             this.details = data;
         } else {
             this.columns = data.meta?.map((i: any) => i.name);
