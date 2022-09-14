@@ -39,7 +39,7 @@ export class ApiService {
             this.login !== postData.login &&
             this.password !== postData.password
         ) {
-            console.log({ bufferParams: this.bufferParams });
+            // console.log({ bufferParams: this.bufferParams });
             const {
                 login = this.login,
                 password = this.password

@@ -21,8 +21,28 @@ import { DictionaryDefault } from './dictionary-default';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AceEditorExtComponent implements OnInit, AfterViewInit, OnDestroy {
+    _sqlRequest: any = '';
+    @Input()
+    set sqlRequest(value: string) {
+        this._sqlRequest = value;
+        const caret = this.getCaretPosition();
+        const el = this.getTextElement();
+        console.log({ el, value });
+        if (el) {
+            el.innerText = value;
+            if (this.lastCaretPoint) {
+                // setTimeout(() => {
+                    this.setCaret(caret);
+                // }, 0);
+            }
+        }
 
-    @Input() sqlRequest: any = '';
+    }
+    get sqlRequest(): string {
+        return this._sqlRequest;
+    }
+
+
     @Input() isDarkMode = false;
     lastCaretPoint = 0;
     _dictionaryFull: any[] = [];
@@ -31,7 +51,6 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit, OnDestroy {
 
     @Input()
     set dictionaryFull(val: any[]) {
-        // console.log(val);
         this._dictionaryFull = val;
         this._dictionaryFull.sort();
     }
@@ -75,15 +94,7 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit, OnDestroy {
         this.editor.getEditor().$blockScrolling = Infinity;
         document.body.appendChild(this.autocomplete.nativeElement);
     }
-    getCaretPosition() {
-        const sel: any = window.getSelection();
-        console.log('sel.focusOffset', sel.focusOffset, sel?.parentNode?.className);
-        if (sel?.focusNode?.parentNode?.className === 'hide-text-container') {
-            this.lastCaretPoint = sel?.focusOffset;
-        }
 
-        return this.lastCaretPoint;
-    }
     mouseUp() {
         this.getCaretPosition();
         if (this.isAutocompleteVisible) {
@@ -91,6 +102,7 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit, OnDestroy {
         }
     }
     textChange(event?: any) {
+        // console.log({event});
         if (this.wasClick) {
             this.wasClick = false;
             return;
@@ -108,7 +120,7 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit, OnDestroy {
         const range = selection.getRangeAt(0);
         const [rect] = range.getClientRects();
 
-        console.log({ rect })
+        console.log({ selection, range, rect })
 
         const position: any = rect || this.getTextElement()?.getBoundingClientRect() || {
             left: 0,
@@ -130,19 +142,15 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit, OnDestroy {
             this.dictionary = this.dictionaryFull;
         }
 
-        // this.dictionary = this.dictionary.slice(0, 20);
-
-        // console.log('textChange:show');
         this.isAutocompleteVisible = !!this.lastWord && this.dictionary.length > 0;
         console.log(this.lastWord, position);
-        requestAnimationFrame(() => {
-            this.cdr.detectChanges();
-        })
+        // requestAnimationFrame(() => {
+        // })
+        this.cdr.detectChanges();
 
     }
     getTextElement(): any {
-        return this.contenteditableContainer.nativeElement;
-        // return this.wrapperAceEditor?.nativeElement?.querySelector('.ace_text-input');
+        return document.querySelector('.hide-text-container');
     }
 
     @HostListener('document:keydown', ['$event'])
@@ -168,16 +176,59 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit, OnDestroy {
             this.cdr.detectChanges();
         }
     }
-    setCaret(position = 0) {
+    getCaretPosition() {
+        const sel: any = window.getSelection();
+        // console.log('sel.focusOffset', sel.focusOffset, sel?.parentNode?.className);
+        if (sel?.focusNode?.parentNode?.className === 'hide-text-container') {
+            const an = sel.anchorNode;
+            const sortedNodes = Array.from(an.parentElement.childNodes); // .filter((i: any) => i.tagName !== 'BR');
+            const nodeIndex = sortedNodes.findIndex((i: any) => i === an);
+            const beforeNodesLength = sortedNodes.reduce((a: number, b: any, k: number) => {
+                if (nodeIndex > k) {
+                    if (b.tagName === 'BR') {
+                        a++;
+                    } else {
+                        a += b.length;
+                    }
+                }
+                return a
+            }, 0);
+            const out = sel?.focusOffset + beforeNodesLength;
+            // if (out > 0) {
+            this.lastCaretPoint = out;
+            // }
+            console.log('getCaretPosition:', { an, sortedNodes, nodeIndex, beforeNodesLength, lastCaretPoint: this.lastCaretPoint })
+        }
+
+        return this.lastCaretPoint;
+    }
+    setCaret(position: number) {
+        if (!position) {
+            return;
+        }
+        position = Math.min(position, this.sqlRequest.length);
+        console.log({ setCaret: position });
         const el = document.getElementsByClassName("hide-text-container");
         const range = document.createRange();
         const sel: any = window.getSelection();
+        const { childNodes } = el[0];
 
-        range.setStart(el[0].childNodes[0], position);
-        range.collapse(true);
+        let n = position;
+        let m = 0;
+        const currentTextNode: any = Array.from(childNodes)
+            .find((i: any) => {
+                m = i.tagName === 'BR' ? 1: i.length;
+                n -= m;
+                return n < 0
+            });
+        if (currentTextNode) {
+            console.log({ position, childNodes, currentTextNode, sR: this.sqlRequest.length });
+            range.setStart(currentTextNode, n + m);
+            range.collapse(true);
 
-        sel.removeAllRanges();
-        sel.addRange(range);
+            sel.removeAllRanges();
+            sel.addRange(range);
+        }
         this.cdr.detectChanges();
     }
     autocompleteSelectorIndex = 0;
@@ -214,10 +265,8 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit, OnDestroy {
                     this.insertCharByCaretPosition(`\n`);
                     event.stopPropagation();
                     event.preventDefault();
-                    return;
                 }
-                break;
-
+                return;
             case 'Tab':
                 this.insertCharByCaretPosition(`  `);
                 event.stopPropagation();
@@ -244,9 +293,13 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit, OnDestroy {
         this.getCaretPosition();
         let start = this.sqlRequest.slice(0, this.lastCaretPoint);
         let end = this.sqlRequest.slice(this.lastCaretPoint);
+        this.lastCaretPoint = (start + char).length;
         this.sqlRequest = start + char + end;
+        requestAnimationFrame(() => {
+            this.setCaret((start + char).length);
+            this.cdr.detectChanges();
+        })
         this.cdr.detectChanges();
-        this.setCaret((start + char).length);
     }
     onItemClick(event: any) {
         console.log('onItemClick', event);
@@ -254,9 +307,6 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit, OnDestroy {
         this.replaceByPositionCaret(event?.name);
         this.textChange(this.lastCaretPoint);
         this.isAutocompleteVisible = false;
-        // requestAnimationFrame(() => {
-        //     this.setCaret(this.sqlRequest.length);
-        // })
         this.cdr.detectChanges();
     }
     replaceByPositionCaret(replacementWord: string) {

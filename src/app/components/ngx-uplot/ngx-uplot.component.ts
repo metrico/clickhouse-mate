@@ -57,7 +57,7 @@ export class NgxUplotComponent implements AfterViewInit {
     @Input()
     set data(value: any) {
         this._details = value?.data;
-        console.log('this._details => ', this._details);
+        // console.log('this._details => ', this._details);
         try {
             const labels = value?.meta?.map((i: any) => i.name);
             this._details = this._details?.map((d: any) => {
@@ -82,12 +82,12 @@ export class NgxUplotComponent implements AfterViewInit {
 
             this.opts.series = [{}, ...series];
 
-            console.log('this.opts.series', this.opts.series);
+            // console.log('this.opts.series', this.opts.series);
             this._details = [
                 [...Array(value?.data?.length).keys()],
                 ...out
             ];
-            console.log('FORMATTED:this._details => ', this._details);
+            // console.log('FORMATTED:this._details => ', this._details);
             this.makeChart(this._details);
         } catch (e) { }
     }
@@ -98,7 +98,7 @@ export class NgxUplotComponent implements AfterViewInit {
     @ViewChild('chartUPlot', { static: true }) chartUPlot: any | HTMLElement;
     constructor() {
 
-        console.log(this.data);
+        // console.log(this.data);
     }
     randColor() {
         return "#000000".replace(/0/g, () => (~~(Math.random() * 16)).toString(16));
@@ -112,10 +112,10 @@ export class NgxUplotComponent implements AfterViewInit {
                 this.indexOfField.push(out);
                 return out;
             })
-            console.log('<< outData >>', outData);
+            // console.log('<< outData >>', outData);
             return outData;
         } else {
-            console.log('<< this.data >>', this.data);
+            // console.log('<< this.data >>', this.data);
             return this.data
         }
     }
@@ -160,6 +160,6 @@ export class NgxUplotComponent implements AfterViewInit {
     }
     hide(event: any) {
         this.makeChart(this.data)
-        console.log(event);
+        // console.log(event);
     }
 }

@@ -32,7 +32,7 @@ export class HomePageComponent implements OnInit {
     _selectedDB: any;
     readyToWork = false;
     set selectedDB(val: any) {
-        console.log('set new value', val);
+        // console.log('set new value', val);
 
         if (this.dbLink === val?.value?.dbLink &&
             this.dbLogin === val?.value?.dbLogin &&
@@ -100,7 +100,7 @@ export class HomePageComponent implements OnInit {
         private docsService: DocsService,
         private cdr: ChangeDetectorRef,
         public dialog: MatDialog,
-        private alertService: AlertService
+        // private alertService: AlertService
     ) {
         if (getParam.kiosk) {
             this.isDarkMode = getParam.mode === 'dark';
@@ -118,7 +118,7 @@ export class HomePageComponent implements OnInit {
             login: getParam.db_login,
             password: getParam.db_pass
         } : getStorage('AUTH_DATA');
-        console.log("auth", !!auth?.dbURL)
+        // console.log("auth", !!auth?.dbURL)
 
         if (auth?.dbURL) {
             this.dbLink = auth.dbURL;
@@ -133,7 +133,7 @@ export class HomePageComponent implements OnInit {
                 await this.getDynamicDictionary();
             });
         }
-        console.log(this.currentRow.size)
+        // console.log(this.currentRow.size)
         this.docsService.listen().subscribe(doc_link => {
             this.isDocsShows = false;
             this.cdr.detectChanges();
@@ -188,7 +188,7 @@ export class HomePageComponent implements OnInit {
         if (!data && typeof result === 'string') {
             data = result.split('\n').map(i => ([i]));
         }
-        console.log({ data });
+        // console.log({ data });
         const dbTreeData: any[] = [];
         const stack = async ([dbName]: any) => {
             await promiseWait(5);
@@ -256,7 +256,7 @@ export class HomePageComponent implements OnInit {
 
     formatData(data: any) {
         data = data || { meta: [], data: [] };
-        console.log(data);
+        // console.log(data);
         if (typeof data !== 'object') {
             this.details = data;
         } else {
@@ -285,7 +285,7 @@ export class HomePageComponent implements OnInit {
             this.isAccess = true;
             return true;
         } catch (error) {
-            console.log('ERROR', error)
+            // console.log('ERROR', error)
             // location.hash = '';
             return false;
         }
@@ -296,7 +296,7 @@ export class HomePageComponent implements OnInit {
             location.hash = '#query=' + encodeURI(this.sqlRequest);
         } else {
             location.hash = setLink(this.sqlRequest);
-            console.log(location.hash)
+            // console.log(location.hash)
         }
     }
 
@@ -368,7 +368,7 @@ export class HomePageComponent implements OnInit {
     }
 
     onClickRun(event?: any): void {
-        console.log(event);
+        // console.log(event);
         this.sqlRequest = event;
 
         this.SQL(this.sqlRequest);
@@ -465,7 +465,7 @@ export class HomePageComponent implements OnInit {
         sqlStr += ` ${FORMAT} ` + (isCompact ? 'JSONCompact' : type);
 
         this.apiService.runQuery(sqlStr).then(result => {
-            console.log(result, sqlStr)
+            // console.log(result, sqlStr)
             if (type === 'csv') {
                 saveToFile(result, fname + format);
             } else {
@@ -520,15 +520,15 @@ export class HomePageComponent implements OnInit {
             (parseFloat(stat?.elapsed || 0) || 0.001)
         );
 
-        console.log({
-            stat,
-            rows,
-            elapsed,
-            rows_read,
-            bytes_read,
-            rowsPerSec,
-            bytesPerSec
-        })
+        // console.log({
+        //     stat,
+        //     rows,
+        //     elapsed,
+        //     rows_read,
+        //     bytes_read,
+        //     rowsPerSec,
+        //     bytesPerSec
+        // })
         return [
             `${rows} rows in set. Elapsed ${elapsed}`,
             rows_read && ` Processed ${rows_read} rows`,
@@ -542,7 +542,7 @@ export class HomePageComponent implements OnInit {
         this.selectedDB = DBItems.find((item: any) => {
             return item.value.dbLink === this.dbLink
         })
-        console.log(this.dbItems, this.selectedDB);
+        // console.log(this.dbItems, this.selectedDB);
         requestAnimationFrame(() => {
             this.cdr.detectChanges();
         })
@@ -559,7 +559,7 @@ export class HomePageComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe((result: any) => {
-            console.log('The dialog was closed', { result });
+            // console.log('The dialog was closed', { result });
             requestAnimationFrame(() => {
                 this.cdr.detectChanges();
             });
@@ -567,7 +567,7 @@ export class HomePageComponent implements OnInit {
     }
     removeItemHistory(item: any): void {
         this.SqlArchive = this.SqlArchive.filter(i => i !== item);
-        console.log(this.SqlArchive, item);
+        // console.log(this.SqlArchive, item);
         localStorage.setItem(this.keyOfSqlHistory(), JSON.stringify(this.SqlArchive));
     }
 }

@@ -11,11 +11,11 @@
             #editor
         ></ace-editor>
     </div>
+    <!-- [textContent]="sqlRequest" -->
     <div
         contenteditable="true"
         spellcheck="false"
         class="hide-text-container"
-        [textContent]="sqlRequest"
         (input)="setRequestData()"
         (mouseup)="mouseUp()"
         (keydown)="keydown($event)"
@@ -65,8 +65,15 @@
 
                 {{ item.name }}
             </div>
-            <span style="float: right; flex: 1; text-align: end" *ngIf="!!item.doc_link">
-                <mat-icon class="customIconSize" (click)="setInfo(item.doc_link)">info</mat-icon>
+            <span
+                style="float: right; flex: 1; text-align: end"
+                *ngIf="!!item.doc_link"
+            >
+                <mat-icon
+                    class="customIconSize"
+                    (click)="setInfo(item.doc_link)"
+                    >info</mat-icon
+                >
             </span>
         </div>
     </div>

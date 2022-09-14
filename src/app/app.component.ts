@@ -72,6 +72,6 @@ export class AppComponent {
             }
         })
 
-        console.log('constructor:::', { params, getParam });
+        // console.log('constructor:::', { params, getParam });
     }
 }
