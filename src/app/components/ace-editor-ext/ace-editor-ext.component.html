@@ -36,9 +36,7 @@
     <div
         class="autocomplete-menu"
         [ngClass]="{ dark: isDarkMode }"
-        [style.display]="
-            isAutocompleteVisible && dictionary.length > 0 ? 'block' : 'none'
-        "
+        [style.display]="isAutocompleteVisible && dictionary.length > 0 ? 'block' : 'none'"
         #autocomplete
     >
         <div

@@ -25,15 +25,12 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit, OnDestroy {
     @Input()
     set sqlRequest(value: string) {
         this._sqlRequest = value;
-        const caret = this.getCaretPosition();
         const el = this.getTextElement();
-        console.log({ el, value });
-        if (el) {
+        if (el?.innerText !== value) {
+            const caret = this.getCaretPosition();
             el.innerText = value;
             if (this.lastCaretPoint) {
-                // setTimeout(() => {
-                    this.setCaret(caret);
-                // }, 0);
+                this.setCaret(caret);
             }
         }
 
@@ -102,7 +99,6 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit, OnDestroy {
         }
     }
     textChange(event?: any) {
-        // console.log({event});
         if (this.wasClick) {
             this.wasClick = false;
             return;
@@ -113,14 +109,11 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit, OnDestroy {
             return;
         }
 
-        this.lastWord = this.getWordByCaretPosition(); // (this.sqlRequest + '').split(/\s+/).pop();
+        this.lastWord = this.getWordByCaretPosition();
 
-        // console.log('textChange:type');
         const selection: any = window.getSelection();
         const range = selection.getRangeAt(0);
         const [rect] = range.getClientRects();
-
-        console.log({ selection, range, rect })
 
         const position: any = rect || this.getTextElement()?.getBoundingClientRect() || {
             left: 0,
@@ -136,18 +129,14 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.dictionary = this.dictionaryFull.filter(
                     i => i.name.toLowerCase().match(rx)
                 );
-            } catch (_) {
-            }
+            } catch (_) { }
         } else {
             this.dictionary = this.dictionaryFull;
         }
 
         this.isAutocompleteVisible = !!this.lastWord && this.dictionary.length > 0;
         console.log(this.lastWord, position);
-        // requestAnimationFrame(() => {
-        // })
         this.cdr.detectChanges();
-
     }
     getTextElement(): any {
         return document.querySelector('.hide-text-container');
@@ -178,10 +167,9 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     getCaretPosition() {
         const sel: any = window.getSelection();
-        // console.log('sel.focusOffset', sel.focusOffset, sel?.parentNode?.className);
         if (sel?.focusNode?.parentNode?.className === 'hide-text-container') {
             const an = sel.anchorNode;
-            const sortedNodes = Array.from(an.parentElement.childNodes); // .filter((i: any) => i.tagName !== 'BR');
+            const sortedNodes = Array.from(an.parentElement.childNodes);
             const nodeIndex = sortedNodes.findIndex((i: any) => i === an);
             const beforeNodesLength = sortedNodes.reduce((a: number, b: any, k: number) => {
                 if (nodeIndex > k) {
@@ -194,10 +182,7 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit, OnDestroy {
                 return a
             }, 0);
             const out = sel?.focusOffset + beforeNodesLength;
-            // if (out > 0) {
             this.lastCaretPoint = out;
-            // }
-            console.log('getCaretPosition:', { an, sortedNodes, nodeIndex, beforeNodesLength, lastCaretPoint: this.lastCaretPoint })
         }
 
         return this.lastCaretPoint;
@@ -207,7 +192,6 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit, OnDestroy {
             return;
         }
         position = Math.min(position, this.sqlRequest.length);
-        console.log({ setCaret: position });
         const el = document.getElementsByClassName("hide-text-container");
         const range = document.createRange();
         const sel: any = window.getSelection();
@@ -217,12 +201,11 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit, OnDestroy {
         let m = 0;
         const currentTextNode: any = Array.from(childNodes)
             .find((i: any) => {
-                m = i.tagName === 'BR' ? 1: i.length;
+                m = i.tagName === 'BR' ? 1 : i.length;
                 n -= m;
                 return n < 0
             });
         if (currentTextNode) {
-            console.log({ position, childNodes, currentTextNode, sR: this.sqlRequest.length });
             range.setStart(currentTextNode, n + m);
             range.collapse(true);
 
@@ -279,11 +262,11 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit, OnDestroy {
                 return;
 
             default:
-                requestAnimationFrame(() => {
-                    console.log("keydown:event", event);
-                    this.textChange(this.sqlRequest)
-                    event.stopPropagation();
-                })
+                // requestAnimationFrame(() => {
+                console.log("keydown:event", event);
+                this.textChange(this.sqlRequest)
+                event.stopPropagation();
+                // })
                 break;
         }
 
@@ -331,9 +314,9 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     private getWordByCaretPosition() {
         this.getCaretPosition();
-        console.log(this.sqlRequest, this.lastCaretPoint);
+        // console.log(this.sqlRequest, this.lastCaretPoint);
         const [lastWord] = this.sqlRequest.slice(0, this.lastCaretPoint).match(/\S+$/g) || [''];
-        console.log({ lastWord });
+        // console.log({ lastWord });
         return lastWord;
     }
     setInfo(doc_link: string) {
