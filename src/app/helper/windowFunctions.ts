@@ -86,7 +86,7 @@ export function setLink(query: string = '') {
                     return '';
                 }
                 if (key === 'mode') {
-                    console.log([key, value]);
+                    // console.log([key, value]);
                     return value ? 'mode=dark' : '';
                 }
 

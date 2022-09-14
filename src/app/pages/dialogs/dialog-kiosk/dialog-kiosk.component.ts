@@ -46,9 +46,9 @@ export class DialogKioskComponent implements OnInit, AfterContentChecked {
     ngAfterContentChecked(): void {
         if (this.dataHash !== this.getHash()) {
             this.dataHash = this.getHash();
-            console.log(
-                this.getHash()
-            )
+            // console.log(
+            //     this.getHash()
+            // )
 
             this.setLink()
         }
@@ -79,7 +79,7 @@ export class DialogKioskComponent implements OnInit, AfterContentChecked {
                         return '';
                     }
                     if (key === 'mode') {
-                        console.log([key, value]);
+                        // console.log([key, value]);
                         return value ? 'mode=dark' : '';
                     }
 
@@ -121,7 +121,7 @@ export class DialogKioskComponent implements OnInit, AfterContentChecked {
                 const successful = document.execCommand('copy');
                 if (successful) {
                     openAlert();
-                    console.log('was copied')
+                    // console.log('was copied')
                 }
 
             } catch (err) {

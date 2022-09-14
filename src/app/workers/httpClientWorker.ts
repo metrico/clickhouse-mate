@@ -17,17 +17,17 @@ export class HttpClientWorker {
                 xhr.send(postData);
 
                 xhr.onerror = (data) => {
-                    console.log('xhr.onerror', { data });
+                    // console.log('xhr.onerror', { data });
                     reject(xhr);
                 }
 
                 xhr.onabort = (data) => {
-                    console.log('xhr.onabort', { data });
+                    // console.log('xhr.onabort', { data });
                     reject(xhr);
                 }
 
                 xhr.ontimeout = (data) => {
-                    console.log('xhr.ontimeout', { data });
+                    // console.log('xhr.ontimeout', { data });
                     reject(xhr);
                 }
 

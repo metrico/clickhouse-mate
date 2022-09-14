@@ -20,7 +20,7 @@ const NEW_CONNECT = '(new connect)';
 export class LoginFormComponent implements OnInit, AfterViewInit {
     _isAccess: boolean = false;
     @Input() set isAccess(val) {
-        console.log("set isAccess", val);
+        // console.log("set isAccess", val);
         this._isAccess = val;
         // if (val) {
         this.ngAfterViewInit();
@@ -55,7 +55,7 @@ export class LoginFormComponent implements OnInit, AfterViewInit {
         this._errorMessage = val;
         if (!!val && this.dbItems?.length > 0) {
             const dbItem = this.dbItems.find(dbItem => dbItem?.value?.dbLink === this.settings.dbLink);
-            console.log("successMessage", { val, dbItem });
+            // console.log("successMessage", { val, dbItem });
             if (dbItem) {
                 dbItem.value.isSucceeded = false;
                 setStorage('dbItems', this.dbItems);
@@ -74,7 +74,7 @@ export class LoginFormComponent implements OnInit, AfterViewInit {
         this._successMessage = val;
         if (!!val && this.dbItems?.length > 0) {
             const dbItem = this.dbItems.find(dbItem => dbItem?.value?.dbLink === this.settings.dbLink);
-            console.log("successMessage", { val, dbItem });
+            // console.log("successMessage", { val, dbItem });
             if (dbItem) {
                 dbItem.value.isSucceeded = true;
                 setStorage('dbItems', this.dbItems);
@@ -112,7 +112,6 @@ export class LoginFormComponent implements OnInit, AfterViewInit {
             this.cdr.detectChanges();
         }
         this.changeDbItems.emit(this.dbItems);
-        console.log('ngOnInit', this.dbItems)
     }
     checkIfHasOneConnect() {
         const s = this.connectionList?.selectedOptions?.selected?.[0]?.value?.value;
@@ -122,8 +121,6 @@ export class LoginFormComponent implements OnInit, AfterViewInit {
         return b && c;
     }
     ngAfterViewInit() {
-        console.log('ngAfterViewInit')
-
         const c = () => {
             const listItem = this.connectionList?.options?.find(
                 (connection: any) => connection?.value?.value?.dbLink === this.settings.dbLink
@@ -157,7 +154,7 @@ export class LoginFormComponent implements OnInit, AfterViewInit {
             };
             this.dbItems.push(newConnection);
             this.settings = newConnection.value;
-            console.log('connectionList', this.connectionList);
+            // console.log('connectionList', this.connectionList);
             this.cdr.detectChanges();
         }
         requestAnimationFrame(() => {
@@ -173,7 +170,7 @@ export class LoginFormComponent implements OnInit, AfterViewInit {
         //     this.connectionList.options.first.toggle();
         // }
         this.settings = this.connectionList.selectedOptions.selected[0].value.value;
-        console.log(this.settings);
+        // console.log(this.settings);
         this.cdr.detectChanges();
     }
     removeConnection() {

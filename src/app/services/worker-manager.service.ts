@@ -14,7 +14,7 @@ export class WorkerManagerService {
                 { type: 'module' }
             );
         }
-        console.log('==== WorkerManagerService[constructor] ====');
+        // console.log('==== WorkerManagerService[constructor] ====');
         this.worker = WorkerManagerService.worker;
     }
     makeNewWorkerInstance() {
