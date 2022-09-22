@@ -299,14 +299,14 @@ export class AceEditorExtComponent implements OnInit, AfterViewInit, OnDestroy {
         start = start.match(/^.+\s/mg)?.join('') || '';
         end = end.match(/\s.+$/mg)?.join('') || '';
         this.sqlRequest = start + replacementWord + end;
-        requestAnimationFrame(() => {
+        setTimeout(() => {
             let inc = 0;
             if (replacementWord.match(/\)$/g)) {
                 // is a function word
                 inc = -1;
             }
             this.setCaret((start + replacementWord).length + inc);
-        })
+        }, 50)
     }
     setRequestData() {
         this.sqlRequest = this.getTextElement()?.innerText;
