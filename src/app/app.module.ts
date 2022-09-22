@@ -1,3 +1,4 @@
+import { PopupTextModule } from './components/popup-text/popup-text.module';
 import { ChHelpModule } from './components/ch-help/ch-help.module';
 import { AceEditorExtModule } from './components/ace-editor-ext/ace-editor-ext.module';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
@@ -44,6 +45,7 @@ import { NgxUplotModule } from 'ngx-uplot';
         AceEditorExtModule,
         LoadingCircleModule,
         ChHelpModule,
+        PopupTextModule,
         NgxUplotModule,
         // MatDialogModule,
         // MatButtonModule,

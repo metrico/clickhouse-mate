@@ -1,0 +1,7 @@
+<div *ngIf="text">
+    <div class="back-place" (click)="onHide()"></div>
+    <div class="full-text-popup" [style.top.px]="top" [style.left.px]="left" #textPopup>
+        <span *ngIf="!isJson">{{ text }}</span>
+        <ngx-json-viewer *ngIf="isJson" [json]="getJSON()"></ngx-json-viewer>
+    </div>
+</div>

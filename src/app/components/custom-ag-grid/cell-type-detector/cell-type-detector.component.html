@@ -1,17 +1,16 @@
-<div [style.text-align]="isNumber && 'right'">
+<div class="cell" [style.text-align]="isNumber && 'right'" (click)="onClick()">
     <span
+        #cell
         [style.display]="isNULL && 'none'"
         [style.color]="isNumber && 'purple'"
-        [style.height]="rowHeight+8+'px'"
-        [style.whiteSpace]="isMultiLine ? 'pre-wrap' : ''"
-        [style.overflow]="'auto'"
+        [style.height]="30 + 'px'"
         [style.display]="'block'"
-        [style.lineHeight]="defaultRowHeight+'px'"
+        [style.lineHeight]="30 + 'px'"
     >
         {{ value }}
     </span>
 
-    <span style="color: grey;" [style.display]="!isNULL && 'none'">
+    <span style="color: grey" [style.display]="!isNULL && 'none'">
         <i>NULL</i>
     </span>
 </div>
