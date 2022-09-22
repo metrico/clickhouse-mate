@@ -1,4 +1,4 @@
-// import { MatButtonModule } from '@angular/material/button';
+import { PopupTextModule } from './components/popup-text/popup-text.module';
 import { ChHelpModule } from './components/ch-help/ch-help.module';
 import { AceEditorExtModule } from './components/ace-editor-ext/ace-editor-ext.module';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
@@ -20,10 +20,10 @@ import { CustomAgGridModule } from './components/custom-ag-grid/custom-ag-grid.m
 import { LoginFormModule } from './components/login-form/login-form.module';
 import { AlertService } from './services/alert.service';
 import { LoadingCircleModule } from './components/loading-circle/loading-circle.module';
-import { NgxUplotModule } from './components/ngx-uplot/ngx-uplot.module';
+// import { NgxUplotModule } from './components/ngx-uplot/ngx-uplot.module';
 import { DialogKioskComponent } from './pages/dialogs/dialog-kiosk/dialog-kiosk.component';
 // import { MatDialogModule } from '@angular/material/dialog';
-
+import { NgxUplotModule } from 'ngx-uplot';
 @NgModule({
     declarations: [
         AppComponent,
@@ -45,6 +45,7 @@ import { DialogKioskComponent } from './pages/dialogs/dialog-kiosk/dialog-kiosk.
         AceEditorExtModule,
         LoadingCircleModule,
         ChHelpModule,
+        PopupTextModule,
         NgxUplotModule,
         // MatDialogModule,
         // MatButtonModule,

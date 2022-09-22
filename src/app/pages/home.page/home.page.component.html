@@ -174,7 +174,7 @@
                                     (getParam.kiosk &&
                                         !getParam.query_field &&
                                         containerSplitter.offsetHeight) ||
-                                    containerSplitter.offsetHeight - 22
+                                    containerSplitter.offsetHeight - 40
                                 "
                             >
                                 <ng-container
@@ -252,3 +252,4 @@
     (testConnection)="connectToDB($event, true)"
     (changeDbItems)="setDBItems($event)"
 ></app-login-form>
+<app-popup-text></app-popup-text>

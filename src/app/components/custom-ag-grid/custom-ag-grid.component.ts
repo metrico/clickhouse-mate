@@ -124,13 +124,13 @@ export class CustomAgGridComponent implements OnInit, AfterContentChecked {
                 this._columns = Object.entries(firstItemOfDetails).map(
                     ([key]: any) => {
                         let isAutoHeight = false;
-                        if (
-                            typeof firstItemOfDetails[key] === 'string' &&
-                            this.details.some((value) => regex.test(value[key]))
-                        ) {
-                            // isAutoHeight = true;
-                            // this.autoHeightColumns.push(key)
-                        }
+                        // if (
+                        //     typeof firstItemOfDetails[key] === 'string' &&
+                        //     this.details.some((value) => regex.test(value[key]))
+                        // ) {
+                        //     // isAutoHeight = true;
+                        //     // this.autoHeightColumns.push(key)
+                        // }
                         return {
                             field: key,
                             hide: !val.includes(key),
@@ -192,8 +192,7 @@ export class CustomAgGridComponent implements OnInit, AfterContentChecked {
     public resizeGrid() {
         requestAnimationFrame(() => {
             if (this.agGridSizeControl.selectedType === GRID_FIT) {
-                this.gridColumnApi?.autoSizeAllColumns();
-
+                // this.gridColumnApi?.autoSizeAllColumns();
             } else {
                 this.gridApi?.sizeColumnsToFit();
             }
@@ -216,34 +215,35 @@ export class CustomAgGridComponent implements OnInit, AfterContentChecked {
             settings: SettingButtonComponent,
             cellHeader: CellHeaderComponent,
             cellTypeDetector: CellTypeDetectorComponent,
-            expandRenderer: ExpandRendererComponent,
+            // expandRenderer: ExpandRendererComponent,
         };
     }
     public getRowHeight(params: RowHeightParams) {
-        const isFullWidth = params.data.isExpanded;
-        // changing defaultRowHeight also requires changing th and tr height in full-row-renderer.component.scss
-        const margins = 10;
-        // changing maxRowHeight also requires changing :host max-height in full-row-renderer.component.scss
-        if (isFullWidth) {
-            const columnCount = Object.keys(params.data)?.length;
-            const exapndedRowSize = (columnCount * defaultRowHeight) + margins;
-            return Math.min(exapndedRowSize, maxRowHeight);
-        } else {
-            let maxNewlineCount = 1;
-            Object.values(params.data).forEach((element) => {
-                if (typeof element === 'string'){
-                    const newLineCount = element.split(/\n|\r\n/).length - 1;
-                    if (newLineCount > maxNewlineCount) {
-                        maxNewlineCount = newLineCount;
-                    }
-                }
-            });
-            const rowHeightWithNewLines = maxNewlineCount * defaultRowHeight;
-            return Math.min(rowHeightWithNewLines, maxRowHeight)
-        }
-
-
+        return 30;
     }
+    // public getRowHeight_(params: RowHeightParams) {
+    //     const isFullWidth = params.data.isExpanded;
+    //     // changing defaultRowHeight also requires changing th and tr height in full-row-renderer.component.scss
+    //     const margins = 10;
+    //     // changing maxRowHeight also requires changing :host max-height in full-row-renderer.component.scss
+    //     if (isFullWidth) {
+    //         const columnCount = Object.keys(params.data)?.length;
+    //         const exapndedRowSize = (columnCount * defaultRowHeight) + margins;
+    //         return Math.min(exapndedRowSize, maxRowHeight);
+    //     } else {
+    //         let maxNewlineCount = 1;
+    //         Object.values(params.data).forEach((element) => {
+    //             if (typeof element === 'string'){
+    //                 const newLineCount = element.split(/\n|\r\n/).length - 1;
+    //                 if (newLineCount > maxNewlineCount) {
+    //                     maxNewlineCount = newLineCount;
+    //                 }
+    //             }
+    //         });
+    //         const rowHeightWithNewLines = maxNewlineCount * defaultRowHeight;
+    //         return Math.min(rowHeightWithNewLines, maxRowHeight);
+    //     }
+    // }
     ngOnInit() {
         this.agEventService.listen().subscribe((data) => {
             if (data) {

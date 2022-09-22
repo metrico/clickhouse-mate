@@ -1,0 +1,28 @@
+.back-place {
+    position: absolute;
+    // display: none;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.2);
+    z-index: 99999999;
+}
+.full-text-popup {
+    position: absolute;
+    // display: none;
+    top: 0;
+    left: 0;
+    padding: 6px 4px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+    white-space: pre;
+    z-index: 99999999;
+    max-width: 400px;
+    max-height: 400px;
+    overflow: auto;
+    transition: top 0.3s, left 0.3s;
+}
