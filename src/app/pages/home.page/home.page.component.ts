@@ -1,16 +1,14 @@
-import { Functions } from './../../helper/functions';
-import { HashParams } from './../../app.component';
-import { DocsService } from './../../services/docs.service';
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, Inject } from '@angular/core';
+import { Functions } from '@app/helper/functions';
+import { DocsService } from '@app/services/docs.service';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ApiService, QUERY_LIST } from 'src/app/services/api.service';
 import { getStorage, saveToFile, setLink, setStorage } from '@app/helper/windowFunctions';
 import { Row } from '@app/models/grid.model';
 import { Dictionary } from '@app/components/ace-editor-ext/dictionary-default';
 import { promiseWait, cloneObject } from '@app/helper/functions';
-import { getParam } from '@app/app.component';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogKioskComponent } from '../dialogs/dialog-kiosk/dialog-kiosk.component';
-import { AlertService } from '@app/services/alert.service';
+import { getParam, HashParams } from '@app/services/get-params.service';
 
 @Component({
     templateUrl: './home.page.component.html',
