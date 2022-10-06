@@ -24,6 +24,9 @@ import { LoadingCircleModule } from './components/loading-circle/loading-circle.
 import { DialogKioskComponent } from './pages/dialogs/dialog-kiosk/dialog-kiosk.component';
 // import { MatDialogModule } from '@angular/material/dialog';
 import { NgxUplotModule } from 'ngx-uplot';
+import { StoreModule } from '@ngrx/store';
+import { reducers, metaReducers } from './reducers';
+import { EffectsModule } from '@ngrx/effects';
 @NgModule({
     declarations: [
         AppComponent,
@@ -47,6 +50,10 @@ import { NgxUplotModule } from 'ngx-uplot';
         ChHelpModule,
         PopupTextModule,
         NgxUplotModule,
+        StoreModule.forRoot(reducers, {
+      metaReducers
+    }),
+        EffectsModule.forRoot([]),
         // MatDialogModule,
         // MatButtonModule,
     ],

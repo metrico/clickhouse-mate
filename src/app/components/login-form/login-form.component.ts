@@ -42,11 +42,7 @@ export class LoginFormComponent implements OnInit, AfterViewInit {
             return (this.value.dbLink + '').match(rx)?.[0] || NEW_CONNECT;
         },
     };
-    @Input() settings: any = {
-        dbPassword: '',
-        dbLogin: '',
-        dbLink: ''
-    };
+    @Input() settings: any = {};
     inProcess = false;
     dbItems: any[] = [];
     _errorMessage: any = '';
@@ -54,8 +50,7 @@ export class LoginFormComponent implements OnInit, AfterViewInit {
         this.inProcess = false;
         this._errorMessage = val;
         if (!!val && this.dbItems?.length > 0) {
-            const dbItem = this.dbItems.find(dbItem => dbItem?.value?.dbLink === this.settings.dbLink);
-            // console.log("successMessage", { val, dbItem });
+            const dbItem = this.dbItems.find(dbItem => dbItem?.value?.dbLink === this.settings?.dbLink);
             if (dbItem) {
                 dbItem.value.isSucceeded = false;
                 setStorage('dbItems', this.dbItems);
@@ -73,8 +68,7 @@ export class LoginFormComponent implements OnInit, AfterViewInit {
         this.inProcess = false;
         this._successMessage = val;
         if (!!val && this.dbItems?.length > 0) {
-            const dbItem = this.dbItems.find(dbItem => dbItem?.value?.dbLink === this.settings.dbLink);
-            // console.log("successMessage", { val, dbItem });
+            const dbItem = this.dbItems.find(dbItem => dbItem?.value?.dbLink === this.settings?.dbLink);
             if (dbItem) {
                 dbItem.value.isSucceeded = true;
                 setStorage('dbItems', this.dbItems);
@@ -104,9 +98,13 @@ export class LoginFormComponent implements OnInit, AfterViewInit {
                 connect.value = Object.assign({}, connect.value, item.value);
                 this.dbItems.push(connect);
             })
+            // if (!this.settings) {
+                this.settings = this.dbItems[0];
+                this.cdr.detectChanges();
+            // }
         } else {
             const connect = shallowClone(this.emptyConnectionTemplate);
-            connect.value = Object.assign({}, connect.value, this.settings);
+            connect.value = Object.assign({}, connect.value, this.settings||{});
 
             this.dbItems = [connect];
             this.cdr.detectChanges();
@@ -121,18 +119,19 @@ export class LoginFormComponent implements OnInit, AfterViewInit {
         return b && c;
     }
     ngAfterViewInit() {
-        const c = () => {
-            const listItem = this.connectionList?.options?.find(
-                (connection: any) => connection?.value?.value?.dbLink === this.settings.dbLink
-            );
-            if (listItem) {
-                listItem.toggle();
-                this.cdr.detectChanges();
-            } else {
-                requestAnimationFrame(c)
-            }
-        }
-        requestAnimationFrame(c);
+            this.selectConnection();
+        // const c = () => {
+        //     const listItem = this.connectionList?.options?.find(
+        //         (connection: any) => connection?.value?.value?.dbLink === this.settings?.dbLink
+        //     );
+        //     if (listItem) {
+        //         listItem.toggle();
+        //         this.cdr.detectChanges();
+        //     } else {
+        //         requestAnimationFrame(c)
+        //     }
+        // }
+        // requestAnimationFrame(c);
     }
     hidePassword(str: string) {
         return Array.from({ length: (str + '').length }, () => '•').join('');
@@ -164,19 +163,31 @@ export class LoginFormComponent implements OnInit, AfterViewInit {
             this.cdr.detectChanges();
         })
     }
-    selectConnection() {
+    selectConnection(event?: any) {
+        console.log(event)
         // if (!this.connectionList?.selectedOptions?.selected?.[0]?.value?.value) {
         //     console.log(this.connectionList.options)
         //     this.connectionList.options.first.toggle();
         // }
-        this.settings = this.connectionList.selectedOptions.selected[0].value.value;
-        // console.log(this.settings);
-        this.cdr.detectChanges();
+        try {
+
+            this.settings = this.connectionList.selectedOptions.selected[0].value.value;
+            // console.log(this.settings);
+            this.cdr.detectChanges();
+        } catch (e) {
+            requestAnimationFrame(() => {
+                this.selectConnection(event);
+            })
+        }
     }
     removeConnection() {
         this.dbItems = this.dbItems.filter(
             connection => connection.viewValue !== this.connectionList.selectedOptions.selected[0].value.viewValue
         );
+        console.log(this.connectionList.options)
+        this.connectionList.options.first.toggle();
+        this.settings = this.dbItems[0];
+        this.selectConnection();
         this.cdr.detectChanges();
         this.changeDbList();
     }
