@@ -40,7 +40,7 @@ export class HomePageComponent implements OnInit {
             return;
         }
 
-        if (this._selectedDB && this._selectedDB?.value?.dbLink !== val?.value?.dbLink) {
+        if (this._selectedDB?.value && this._selectedDB.value?.dbLink !== val?.value?.dbLink) {
             this._selectedDB = val;
             this.connectToDB(this._selectedDB.value);
             this.cdr.detectChanges();
@@ -108,8 +108,29 @@ export class HomePageComponent implements OnInit {
         }
     }
 
-    ngOnInit(): void {
+    checkDBList() {
+        const dbItems = getStorage('dbItems');
+        const AUTH_DATA: any = getStorage('AUTH_DATA');
+        if (AUTH_DATA && !dbItems.find((dbItem: any) => dbItem?.value?.dbLink === AUTH_DATA?.dbURL)) {
+            const rx = /[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+/;
+            const temp = {
+                value: {
+                    dbLink: AUTH_DATA.dbURL,
+                    dbLogin: AUTH_DATA.login,
+                    dbPassword: AUTH_DATA.password,
+                    isSucceeded: true
+                },
+                viewValue: (AUTH_DATA.dbURL + '').match(rx)?.[0],
+            };
 
+            dbItems.push(temp);
+            setStorage('dbItems', dbItems);
+        }
+
+    }
+
+    ngOnInit(): void {
+        this.checkDBList();
 
         const auth: any = getParam.kiosk ? {
             dbURL: getParam.db_host,
