@@ -767,6 +767,12 @@ Awesome, nor vice versa. **Please do not use brand logos for any purpose except
 to represent the company, product, or service to which they refer.**
 
 
+@ngrx/effects
+MIT
+
+@ngrx/store
+MIT
+
 ag-grid-angular
 MIT
 
