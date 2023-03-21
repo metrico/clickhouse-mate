@@ -1,4 +1,4 @@
-<img src="https://user-images.githubusercontent.com/1423657/162776419-0330af12-7857-40c0-b660-254f8837a910.png" width=420 />
+<img src="https://user-images.githubusercontent.com/1423657/218816262-e0e8d7ad-44d0-4a7d-9497-0d383ed78b83.png" width=420 />
 
 # ClickHouse-Mate
 Advanced Clickhouse _"play"_ Client and User-Interface
